@@ -11,6 +11,7 @@ Static site. Deployed on Vercel. Served at `tshaws.elbrink.com`.
 /episodes/           Full episode archive with player
 /guests/             Everyone who has been on the show
 /videos/             YouTube library
+/mortgages/          Trevor's mortgage lending page
 /about/              Trevor and the show
 /api/episodes        Serverless: parses the ZenCast RSS, returns JSON
 /api/videos          Serverless: YouTube Data API proxy, hides the key
