@@ -1,0 +1,24 @@
+{
+  "note": "Synthetic show notes covering the guest-line rules. Lines are HTML as ZenCast emits it, so & arrives as &amp;. Episodes 80-98 are out of the real feed's range so they cannot collide with it. Episodes 34 and 39 are real numbers, left from when they were covered by hand-entered fallback rows, which were all deleted by 2026-09-14.",
+  "episodes": [
+    { "episode": 80, "line": "Guest: Adam Greuel (Horseshoes &amp; Hand Grenades)" },
+    { "episode": 81, "line": "Guest: Danny O&#039;Keefe (O&#39;Keefe &amp; Sons)" },
+    { "episode": 82, "line": "Guest: Béla Fleck (Béla Fleck &amp; the Flecktones)" },
+    { "episode": 83, "line": "Guest: Zo&#235; Keating (Keating&nbsp;Trio)" },
+    { "episode": 84, "line": "Guest: Mason Via (Mason Via)" },
+    { "episode": 90, "line": "Guests: Cory Walker (East Nash Grass, Winding Down Boys); Kate Kirchner (Band Manager)" },
+    { "episode": 91, "line": "Guests: Trevor Shaw (T Shaws Progressive Bluegrass); Sierra Hull (Sierra Hull Band)" },
+    { "episode": 92, "line": "Guest: T Shaw's (T Shaw's Progressive Bluegrass)" },
+    { "episode": 93, "line": "Guest: T Shaw" },
+    { "episode": 94, "line": "Guest: Trevor Shaw’s" },
+    { "episode": 95, "line": "Guest: TREVOR SHAW (whatever)" },
+    { "episode": 96, "line": "Guest: John Weisberger (Record Company)" },
+    { "episode": 97, "line": "Guest: Trevor Wilson (Some Band)" },
+    { "episode": 98, "line": "Guest: Lucas White (Lucas White)" },
+    { "episode": 85, "line": "Jane Doe (Mandolin Fixture Band) and I talk shop, and more. Guest: Jane Doe (Fixture Band)" },
+    { "episode": 86, "line": "Just me this week! Guest: Trevor Shaw (T Shaws Progressive Bluegrass)" },
+    { "episode": 87, "line": "No show last week, so my guest: nobody. Stay tuned for our Guest: Picks segment." },
+    { "episode": 34, "line": "Guest: John Boulware (Randy Steele and The High Cold Wind)" },
+    { "episode": 39, "line": "Guest: John Boulware (Randy Steele and The High Cold Wind)" }
+  ]
+}

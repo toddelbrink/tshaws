@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--
+  Numbers in this prose maintain themselves. Anything wrapped in data-stat is
+  overwritten from live data by /assets/js/stats.js, and the words written here
+  are the fallback for when the API is unreachable. Do not hand-edit them.
+  Bound: years, videos, concerts, seasons, episodes.
+
+  One number is deliberately NOT bound: "2016 was my busiest year. I posted
+  more than 500 videos." 2016 is a closed year, the real figure is 502, and it
+  cannot drift, so hardcoding it is correct.
+
+  Two facts corrected against live data:
+    "eighty-five whole concerts" -> eighty-three. The 85th playlist is the
+    podcast-on-video playlist, and one more holds no public videos.
+    "first show on November 22, 2010" -> November 20. The 22nd is the upload
+    date; the video's own title reads 11/20/10.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>About · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Trevor Shaw has been filming bluegrass shows since 2010 and hosting the podcast since 2024.">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a href="/">Home</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/" aria-current="page">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="about">
+
+  <p class="label">About</p>
+  <h1>Trevor Shaw</h1>
+
+  <div class="prose">
+    <p class="lead">I'm Trevor Shaw. I go to bluegrass shows, I film them, and I talk to
+      the people who play them. That's been the whole project for <span data-stat="years">fifteen</span> years.</p>
+
+    <h2>How I got here</h2>
+    <!--
+      4:3, cropped from y=360 of the 1800x2400 portrait master, which loses the
+      pine canopy and the dark tent corner off the top before it touches the
+      shirt at the bottom. The face, the cap and the camera all survive.
+
+      It floats here rather than above the heading, so the h2 keeps the full
+      column and only the paragraphs wrap. Served at 300px with a 2x file, not
+      at master size, because the master is 1.1 MB.
+    -->
+    <figure class="photo float">
+      <img src="/assets/photos/trevor-in-action-300.jpg"
+           srcset="/assets/photos/trevor-in-action-300.jpg 300w,
+                   /assets/photos/trevor-in-action-600.jpg 600w"
+           sizes="(min-width:641px) 300px, calc(100vw - 40px)"
+           width="300" height="225" loading="eager" decoding="async"
+           alt="Trevor Shaw in profile at an outdoor festival, laughing, camera in hand.">
+    </figure>
+    <p>I was raised in a folk music family and had no idea what I was sitting on. The
+      Kingston Trio or Johnny Cash could be playing in the living room on any given day,
+      and if it wasn't rock and roll I wasn't interested. It did leave me open to
+      stringed instruments, banjo and guitar especially.</p>
+    <p>My first brush with this music was a trade in a parking lot after a Phish show in
+      2000. I came away with two very early Yonder Mountain String Band sets, one from
+      1999 and one from 2000. They were crude recordings and they didn't speak to me.</p>
+    <p>Eight years later a friend traveling on business shared Yonder Mountain's New
+      Year's run from 2006. That one got me, and I still play those shows.</p>
+    <p>Later that same year my father was in town and we had lunch with a friend of his
+      who had just come back from IBMA raving about a band called The Infamous
+      Stringdusters. He handed my father their first two albums. Those CDs never made it
+      home with him, because I kept them. That is what launched me into the bluegrass
+      life I live today.</p>
+
+    <h2>The archive</h2>
+    <p>By 2010 phones were finally good enough to shoot video, so I started a YouTube
+      channel. It didn't take long before I wanted better quality and moved up to a real
+      camera.</p>
+    <p>My first full-length videos are from November 20, 2010. The Infamous Stringdusters
+      at Variety Playhouse. I wasn't trying to build anything. I just wanted to keep it.</p>
+    <p>I never really stopped. There are more than <span data-stat="videos">3,000</span> videos now. A lot of them are
+      single songs. <span data-stat="concerts" data-stat-case="title">Eighty-three</span> shows have a set of their own, so you can watch
+      the songs I filmed that night in the order they were played. 2016 was
+      my busiest year. I posted more than 500 videos.</p>
+    <p>A lot of these bands are still out there and you should go see them. Some are
+      gone. Bands break up, and we've lost people. For a few of those nights, this is the
+      only place the show still exists.</p>
+    <p>I have never monetized the channel and I don't intend to. I never want a musician
+      to be able to say I'm making money off their art.</p>
+
+    <figure class="photo">
+      <img src="/assets/photos/trevor-and-kat-700.jpg"
+           srcset="/assets/photos/trevor-and-kat-700.jpg 700w,
+                   /assets/photos/trevor-and-kat-1050.jpg 1050w,
+                   /assets/photos/trevor-and-kat-1400.jpg 1400w"
+           sizes="(min-width:740px) 660px, calc(100vw - 40px)"
+           width="700" height="526" loading="lazy" decoding="async"
+           alt="Trevor and Kat at an outdoor festival, with The Infamous Stringdusters playing on the stage behind them.">
+      <figcaption>Kat and me, watching the Stringdusters.</figcaption>
+    </figure>
+
+    <h2>The podcast</h2>
+    <p>In 2024 I started the podcast, because the videos were one-dimensional. I was
+      already having conversations with the musicians I filmed, and not all of it
+      belonged on camera. And if I had questions for the people who influenced me, I
+      figured the fans had the same ones. The podcast is how you get to know a musician
+      past the music, off the stage.</p>
+    <p>At the time I thought it was as simple as talking into a microphone and hitting
+      record. It turns out it's a whole lot more complicated, and I'm still learning and
+      improving with every episode.</p>
+    <p><span data-stat="seasons" data-stat-case="title">Four</span> seasons and <span data-stat="episodes">forty-one</span> episodes so far, out most weeks. I've talked with
+      pickers, festival people, and folks who run the business side of this music. Some
+      of the best conversations ran two parts because neither of us wanted to stop.</p>
+
+    <h2>Where I am</h2>
+    <p>Chattanooga, Tennessee, mostly. IBMA World of Bluegrass when it's in town,
+      Telluride, SPBGMA, and whatever else I can get to. When I'm not at a show I'm
+      probably watching the Cubs.</p>
+    <p>I film less than I used to. Phone cameras got good, so there are a lot of people
+      shooting bluegrass now, and I'd rather put the hours into the podcast. When I do
+      bring the camera out it's usually for a band most people haven't heard yet.</p>
+    <p>If you want to come on the podcast, or you know someone I should be talking to,
+      find me at one of the links below.</p>
+  </div>
+
+  <!--
+    The guest list moved to /guests/ on 2026-09-11. This section stays, and
+    keeps id="guests", because /about/#guests is linked from outside the site
+    and must not break. It is a signpost now, not a copy of the
+    table: one source of truth, nothing to drift.
+  -->
+  <section class="section" id="guests" aria-labelledby="guests-h">
+    <p class="label">The Show</p>
+    <h2 id="guests-h" class="big">Guests</h2>
+    <p class="meta" style="margin-top:8px">Everyone who has come on the show, with links
+      straight to their episodes.</p>
+    <p style="margin-top:16px"><a class="btn" href="/guests/">See the guest list</a></p>
+  </section>
+
+  <section class="section" aria-label="Follow the show">
+    <p class="label">Follow</p>
+    <div class="follow">
+      <a href="https://podcasts.apple.com/us/podcast/t-shaws-progressive-bluegrass/id1727560726" rel="noopener">Apple Podcasts</a>
+      <a href="https://open.spotify.com/show/3UZuxMJ2Ti6agQ1U6Peh15" rel="noopener">Spotify</a>
+      <a href="https://www.youtube.com/user/MrTrevor6162" rel="noopener">YouTube</a>
+      <a href="https://www.facebook.com/TShawsProgressiveBluegrass/" rel="noopener">Facebook</a>
+      <a href="https://www.instagram.com/tshawsprogressivebluegrass/" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/in/trevor-shaw-7b276a6/" rel="noopener">LinkedIn</a>
+      <a href="https://media.zencast.fm/t-shaw-s-progressive-bluegrass/rss" rel="noopener">RSS Feed</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

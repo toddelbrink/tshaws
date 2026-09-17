@@ -1,0 +1,13 @@
+# Working files — not for deployment
+test/
+tools/
+exports/
+CLAUDE.md
+BUILD_BRIEF.md
+FROM_COWORK_copy-delivery.md
+README.md
+SETUP.md
+.DS_Store
+
+# 2 MB master. Source of the derivatives, never served.
+assets/logo/t-shaws-logo.jpg

@@ -1,0 +1,41 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment — API keys live here, never in git
+.env
+.env.local
+.env.*.local
+
+# Editor and local tooling
+.vscode/
+.claude/
+.idea/
+*.swp
+*.swo
+
+# Node
+node_modules/
+
+# Vercel
+.vercel
+
+# Data exports for Trevor. Regenerate with tools/export-videos-csv.js.
+# They go stale the moment he edits a YouTube title, so they are never
+# committed. The generator is.
+exports/
+
+# Project working files — planning docs, not deliverables.
+# Mirrors .vercelignore. Trevor may take this repo; keep it site-only.
+CLAUDE.md
+BUILD_BRIEF.md
+FROM_COWORK_copy-delivery.md
+
+# The 2 MB logo master. Source of the derivatives, never served, and it
+# carries editor metadata. Kept locally, never committed.
+assets/logo/t-shaws-logo.jpg
