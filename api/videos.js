@@ -42,6 +42,8 @@ const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 // library falls back to an in-memory cache, and failed reads or writes are
 // logged, not thrown, so the worst case is the old behavior.
 const { getCache, waitUntil } = require('@vercel/functions');
+// Bump the version whenever the index's shape changes. The stored copy
+// outlives deploys, so an old shape would otherwise be served for hours.
 const INDEX_KEY = 'video-index:v1';
 const INDEX_LOCK = 'video-index:v1:rebuilding';
 const INDEX_FRESH_MS = 6 * 3600 * 1000;
