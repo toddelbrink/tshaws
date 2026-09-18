@@ -21,7 +21,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 8787;
-const UPSTREAM = 'https://tshaws.elbrink.com';
+const UPSTREAM = 'https://www.tshawsprogressivebluegrass.com';
 
 const TYPES = {
   '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',

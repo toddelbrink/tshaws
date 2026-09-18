@@ -2,7 +2,7 @@
 
 Website for Trevor Shaw's podcast and YouTube channel.
 
-Static site. Deployed on Vercel. Served at `tshaws.elbrink.com`.
+Static site. Deployed on Vercel. Served at `www.tshawsprogressivebluegrass.com`.
 
 ## Structure
 
@@ -52,8 +52,8 @@ he edits a title. Takes about a minute cold, ten seconds warm.
 
 Vercel project `tshaws`, linked to this repo. Push to `main` deploys automatically.
 
-- Live: https://tshaws.elbrink.com
-- `tshaws.vercel.app` redirects to the subdomain.
+- Live: https://www.tshawsprogressivebluegrass.com
+- `tshawsprogressivebluegrass.com`, `tshaws.elbrink.com` and `tshaws.vercel.app` redirect there.
 
 ## Local development
 

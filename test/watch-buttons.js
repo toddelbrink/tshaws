@@ -18,7 +18,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const LIVE = process.argv.includes('--live');
 const ONLY_REPORT = process.argv.includes('--report');
-const BASE = 'https://tshaws.elbrink.com';
+const BASE = 'https://www.tshawsprogressivebluegrass.com';
 
 global.window = {};
 require(path.join(ROOT, 'assets/js/epvideo.js'));

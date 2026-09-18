@@ -21,7 +21,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE = process.env.TS_BASE || 'https://tshaws.elbrink.com';
+const BASE = process.env.TS_BASE || 'https://www.tshawsprogressivebluegrass.com';
 const OUT_DIR = path.join(__dirname, '..', 'exports');
 
 const get = async (p) => {

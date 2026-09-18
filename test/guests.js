@@ -176,7 +176,7 @@ const EXPECTED = {
 
 async function live() {
   console.log('\n--- live feed ---');
-  const feed = await fetch('https://tshaws.elbrink.com/api/episodes').then((x) => x.json());
+  const feed = await fetch('https://www.tshawsprogressivebluegrass.com/api/episodes').then((x) => x.json());
   const rows = await renderWith(feed);
   assertNoHost(rows);
   const missing = [];

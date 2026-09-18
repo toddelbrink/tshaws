@@ -105,7 +105,7 @@ function parseItem(xml) {
 module.exports = async (req, res) => {
   try {
     const upstream = await fetch(FEED_URL, {
-      headers: { 'user-agent': 'tshaws-site/1.0 (+https://tshaws.elbrink.com)' }
+      headers: { 'user-agent': 'tshaws-site/1.0 (+https://www.tshawsprogressivebluegrass.com)' }
     });
     if (!upstream.ok) {
       res.status(502).json({ error: 'feed_unavailable', status: upstream.status });
