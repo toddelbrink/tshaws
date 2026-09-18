@@ -21,8 +21,10 @@
    * explicitly includes "advertising the sale of a product or service". A
    * working mortgage funnel is that.
    *
-   * So this is switched on only while the project runs on a Pro plan. */
-  var MORTGAGE_CTA_ENABLED = false;
+   * So this is switched on only while the project runs on a Pro plan.
+   * It has been on since 2026-09-18, when the project moved to a Pro team.
+   * If the project ever leaves Pro, set this back to false first. */
+  var MORTGAGE_CTA_ENABLED = true;
 
   /* ---- the destination ---------------------------------------------------
    *
