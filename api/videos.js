@@ -33,6 +33,31 @@ const PODCAST_PLAYLIST_ID = 'PLw21tIo6r9GxGkY-mUWx0PUeMANAKYjE4';
 const INDEX_MAX_PAGES = 80;   // 4000 videos. Headroom over the current 3,147.
 const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 
+// The index is kept in Vercel's Runtime Cache as well as the edge cache.
+// The edge copy was lost on every push and during quiet spells, and each loss
+// cost a visitor a 13 to 20 second rebuild: 63 YouTube pages walked in order.
+// The Runtime Cache sits beside the function and survives deployments, so a
+// lost edge copy now costs one store read. Past INDEX_FRESH_MS the stored copy
+// is still served at once and rebuilt after the response. Off Vercel the
+// library falls back to an in-memory cache, and failed reads or writes are
+// logged, not thrown, so the worst case is the old behavior.
+const { getCache, waitUntil } = require('@vercel/functions');
+const INDEX_KEY = 'video-index:v1';
+const INDEX_LOCK = 'video-index:v1:rebuilding';
+const INDEX_FRESH_MS = 6 * 3600 * 1000;
+const INDEX_KEEP_S = 30 * 86400;   // a month-old index still beats a 20s wait
+
+// The store has no atomic claim, so two stale requests arriving together could
+// both see no lock and both rebuild, doubling the 126 quota units. Each writes
+// its own ticket and reads it back, and only the last writer rebuilds.
+async function claimRebuild(store) {
+  if (await store.get(INDEX_LOCK)) return false;
+  const ticket = Math.random().toString(36).slice(2);
+  await store.set(INDEX_LOCK, { ticket }, { ttl: 300 });
+  const held = await store.get(INDEX_LOCK);
+  return !!held && held.ticket === ticket;
+}
+
 function parseIsoDuration(iso) {
   if (!iso) return null;
   const m = iso.match(/^P(?:([\d.]+)D)?T?(?:([\d.]+)H)?(?:([\d.]+)M)?(?:([\d.]+)S)?$/);
@@ -143,6 +168,53 @@ module.exports = async (req, res) => {
     };
   }
 
+  // Lite index of everything, for client-side search and /videos/all.
+  // No descriptions, no thumbnail objects, no view counts. The grid fetches
+  // detail per page. This exists so search can span all 3,147 at once.
+  async function buildIndex() {
+    const builtStart = Date.now();
+    const unitsBefore = units;
+    const items = [];
+    let token = '', pages = 0, truncated = false;
+    do {
+      const p = await yt('/playlistItems', {
+        part: 'snippet,contentDetails', playlistId: UPLOADS_PLAYLIST,
+        maxResults: String(PAGE_SIZE), ...(token ? { pageToken: token } : {})
+      });
+      items.push(...(p.items || []));
+      token = p.nextPageToken || '';
+      if (token && ++pages >= INDEX_MAX_PAGES) { truncated = true; break; }
+    } while (token);
+
+    // Duration was dropped from this mode on 2026-09-07 to halve a 27s cold
+    // build, when the index only fed search. It is back, because /videos/all
+    // now renders from this index so it can filter by year, and that grid is
+    // the main way into the archive. The 63 lookups run in parallel now, so
+    // they cost seconds rather than the 13 they used to.
+    const live = items.filter(isLive);
+    const detail = await hydrate(live.map(i => i.contentDetails.videoId), 8);
+    const videos = live.map(i => {
+      const d = detail.get(i.contentDetails.videoId);
+      return {
+        i: i.contentDetails.videoId,
+        t: i.snippet.title,
+        p: (i.contentDetails.videoPublishedAt || i.snippet.publishedAt || '').slice(0, 10),
+        d: d ? parseIsoDuration(d.contentDetails && d.contentDetails.duration) : null
+      };
+    }).sort((a, b) => b.p.localeCompare(a.p));
+
+    return {
+      mode: 'index', count: videos.length, truncated,
+      skipped: items.length - live.length,
+      quotaUnitsUsed: units - unitsBefore, elapsedMs: Date.now() - builtStart,
+      builtAt: new Date().toISOString(),
+      // Thumbnails are derivable: https://i.ytimg.com/vi/<id>/hqdefault.jpg
+      fields: { i: 'videoId', t: 'title', p: 'publishedDate', d: 'durationSeconds' },
+      videos
+    };
+  }
+
+
   const mode = (req.query && req.query.mode) || 'page';
   const SIX_HOURS = 's-maxage=21600, stale-while-revalidate=604800';
 
@@ -225,48 +297,32 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // ---- Lite index of everything, for client-side search ----------------
-    // No descriptions, no thumbnail objects, no view counts. The grid fetches
-    // detail per page; this exists so search can span all 3,147 at once.
+    // ---- Lite index of everything, served from the store when it can be ----
     if (mode === 'index') {
-      const items = [];
-      let token = '', pages = 0, truncated = false;
-      do {
-        const p = await yt('/playlistItems', {
-          part: 'snippet,contentDetails', playlistId: UPLOADS_PLAYLIST,
-          maxResults: String(PAGE_SIZE), ...(token ? { pageToken: token } : {})
-        });
-        items.push(...(p.items || []));
-        token = p.nextPageToken || '';
-        if (token && ++pages >= INDEX_MAX_PAGES) { truncated = true; break; }
-      } while (token);
+      // The edge keeps it an hour, not six. A miss now costs one store read,
+      // and a shorter edge life keeps a background rebuild from being hidden
+      // behind a stale edge copy for another six hours.
+      const INDEX_EDGE = 's-maxage=3600, stale-while-revalidate=604800';
+      const store = getCache();
+      const kept = await store.get(INDEX_KEY);
 
-      // Duration was dropped from this mode on 2026-09-07 to halve a 27s cold
-      // build, when the index only fed search. It is back, because /videos/all
-      // now renders from this index so it can filter by year, and that grid is
-      // the main way into the archive. The 63 lookups run in parallel now, so
-      // they cost seconds rather than the 13 they used to.
-      const live = items.filter(isLive);
-      const detail = await hydrate(live.map(i => i.contentDetails.videoId), 8);
-      const videos = live.map(i => {
-        const d = detail.get(i.contentDetails.videoId);
-        return {
-          i: i.contentDetails.videoId,
-          t: i.snippet.title,
-          p: (i.contentDetails.videoPublishedAt || i.snippet.publishedAt || '').slice(0, 10),
-          d: d ? parseIsoDuration(d.contentDetails && d.contentDetails.duration) : null
-        };
-      }).sort((a, b) => b.p.localeCompare(a.p));
+      if (kept && Array.isArray(kept.videos)) {
+        const age = Date.now() - Date.parse(kept.builtAt);
+        if (!(age < INDEX_FRESH_MS) && await claimRebuild(store)) {
+          waitUntil(buildIndex()
+            .then(fresh => store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S }))
+            .catch(e => console.error('index rebuild failed:', e.message))
+            .finally(() => store.delete(INDEX_LOCK)));
+        }
+        res.setHeader('cache-control', INDEX_EDGE);
+        res.status(200).json({ ...kept, source: 'store' });
+        return;
+      }
 
-      res.setHeader('cache-control', SIX_HOURS);
-      res.status(200).json({
-        mode, count: videos.length, truncated,
-        skipped: items.length - live.length,
-        quotaUnitsUsed: units, elapsedMs: Date.now() - startedAt,
-        // Thumbnails are derivable: https://i.ytimg.com/vi/<id>/hqdefault.jpg
-        fields: { i: 'videoId', t: 'title', p: 'publishedDate', d: 'durationSeconds' },
-        videos
-      });
+      const fresh = await buildIndex();
+      await store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+      res.setHeader('cache-control', INDEX_EDGE);
+      res.status(200).json({ ...fresh, source: 'youtube' });
       return;
     }
 

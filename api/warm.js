@@ -9,6 +9,9 @@
 //
 // The edge cache is keyed per deployment, so every push to main starts cold.
 // This cron narrows the window to the gap between a deploy and the next run.
+// Since 2026-09-18 mode=index is also kept in the Runtime Cache (videos.js),
+// which survives deploys, so a cold edge there costs a store read, not a
+// rebuild. This run also triggers the rebuild once the stored copy is stale.
 //
 // CAVEAT, measured 2026-09-11: the HIT this endpoint reports is not the cache a
 // visitor reads. It reported HIT for mode=index in 90ms while an external

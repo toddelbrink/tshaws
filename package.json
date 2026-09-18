@@ -1,0 +1,8 @@
+{
+  "name": "tshaws",
+  "private": true,
+  "description": "Website for T Shaw's Progressive Bluegrass",
+  "dependencies": {
+    "@vercel/functions": "^3.9.8"
+  }
+}
