@@ -50,8 +50,24 @@
     if (state.season !== 'all' && String(ep.season) !== state.season) return false;
     if (!state.q) return true;
     var q = state.q.toLowerCase();
-    return (ep.title || '').toLowerCase().indexOf(q) > -1 ||
-           (ep.descriptionText || '').toLowerCase().indexOf(q) > -1;
+    var s = fold(q), joined = s.replace(/ /g, '');
+    // A query of only punctuation folds to nothing. Match it literally.
+    if (!joined) {
+      return (ep.title || '').toLowerCase().indexOf(q) > -1 ||
+             (ep.descriptionText || '').toLowerCase().indexOf(q) > -1;
+    }
+    if (ep._fold === undefined) {
+      ep._fold = fold(ep.title) + ' \n ' + fold(ep.descriptionText);
+      ep._joined = fold(ep.title).replace(/ /g, '') + '\n' + fold(ep.descriptionText).replace(/ /g, '');
+    }
+    return ep._fold.indexOf(s) > -1 || (joined.length >= 5 && ep._joined.indexOf(joined) > -1);
+  }
+
+  // Same rules as video search (videos.js): case, accents and punctuation are
+  // ignored, and from five letters up so are spaces.
+  function fold(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   }
 
   function render(root) {
