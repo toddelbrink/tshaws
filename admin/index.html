@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+  Trevor's admin page. One password, set as ADMIN_PASSWORD in Vercel, and no
+  accounts. It controls the homepage featured video and the refresh button,
+  nothing else. Approved by Todd on 2026-09-18 as the single exception to the
+  site's no-login rule.
+
+  Kept out of search engines three ways: the meta tag below, robots.txt, and
+  its absence from sitemap.xml. It loads only its own script, not the soft
+  navigation, so every link out of it is a normal page load.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F5F0E6">
+<title>Admin · T Shaw's Progressive Bluegrass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" href="/assets/css/base.css">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a href="/">Home</a>
+  <a href="/episodes/">Podcast</a>
+  <a href="/videos/">Videos</a>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div id="admin" class="wrap">
+
+  <h1 class="adm-title">Admin</h1>
+  <p class="status" id="boot">Checking...</p>
+
+  <form id="login" class="adm-card" hidden>
+    <label for="pw" class="label plain">Password</label>
+    <input id="pw" type="password" autocomplete="current-password" required>
+    <button class="btn solid" type="submit">Log in</button>
+    <p class="adm-msg" id="loginmsg" role="alert"></p>
+  </form>
+
+  <p class="adm-card" id="unset" hidden>The admin password has not been set up in Vercel yet.</p>
+
+  <div id="panel" hidden>
+
+    <section class="adm-card" aria-labelledby="now-h">
+      <p class="label" id="now-h">On the homepage now</p>
+      <div id="now" class="adm-video"><p class="status">Loading...</p></div>
+    </section>
+
+    <section class="adm-card" aria-labelledby="daily-h">
+      <p class="label" id="daily-h">Video of the day</p>
+      <label class="adm-check"><input type="checkbox" id="random" checked>
+        Pick a random video from the channel every day</label>
+      <div id="pinbox" hidden>
+        <p class="adm-help">With the random video off, the homepage shows this one until you switch random back on.</p>
+        <div class="adm-field" data-slot="pick">
+          <label for="picklink">YouTube link</label>
+          <div class="adm-row">
+            <input id="picklink" type="url" placeholder="https://youtu.be/..." inputmode="url">
+            <button class="btn" type="button" data-find="pick">Search my videos</button>
+          </div>
+          <div class="adm-preview" id="pickpreview"></div>
+          <label for="pickcap">Caption, optional</label>
+          <textarea id="pickcap" rows="3" maxlength="600"></textarea>
+          <button class="btn" type="button" data-polish="pickcap" hidden>Polish with Claude</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="adm-card" aria-labelledby="sched-h">
+      <p class="label" id="sched-h">Scheduled video</p>
+      <p class="adm-help">Feature one video for a set time, like an exclusive from a festival. It can be unlisted on YouTube. When the time runs out, the homepage goes back to the video of the day by itself.</p>
+      <div class="adm-field" data-slot="override">
+        <label for="ovlink">YouTube link</label>
+        <div class="adm-row">
+          <input id="ovlink" type="url" placeholder="https://youtu.be/..." inputmode="url">
+          <button class="btn" type="button" data-find="override">Search my videos</button>
+        </div>
+        <div class="adm-preview" id="ovpreview"></div>
+        <div class="adm-dates">
+          <div><label for="ovstart">Starts</label><input id="ovstart" type="datetime-local"></div>
+          <div><label for="ovend">Ends</label><input id="ovend" type="datetime-local"></div>
+        </div>
+        <label for="ovcap">Caption, optional</label>
+        <textarea id="ovcap" rows="3" maxlength="600"></textarea>
+        <button class="btn" type="button" data-polish="ovcap" hidden>Polish with Claude</button>
+        <button class="btn" type="button" id="ovclear">Clear the schedule</button>
+      </div>
+    </section>
+
+    <div class="adm-save">
+      <button class="btn solid" type="button" id="save">Save</button>
+      <p class="adm-msg" id="savemsg" role="status"></p>
+    </div>
+
+    <section class="adm-card" aria-labelledby="ref-h">
+      <p class="label" id="ref-h">Refresh</p>
+      <p class="adm-help">Just posted a video or an episode? This pulls them onto the site now instead of within a few hours. It takes about 20 seconds.</p>
+      <button class="btn" type="button" id="refresh">Pull in new videos and episodes</button>
+      <p class="adm-msg" id="refmsg" role="status"></p>
+    </section>
+
+    <p><button class="btn" type="button" id="logout">Log out</button></p>
+  </div>
+
+  <dialog id="finder" class="adm-finder" aria-labelledby="finder-h">
+    <p class="label" id="finder-h">Search my videos</p>
+    <input id="findq" type="search" placeholder="Band, song or venue" aria-label="Search videos">
+    <div id="findres" class="adm-results"></div>
+    <button class="btn" type="button" id="findclose">Close</button>
+  </dialog>
+
+</div>
+</main>
+
+<script src="/assets/js/admin.js"></script>
+</body>
+</html>

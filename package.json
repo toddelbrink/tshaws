@@ -3,6 +3,8 @@
   "private": true,
   "description": "Website for T Shaw's Progressive Bluegrass",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
+    "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.8"
   }
 }

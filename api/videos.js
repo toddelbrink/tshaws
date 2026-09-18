@@ -18,6 +18,7 @@
 //   /api/videos?mode=show&id=PLID    the videos inside one concert
 //   /api/videos?mode=index           lite index of every upload, for search
 //   /api/videos?mode=featured        the homepage featured video for today
+//   /api/videos?mode=refresh (POST)  admin only: rebuild now and drop edge copies
 //   /api/warm                        cron target, keeps the caches above hot
 
 const CHANNEL_ID = 'UCDS7usPBxVlwfWbM5euFhWQ';
@@ -42,7 +43,8 @@ const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 // is still served at once and rebuilt after the response. Off Vercel the
 // library falls back to an in-memory cache, and failed reads or writes are
 // logged, not thrown, so the worst case is the old behavior.
-const { getCache, waitUntil } = require('@vercel/functions');
+const { getCache, waitUntil, addCacheTag, dangerouslyDeleteByTag } = require('@vercel/functions');
+const { isAdmin, sameOrigin, readSettings, chosenFeature } = require('../lib/admin');
 // Bump the version whenever the index's shape changes. The stored copy
 // outlives deploys, so an old shape would otherwise be served for hours.
 const INDEX_KEY = 'video-index:v1';
@@ -237,6 +239,11 @@ module.exports = async (req, res) => {
   }
 
 
+  // Labels this response in the edge cache so the admin page can drop it.
+  async function tagged(tag) {
+    try { await addCacheTag(tag); } catch (e) { /* off Vercel there is no edge cache */ }
+  }
+
   // The index from the store when it is there, rebuilt in the background once
   // stale. Built from YouTube only when the store has nothing.
   async function loadIndex() {
@@ -340,6 +347,26 @@ module.exports = async (req, res) => {
     }
 
     // ---- Lite index of everything, served from the store when it can be ----
+    // ---- Refresh, from the admin page --------------------------------------
+    // Rebuild the stored index now instead of waiting up to six hours, then
+    // drop every edge copy of the video and episode lists so the next visit
+    // fetches fresh ones. About 20 seconds, nearly all of it YouTube.
+    if (mode === 'refresh') {
+      if (req.method !== 'POST' || !sameOrigin(req) || !isAdmin(req)) {
+        res.setHeader('cache-control', 'no-store');
+        res.status(401).json({ error: 'Please log in again.' });
+        return;
+      }
+      const fresh = await buildIndex();
+      await getCache().set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+      await dangerouslyDeleteByTag(['videos', 'episodes', 'featured']);
+      res.setHeader('cache-control', 'no-store');
+      res.status(200).json({ ok: true, count: fresh.count, builtAt: fresh.builtAt, elapsedMs: fresh.elapsedMs });
+      return;
+    }
+
+    await tagged('videos');
+
     if (mode === 'index') {
       // The edge keeps it an hour, not six. A miss now costs one store read,
       // and a shorter edge life keeps a background rebuild from being hidden
@@ -355,6 +382,22 @@ module.exports = async (req, res) => {
     // whole archive so nothing repeats until all 3,148 have had a day. That is
     // about eight and a half years. The day turns at midnight Eastern.
     if (mode === 'featured') {
+      await tagged('featured');
+      // Trevor's own choice from the admin page wins: a scheduled video while
+      // its window runs, or a pinned one while the random rotation is off.
+      const now = Date.now();
+      const settings = await readSettings();
+      const chosen = chosenFeature(settings, now);
+      if (chosen) {
+        // Never let the edge hold an override past its end time.
+        const left = chosen.until ? Math.max(30, Math.floor((Date.parse(chosen.until) - now) / 1000)) : 300;
+        res.setHeader('cache-control', `s-maxage=${Math.min(300, left)}`);
+        res.status(200).json({ mode: 'featured', source: chosen.source, video: chosen.video, caption: chosen.caption, until: chosen.until });
+        return;
+      }
+      // A scheduled video that has not started yet must appear on time.
+      const o = settings.override;
+      const startsIn = o && Date.parse(o.start) > now ? Math.floor((Date.parse(o.start) - now) / 1000) : null;
       const { index } = await loadIndex();
       const day = easternDay(new Date());
       const order = shuffled(index.videos);
@@ -374,7 +417,7 @@ module.exports = async (req, res) => {
         }
       }
       if (!video) throw Object.assign(new Error('no_embeddable_video'), { httpStatus: 502 });
-      res.setHeader('cache-control', 's-maxage=900, stale-while-revalidate=600');
+      res.setHeader('cache-control', startsIn != null ? `s-maxage=${Math.max(30, Math.min(300, startsIn))}` : 's-maxage=300, stale-while-revalidate=300');
       res.status(200).json({ mode: 'featured', source: 'daily', day: day.key, video, caption: null });
       return;
     }

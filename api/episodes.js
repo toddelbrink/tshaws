@@ -6,8 +6,10 @@
 // the XML directly. The audio files are a separate matter and play fine
 // from an <audio> element without this function.
 //
-// No dependencies. The feed shape is known and verified.
+// No parsing dependencies. The feed shape is known and verified. The one
+// require labels the edge copy so the admin refresh button can drop it.
 
+const { addCacheTag } = require('@vercel/functions');
 const FEED_URL = 'https://media.zencast.fm/t-shaw-s-progressive-bluegrass/rss';
 
 // Named and numeric XML entities. ZenCast emits &#039; in itunes:* fields
@@ -126,6 +128,7 @@ module.exports = async (req, res) => {
     // The feed changes weekly at most. One hour at the edge is plenty, and
     // stale-while-revalidate means a visitor never waits on ZenCast.
     res.setHeader('cache-control', 's-maxage=3600, stale-while-revalidate=86400');
+    try { await addCacheTag('episodes'); } catch (e) { /* off Vercel there is no edge cache */ }
 
     // ?mode=meta answers "which seasons exist" in a few hundred bytes rather
     // than 97 KB. The season menu in the nav needs nothing else, and it sits

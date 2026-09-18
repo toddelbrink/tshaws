@@ -658,3 +658,43 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   #vdlg .bar b{font-size:15px}
   #vdlg .x{width:100%}
 }
+
+/* ---- admin page (Trevor only, /admin/) ---- */
+#admin{padding-block:40px 60px;max-width:760px}
+.adm-title{font-family:var(--display);font-size:clamp(30px,6vw,42px);margin-bottom:18px}
+.adm-card{border:1px solid var(--rule);border-radius:var(--radius);background:#FBF8F1;
+  padding:22px;margin-bottom:22px}
+.adm-card .label{margin-bottom:14px}
+#admin label{display:block;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-2);margin:14px 0 6px}
+#admin input[type=password],#admin input[type=url],#admin input[type=datetime-local],
+#admin input[type=search],#admin textarea{width:100%;font-family:var(--serif);font-size:16px;
+  padding:11px 13px;border:1px solid var(--rule);border-radius:var(--radius);background:#fff;color:var(--ink)}
+#admin input:focus,#admin textarea:focus{border-color:var(--ink);outline:2px solid var(--brass);outline-offset:1px}
+#admin .adm-check{display:flex;gap:10px;align-items:center;font-family:var(--serif);font-size:17px;
+  font-weight:400;color:var(--ink);margin:0}
+#admin .adm-check input{width:20px;height:20px;accent-color:var(--accent)}
+.adm-help{color:var(--ink-2);font-size:15px;margin:10px 0 4px;max-width:60ch}
+.adm-row{display:flex;gap:10px;flex-wrap:wrap}
+.adm-row input{flex:1 1 260px}
+.adm-dates{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.adm-field .btn{margin-top:12px;margin-right:8px}
+.adm-save{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:0 0 22px}
+.adm-msg{font-family:var(--sans);font-size:14px;color:var(--ink-2);margin-top:10px}
+.adm-msg.bad{color:var(--accent-deep);font-weight:600}
+.adm-video,.adm-preview{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:start;margin-top:10px}
+.adm-video:empty,.adm-preview:empty{display:none}
+.adm-video img,.adm-preview img{width:160px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--rule);border-radius:var(--radius)}
+.adm-video b,.adm-preview b{display:block;font-family:var(--serif);font-size:16px;line-height:1.35}
+.adm-video .meta,.adm-preview .meta{display:block;margin-top:4px}
+.adm-video .note,.adm-video .status,.adm-preview .status,.adm-preview .adm-msg{grid-column:1/-1}
+.adm-finder{width:min(680px,94vw);max-height:84vh;border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--paper);color:var(--ink);padding:22px}
+.adm-finder::backdrop{background:rgba(33,28,23,.55)}
+.adm-results{margin:12px 0 16px;max-height:52vh;overflow:auto}
+.adm-results button{display:grid;grid-template-columns:120px 1fr;gap:12px;width:100%;text-align:left;
+  padding:8px;border:0;border-bottom:1px solid var(--rule);background:transparent;color:inherit;font:inherit;cursor:pointer}
+.adm-results button:hover,.adm-results button:focus-visible{background:var(--paper-2)}
+.adm-results img{width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:2px}
+.adm-results b{display:block;font-family:var(--serif);font-size:15px;line-height:1.35}
+@media(max-width:560px){.adm-video,.adm-preview{grid-template-columns:1fr}.adm-video img,.adm-preview img{width:100%}}
+.foot .adminlink{color:inherit;margin-left:10px;text-decoration:underline;text-underline-offset:2px}
