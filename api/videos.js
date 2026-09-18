@@ -17,6 +17,7 @@
 //   /api/videos?mode=shows           the concert playlists, with covers
 //   /api/videos?mode=show&id=PLID    the videos inside one concert
 //   /api/videos?mode=index           lite index of every upload, for search
+//   /api/videos?mode=featured        the homepage featured video for today
 //   /api/warm                        cron target, keeps the caches above hot
 
 const CHANNEL_ID = 'UCDS7usPBxVlwfWbM5euFhWQ';
@@ -58,6 +59,25 @@ async function claimRebuild(store) {
   await store.set(INDEX_LOCK, { ticket }, { ttl: 300 });
   const held = await store.get(INDEX_LOCK);
   return !!held && held.ticket === ticket;
+}
+
+// The calendar day in Trevor's time zone, and a running day number for it.
+function easternDay(now) {
+  const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(now);
+  const [y, m, d] = key.split('-').map(Number);
+  return { key, number: Math.floor(Date.UTC(y, m - 1, d) / 86400000) };
+}
+
+// A fixed shuffle: every video sorted by a hash of its id. New uploads slot in
+// at random places, so the order barely moves as the archive grows.
+function hash32(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return h >>> 0;
+}
+function shuffled(videos) {
+  return videos.map(v => ({ v, h: hash32('featured-v1:' + v.i) }))
+    .sort((a, b) => a.h - b.h || (a.v.i < b.v.i ? -1 : 1)).map(x => x.v);
 }
 
 function parseIsoDuration(iso) {
@@ -217,6 +237,26 @@ module.exports = async (req, res) => {
   }
 
 
+  // The index from the store when it is there, rebuilt in the background once
+  // stale. Built from YouTube only when the store has nothing.
+  async function loadIndex() {
+    const store = getCache();
+    const kept = await store.get(INDEX_KEY);
+    if (kept && Array.isArray(kept.videos)) {
+      const age = Date.now() - Date.parse(kept.builtAt);
+      if (!(age < INDEX_FRESH_MS) && await claimRebuild(store)) {
+        waitUntil(buildIndex()
+          .then(fresh => store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S }))
+          .catch(e => console.error('index rebuild failed:', e.message))
+          .finally(() => store.delete(INDEX_LOCK)));
+      }
+      return { index: kept, source: 'store' };
+    }
+    const fresh = await buildIndex();
+    await store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+    return { index: fresh, source: 'youtube' };
+  }
+
   const mode = (req.query && req.query.mode) || 'page';
   const SIX_HOURS = 's-maxage=21600, stale-while-revalidate=604800';
 
@@ -304,27 +344,38 @@ module.exports = async (req, res) => {
       // The edge keeps it an hour, not six. A miss now costs one store read,
       // and a shorter edge life keeps a background rebuild from being hidden
       // behind a stale edge copy for another six hours.
-      const INDEX_EDGE = 's-maxage=3600, stale-while-revalidate=604800';
-      const store = getCache();
-      const kept = await store.get(INDEX_KEY);
+      const { index, source } = await loadIndex();
+      res.setHeader('cache-control', 's-maxage=3600, stale-while-revalidate=604800');
+      res.status(200).json({ ...index, source });
+      return;
+    }
 
-      if (kept && Array.isArray(kept.videos)) {
-        const age = Date.now() - Date.parse(kept.builtAt);
-        if (!(age < INDEX_FRESH_MS) && await claimRebuild(store)) {
-          waitUntil(buildIndex()
-            .then(fresh => store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S }))
-            .catch(e => console.error('index rebuild failed:', e.message))
-            .finally(() => store.delete(INDEX_LOCK)));
+    // ---- The homepage featured video --------------------------------------
+    // One video a day, the same for every visitor, in a fixed shuffle of the
+    // whole archive so nothing repeats until all 3,148 have had a day. That is
+    // about eight and a half years. The day turns at midnight Eastern.
+    if (mode === 'featured') {
+      const { index } = await loadIndex();
+      const day = easternDay(new Date());
+      const order = shuffled(index.videos);
+      let video = null;
+      // Skip anything YouTube will not embed, rather than feature a dead frame.
+      for (let k = 0; k < 5 && !video; k++) {
+        const pick = order[(day.number + k) % order.length];
+        const d = await yt('/videos', { part: 'snippet,contentDetails,status', id: pick.i });
+        const v = d.items && d.items[0];
+        if (v && v.status && v.status.embeddable !== false && v.status.privacyStatus !== 'private') {
+          const sec = parseIsoDuration(v.contentDetails && v.contentDetails.duration);
+          video = {
+            id: v.id, title: v.snippet.title, published: v.snippet.publishedAt,
+            thumbnail: pickThumb(v.snippet.thumbnails),
+            duration: sec, durationLabel: formatDuration(sec)
+          };
         }
-        res.setHeader('cache-control', INDEX_EDGE);
-        res.status(200).json({ ...kept, source: 'store' });
-        return;
       }
-
-      const fresh = await buildIndex();
-      await store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
-      res.setHeader('cache-control', INDEX_EDGE);
-      res.status(200).json({ ...fresh, source: 'youtube' });
+      if (!video) throw Object.assign(new Error('no_embeddable_video'), { httpStatus: 502 });
+      res.setHeader('cache-control', 's-maxage=900, stale-while-revalidate=600');
+      res.status(200).json({ mode: 'featured', source: 'daily', day: day.key, video, caption: null });
       return;
     }
 
