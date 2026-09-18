@@ -54,22 +54,34 @@
 <main id="page">
 <div id="home">
 
-  <header class="hero wrap">
-    <h1><img class="badge" src="/assets/logo/logo.svg"
-         alt="T Shaw's Progressive Bluegrass" width="680" height="680" fetchpriority="high"></h1>
-    <p class="tagline">I document and share all things bluegrass.</p>
-    <div class="cta">
-      <a class="btn solid" href="/episodes/">Listen</a>
-      <a class="btn" href="/videos/">Watch</a>
+  <!--
+    Top of the page, per the 2026-09-16 call: the badge on the left, the latest
+    episode on the right, and the featured video straight underneath, so all
+    three sit at the top rather than below the fold. On a phone they stack in
+    that order.
+  -->
+  <header class="hero duo wrap">
+    <div class="brand">
+      <h1><img class="badge" src="/assets/logo/logo.svg"
+           alt="T Shaw's Progressive Bluegrass" width="680" height="680" fetchpriority="high"></h1>
+      <p class="tagline">I document and share all things bluegrass.</p>
+      <div class="cta">
+        <a class="btn solid" href="/episodes/">Listen</a>
+        <a class="btn" href="/videos/">Watch</a>
+      </div>
     </div>
+    <section class="herolatest" aria-label="Latest episode">
+      <p class="label">Latest Episode</p>
+      <div id="latest" class="feature"><p class="status">Loading the latest episode...</p></div>
+    </section>
   </header>
 
-  <div class="wrap"><div class="waverule"><svg class="wave" viewBox="0 0 242 28" width="242" height="28" aria-hidden="true" focusable="false"><rect x="0.0" y="13.00" width="2" height="2.00" rx="1"/><rect x="4.0" y="12.77" width="2" height="2.47" rx="1"/><rect x="8.0" y="11.80" width="2" height="4.39" rx="1"/><rect x="12.0" y="10.87" width="2" height="6.26" rx="1"/><rect x="16.0" y="10.00" width="2" height="7.99" rx="1"/><rect x="20.0" y="9.27" width="2" height="9.46" rx="1"/><rect x="24.0" y="8.71" width="2" height="10.58" rx="1"/><rect x="28.0" y="8.36" width="2" height="11.29" rx="1"/><rect x="32.0" y="8.21" width="2" height="11.59" rx="1"/><rect x="36.0" y="8.23" width="2" height="11.54" rx="1"/><rect x="40.0" y="8.37" width="2" height="11.25" rx="1"/><rect x="44.0" y="8.56" width="2" height="10.88" rx="1"/><rect x="48.0" y="8.70" width="2" height="10.60" rx="1"/><rect x="52.0" y="8.69" width="2" height="10.61" rx="1"/><rect x="56.0" y="8.43" width="2" height="11.14" rx="1"/><rect x="60.0" y="8.17" width="2" height="11.67" rx="1"/><rect x="64.0" y="7.54" width="2" height="12.92" rx="1"/><rect x="68.0" y="6.71" width="2" height="14.58" rx="1"/><rect x="72.0" y="5.74" width="2" height="16.53" rx="1"/><rect x="76.0" y="4.71" width="2" height="18.58" rx="1"/><rect x="80.0" y="3.73" width="2" height="20.54" rx="1"/><rect x="84.0" y="2.91" width="2" height="22.19" rx="1"/><rect x="88.0" y="2.33" width="2" height="23.33" rx="1"/><rect x="92.0" y="2.09" width="2" height="23.83" rx="1"/><rect x="96.0" y="2.20" width="2" height="23.60" rx="1"/><rect x="100.0" y="2.67" width="2" height="22.66" rx="1"/><rect x="104.0" y="3.46" width="2" height="21.07" rx="1"/><rect x="108.0" y="4.50" width="2" height="19.01" rx="1"/><rect x="112.0" y="5.67" width="2" height="16.67" rx="1"/><rect x="116.0" y="6.86" width="2" height="14.29" rx="1"/><rect x="120.0" y="5.75" width="2" height="16.50" rx="1"/><rect x="124.0" y="4.87" width="2" height="18.25" rx="1"/><rect x="128.0" y="4.30" width="2" height="19.40" rx="1"/><rect x="132.0" y="4.07" width="2" height="19.87" rx="1"/><rect x="136.0" y="4.18" width="2" height="19.64" rx="1"/><rect x="140.0" y="4.59" width="2" height="18.82" rx="1"/><rect x="144.0" y="5.23" width="2" height="17.53" rx="1"/><rect x="148.0" y="6.01" width="2" height="15.98" rx="1"/><rect x="152.0" y="6.80" width="2" height="14.40" rx="1"/><rect x="156.0" y="7.22" width="2" height="13.56" rx="1"/><rect x="160.0" y="6.93" width="2" height="14.15" rx="1"/><rect x="164.0" y="6.89" width="2" height="14.22" rx="1"/><rect x="168.0" y="7.14" width="2" height="13.72" rx="1"/><rect x="172.0" y="7.66" width="2" height="12.67" rx="1"/><rect x="176.0" y="7.79" width="2" height="12.42" rx="1"/><rect x="180.0" y="7.26" width="2" height="13.48" rx="1"/><rect x="184.0" y="6.70" width="2" height="14.61" rx="1"/><rect x="188.0" y="6.19" width="2" height="15.61" rx="1"/><rect x="192.0" y="5.84" width="2" height="16.32" rx="1"/><rect x="196.0" y="5.71" width="2" height="16.58" rx="1"/><rect x="200.0" y="5.84" width="2" height="16.32" rx="1"/><rect x="204.0" y="6.24" width="2" height="15.53" rx="1"/><rect x="208.0" y="6.88" width="2" height="14.24" rx="1"/><rect x="212.0" y="7.71" width="2" height="12.57" rx="1"/><rect x="216.0" y="8.67" width="2" height="10.65" rx="1"/><rect x="220.0" y="9.68" width="2" height="8.64" rx="1"/><rect x="224.0" y="10.66" width="2" height="6.68" rx="1"/><rect x="228.0" y="11.56" width="2" height="4.88" rx="1"/><rect x="232.0" y="12.35" width="2" height="3.30" rx="1"/><rect x="236.0" y="12.83" width="2" height="2.33" rx="1"/><rect x="240.0" y="13.00" width="2" height="2.00" rx="1"/></svg></div></div>
-
-  <section class="section wrap" aria-label="Latest episode">
-    <p class="label">Latest Episode</p>
-    <div id="latest" class="feature"><p class="status">Loading the latest episode...</p></div>
+  <section class="section wrap featured" aria-label="Featured video">
+    <p class="label">Featured Video</p>
+    <div id="featured" class="featvid"><p class="status">Loading today's video...</p></div>
   </section>
+
+  <div class="wrap"><div class="waverule"><svg class="wave" viewBox="0 0 242 28" width="242" height="28" aria-hidden="true" focusable="false"><rect x="0.0" y="13.00" width="2" height="2.00" rx="1"/><rect x="4.0" y="12.77" width="2" height="2.47" rx="1"/><rect x="8.0" y="11.80" width="2" height="4.39" rx="1"/><rect x="12.0" y="10.87" width="2" height="6.26" rx="1"/><rect x="16.0" y="10.00" width="2" height="7.99" rx="1"/><rect x="20.0" y="9.27" width="2" height="9.46" rx="1"/><rect x="24.0" y="8.71" width="2" height="10.58" rx="1"/><rect x="28.0" y="8.36" width="2" height="11.29" rx="1"/><rect x="32.0" y="8.21" width="2" height="11.59" rx="1"/><rect x="36.0" y="8.23" width="2" height="11.54" rx="1"/><rect x="40.0" y="8.37" width="2" height="11.25" rx="1"/><rect x="44.0" y="8.56" width="2" height="10.88" rx="1"/><rect x="48.0" y="8.70" width="2" height="10.60" rx="1"/><rect x="52.0" y="8.69" width="2" height="10.61" rx="1"/><rect x="56.0" y="8.43" width="2" height="11.14" rx="1"/><rect x="60.0" y="8.17" width="2" height="11.67" rx="1"/><rect x="64.0" y="7.54" width="2" height="12.92" rx="1"/><rect x="68.0" y="6.71" width="2" height="14.58" rx="1"/><rect x="72.0" y="5.74" width="2" height="16.53" rx="1"/><rect x="76.0" y="4.71" width="2" height="18.58" rx="1"/><rect x="80.0" y="3.73" width="2" height="20.54" rx="1"/><rect x="84.0" y="2.91" width="2" height="22.19" rx="1"/><rect x="88.0" y="2.33" width="2" height="23.33" rx="1"/><rect x="92.0" y="2.09" width="2" height="23.83" rx="1"/><rect x="96.0" y="2.20" width="2" height="23.60" rx="1"/><rect x="100.0" y="2.67" width="2" height="22.66" rx="1"/><rect x="104.0" y="3.46" width="2" height="21.07" rx="1"/><rect x="108.0" y="4.50" width="2" height="19.01" rx="1"/><rect x="112.0" y="5.67" width="2" height="16.67" rx="1"/><rect x="116.0" y="6.86" width="2" height="14.29" rx="1"/><rect x="120.0" y="5.75" width="2" height="16.50" rx="1"/><rect x="124.0" y="4.87" width="2" height="18.25" rx="1"/><rect x="128.0" y="4.30" width="2" height="19.40" rx="1"/><rect x="132.0" y="4.07" width="2" height="19.87" rx="1"/><rect x="136.0" y="4.18" width="2" height="19.64" rx="1"/><rect x="140.0" y="4.59" width="2" height="18.82" rx="1"/><rect x="144.0" y="5.23" width="2" height="17.53" rx="1"/><rect x="148.0" y="6.01" width="2" height="15.98" rx="1"/><rect x="152.0" y="6.80" width="2" height="14.40" rx="1"/><rect x="156.0" y="7.22" width="2" height="13.56" rx="1"/><rect x="160.0" y="6.93" width="2" height="14.15" rx="1"/><rect x="164.0" y="6.89" width="2" height="14.22" rx="1"/><rect x="168.0" y="7.14" width="2" height="13.72" rx="1"/><rect x="172.0" y="7.66" width="2" height="12.67" rx="1"/><rect x="176.0" y="7.79" width="2" height="12.42" rx="1"/><rect x="180.0" y="7.26" width="2" height="13.48" rx="1"/><rect x="184.0" y="6.70" width="2" height="14.61" rx="1"/><rect x="188.0" y="6.19" width="2" height="15.61" rx="1"/><rect x="192.0" y="5.84" width="2" height="16.32" rx="1"/><rect x="196.0" y="5.71" width="2" height="16.58" rx="1"/><rect x="200.0" y="5.84" width="2" height="16.32" rx="1"/><rect x="204.0" y="6.24" width="2" height="15.53" rx="1"/><rect x="208.0" y="6.88" width="2" height="14.24" rx="1"/><rect x="212.0" y="7.71" width="2" height="12.57" rx="1"/><rect x="216.0" y="8.67" width="2" height="10.65" rx="1"/><rect x="220.0" y="9.68" width="2" height="8.64" rx="1"/><rect x="224.0" y="10.66" width="2" height="6.68" rx="1"/><rect x="228.0" y="11.56" width="2" height="4.88" rx="1"/><rect x="232.0" y="12.35" width="2" height="3.30" rx="1"/><rect x="236.0" y="12.83" width="2" height="2.33" rx="1"/><rect x="240.0" y="13.00" width="2" height="2.00" rx="1"/></svg></div></div>
 
   <section class="section wrap" aria-labelledby="recent-h">
     <p class="label">More Episodes</p>

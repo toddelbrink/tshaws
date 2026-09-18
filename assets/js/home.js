@@ -1,10 +1,11 @@
-/* Homepage. Pulls the latest episode, three more, and the newest videos.
+/* Homepage. Pulls the latest episode, three more, today's featured video and
+ * the newest videos.
  * Owns no audio and no video: it hands off to TSPlayer and to the shared
  * lightbox that videos.js installs. */
 (function () {
   'use strict';
 
-  var eps = null, vids = null, subscribed = false;
+  var eps = null, vids = null, feat = null, subscribed = false;
 
   // ZenCast serves the same artwork at several sizes and the feed hands us the
   // 3000x3000 "large" one, which is 470 KB. Measured 2026-09-07: a full season
@@ -111,6 +112,30 @@
     }).join('');
   }
 
+  // Today's featured video. The server picks it, so every visitor sees the
+  // same one. A click hands off to the shared lightbox like every other video.
+  function renderFeatured(root) {
+    var box = root.querySelector('#featured');
+    if (!box) return;
+    if (!feat || !feat.video) {
+      box.closest('section').hidden = true;   // no dead frame if the pick failed
+      return;
+    }
+    var v = feat.video;
+    var thumb = v.thumbnail ? v.thumbnail.url : 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+    box.innerHTML =
+      '<button type="button" class="fshot" data-video="' + esc(v.id) + '" data-eptitle="' + esc(v.title) + '">' +
+        '<img src="' + esc(thumb) + '" alt="" decoding="async">' +
+        '<span class="fplay">' + PLAY + '</span>' +
+        (v.durationLabel ? '<span class="dur">' + esc(v.durationLabel) + '</span>' : '') +
+        '<span class="sr-only">Play ' + esc(v.title) + '</span>' +
+      '</button>' +
+      '<div class="fcap"><h2>' + esc(v.title) + '</h2>' +
+        '<p class="meta">' + esc(nice(v.published)) + '</p>' +
+        (feat.caption ? '<p class="note">' + esc(feat.caption) + '</p>' : '') +
+      '</div>';
+  }
+
   // One subscription for the whole page, matching the episodes page pattern.
   function sync(root, snap) {
     snap = snap || { guid: null, playing: false, position: 0, duration: 0 };
@@ -177,6 +202,18 @@
       root.querySelector('#latest').innerHTML =
         '<p class="status">Could not load episodes right now.</p>';
     }
+
+    // Its own request, so a slow pick never holds up the episode or the grid.
+    (async function () {
+      try {
+        if (!feat) {
+          var rf = await fetch('/api/videos?mode=featured');
+          feat = rf.ok ? await rf.json() : { video: null };
+        }
+      } catch (e) { feat = { video: null }; }
+      var hf = document.getElementById('home');
+      if (hf) renderFeatured(hf);
+    })();
 
     try {
       if (!vids) {
