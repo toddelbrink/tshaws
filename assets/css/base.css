@@ -189,20 +189,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   .hero .tagline{font-size:20px}
 }
 
-/* ---- homepage top: badge beside the latest episode, featured video below ----
-   2026-09-16 call. On a phone the three stack: badge, episode, video. */
-.hero.duo .herolatest{margin-top:40px;text-align:left}
-@media(min-width:780px){
-  .hero.duo{display:grid;grid-template-columns:250px 1fr;gap:48px;align-items:center;
-    padding-block:44px 14px}
-  .hero.duo .badge{width:100%;margin:0 0 16px}
-  .hero.duo .tagline{font-size:17px;margin:0 auto 18px}
-  .hero.duo .herolatest{margin-top:0}
-  .hero.duo .feature{grid-template-columns:128px 1fr;gap:22px}
-  .hero.duo .feature h2{font-size:clamp(24px,3vw,30px);margin:6px 0 8px}
-  .hero.duo .feature .desc{margin:8px 0 16px;display:-webkit-box;-webkit-line-clamp:3;
-    -webkit-box-orient:vertical;overflow:hidden}
-}
+/* ---- homepage featured video ---- */
 .section.featured{padding-top:14px}
 .featvid .fshot{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;
   border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;
@@ -699,7 +686,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 @media(max-width:560px){.adm-video,.adm-preview{grid-template-columns:1fr}.adm-video img,.adm-preview img{width:100%}}
 .foot .adminlink{color:inherit;margin-left:10px;text-decoration:underline;text-underline-offset:2px}
 
-/* ---- MOCKUP: small logo at the right of the nav, badge out of the body ---- */
+/* ---- small logo at the right of the nav, on every page ----
+   2026-09-19: the big badge left the homepage body so content starts at the top.
+   The current badge stands in until Kat's minimal mark arrives; swap the file,
+   not the markup. */
 .sitenav .navlogo{margin-left:auto;display:inline-flex;align-items:center;min-height:44px}
 .sitenav .navlogo img{width:44px;height:44px;mix-blend-mode:multiply}
 .section.toplatest{padding-top:30px}
