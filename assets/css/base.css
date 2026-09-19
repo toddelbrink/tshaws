@@ -455,13 +455,17 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .more[disabled]:hover{background:transparent;color:var(--ink)}
 
 /* ---- follow + footer ---- */
-.follow{display:flex;flex-wrap:wrap;gap:10px}
-.follow a{display:inline-flex;align-items:center;gap:9px;min-height:48px;padding:0 18px;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;text-decoration:none;color:var(--ink);
-  border:1px solid var(--rule);border-radius:var(--radius)}
-.follow a:hover{border-color:var(--ink);background:var(--paper-2)}
-.follow svg{width:16px;height:16px;fill:currentColor}
+/* Platform icons. Each mark keeps the exact color its owner allows and is never
+   faded or recolored, so hover and focus draw a soft circle behind it instead.
+   32px clears the largest minimum among them (Instagram, 29px); the 44px box is
+   the touch target and leaves at least half an icon of clear space between marks. */
+.follow{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.ficon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
+  border-radius:50%;transition:background .18s}
+.ficon svg{width:32px;height:32px;display:block}
+.ficon:hover,.ficon:focus-visible{background:var(--paper-3)}
+.alsoon{margin-top:14px;font-size:16px;color:var(--ink-2)}
+@media(prefers-reduced-motion:reduce){.ficon{transition:none}}
 
 /* 40px above the rule, not 10. Every page carried a footer from 2026-09-11,
    and the three that gained one end in a bare div of runtime content with no
