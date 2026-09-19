@@ -698,3 +698,11 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .adm-results b{display:block;font-family:var(--serif);font-size:15px;line-height:1.35}
 @media(max-width:560px){.adm-video,.adm-preview{grid-template-columns:1fr}.adm-video img,.adm-preview img{width:100%}}
 .foot .adminlink{color:inherit;margin-left:10px;text-decoration:underline;text-underline-offset:2px}
+
+/* ---- MOCKUP: small logo at the right of the nav, badge out of the body ---- */
+.sitenav .navlogo{margin-left:auto;display:inline-flex;align-items:center;min-height:44px}
+.sitenav .navlogo img{width:44px;height:44px;mix-blend-mode:multiply}
+.section.toplatest{padding-top:30px}
+@media(min-width:720px){.toplatest .feature{grid-template-columns:180px 1fr}}
+@media(max-width:700px){.sitenav .inner > a.navlogo{margin-left:auto}
+  .sitenav .navlogo img{width:34px;height:34px}}
