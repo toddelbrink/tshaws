@@ -69,9 +69,14 @@ async function claimRebuild(store) {
   return !!held && held.ticket === ticket;
 }
 
-// The calendar day in Trevor's time zone, and a running day number for it.
+// The featured-video day, in Eastern time, and a running number for it. The
+// day turns at 2 a.m. rather than midnight, so a late-night visitor still sees
+// the evening's pick. Counting from two hours earlier does exactly that, and
+// stays right across daylight-saving changes.
+const DAY_TURNS_AT_H = 2;
 function easternDay(now) {
-  const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(now);
+  const shifted = new Date(now.getTime() - DAY_TURNS_AT_H * 3600 * 1000);
+  const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(shifted);
   const [y, m, d] = key.split('-').map(Number);
   return { key, number: Math.floor(Date.UTC(y, m - 1, d) / 86400000) };
 }
@@ -403,7 +408,7 @@ module.exports = async (req, res) => {
     // ---- The homepage featured video --------------------------------------
     // One video a day, the same for every visitor, in a fixed shuffle of the
     // whole archive so nothing repeats until all 3,148 have had a day. That is
-    // about eight and a half years. The day turns at midnight Eastern.
+    // about eight and a half years. The day turns at 2 a.m. Eastern.
     if (mode === 'featured') {
       await tagged('featured');
       // Trevor's own choice from the admin page wins: a scheduled video while
@@ -413,7 +418,7 @@ module.exports = async (req, res) => {
       const chosen = chosenFeature(settings, now);
       if (chosen) {
         // Never let the edge hold an override past its end time.
-        const left = chosen.until ? Math.max(30, Math.floor((Date.parse(chosen.until) - now) / 1000)) : 300;
+        const left = chosen.until ? Math.max(5, Math.floor((Date.parse(chosen.until) - now) / 1000)) : 300;
         res.setHeader('cache-control', `s-maxage=${Math.min(300, left)}`);
         res.status(200).json({ mode: 'featured', source: chosen.source, video: chosen.video, caption: chosen.caption, until: chosen.until });
         return;
@@ -440,7 +445,7 @@ module.exports = async (req, res) => {
         }
       }
       if (!video) throw Object.assign(new Error('no_embeddable_video'), { httpStatus: 502 });
-      res.setHeader('cache-control', startsIn != null ? `s-maxage=${Math.max(30, Math.min(300, startsIn))}` : 's-maxage=300, stale-while-revalidate=300');
+      res.setHeader('cache-control', startsIn != null ? `s-maxage=${Math.max(5, Math.min(300, startsIn))}` : 's-maxage=300, stale-while-revalidate=300');
       res.status(200).json({ mode: 'featured', source: 'daily', day: day.key, video, caption: null });
       return;
     }

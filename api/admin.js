@@ -21,7 +21,9 @@ const Anthropic = AnthropicSDK.default || AnthropicSDK;
 
 const MAX_FAILS = 8;          // wrong passwords from one address...
 const LOCK_S = 15 * 60;       // ...lock that address out for fifteen minutes
-const CAPTION_MAX = 600;
+// Measured under the featured video: 160 characters is four lines on a 360px
+// phone and three on a laptop. The page also clamps the caption to four lines.
+const CAPTION_MAX = 160;
 
 function send(res, status, body, cookie) {
   res.setHeader('cache-control', 'no-store');
@@ -31,6 +33,10 @@ function send(res, status, body, cookie) {
 
 function clientIp(req) {
   return String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+}
+
+function captionOf(slot) {
+  return String((slot && slot.caption) || '').trim() || null;
 }
 
 function isoOrNull(v) {
@@ -81,10 +87,11 @@ async function polish(text) {
       system:
         "You polish short captions for T Shaw's Progressive Bluegrass, a bluegrass video and podcast site " +
         "run by Trevor Shaw. He describes himself this way: \"I document and share all things bluegrass.\" " +
-        'Rewrite the caption he gives you so it reads cleanly in his own voice: warm, direct, excited about ' +
-        'the music, conversational rather than promotional. Keep every fact, name and date exactly as he ' +
-        'wrote them and add none. Keep it to one to three sentences. Fix spelling and grammar. Do not add ' +
-        'hashtags, emojis or quotation marks unless his draft has them. Reply with the caption text only.',
+        'Tighten the caption he gives you so it reads cleanly in his own voice: warm, direct, excited about ' +
+        'the music, conversational rather than promotional. Fix spelling and grammar. Only ever cut or ' +
+        'rephrase: never add words, details, facts or sentences, and keep every name and date exactly as ' +
+        'written. Your version must be no longer than his draft, and never over ' + CAPTION_MAX +
+        ' characters. Do not add hashtags, emojis or quotation marks. Reply with the caption text only.',
       messages: [{ role: 'user', content: text }]
   };
   try {
@@ -104,7 +111,14 @@ async function polish(text) {
     }
     if (msg.stop_reason === 'refusal') return { status: 422, body: { error: 'Claude would not rewrite that one. Edit it by hand.' } };
     const out = msg.content.filter(b => b.type === 'text').map(b => b.text).join('').trim();
-    return out ? { status: 200, body: { text: out } } : { status: 502, body: { error: 'Claude returned nothing. Try again.' } };
+    if (!out) return { status: 502, body: { error: 'Claude returned nothing. Try again.' } };
+    // Polish only ever tightens. A few characters of slack covers a fixed
+    // apostrophe or a comma; anything longer than that is padding, so it is
+    // refused rather than shown.
+    if (out.length > Math.min(CAPTION_MAX, text.length + 3)) {
+      return { status: 422, body: { error: 'Claude\u2019s version came out longer than yours, so it was not used.' } };
+    }
+    return { status: 200, body: { text: out } };
   } catch (e) {
     if (e instanceof Anthropic.RateLimitError) return { status: 429, body: { error: 'Claude is busy. Try again in a minute.' } };
     if (e instanceof Anthropic.AuthenticationError) return { status: 503, body: { error: 'The Claude key was rejected. Check it in Vercel.' } };
@@ -157,19 +171,25 @@ module.exports = async (req, res) => {
   }
 
   if (action === 'polish') {
-    const text = String(body.text || '').trim().slice(0, CAPTION_MAX);
+    const text = String(body.text || '').trim();
     if (!text) return send(res, 400, { error: 'Write a caption first.' });
+    if (text.length > CAPTION_MAX) return send(res, 400, { error: `Captions can be up to ${CAPTION_MAX} characters.` });
     const r = await polish(text);
     return send(res, r.status, r.body);
   }
 
   if (action === 'save') {
+    for (const slot of [body.pick, body.override]) {
+      if (slot && String(slot.caption || '').trim().length > CAPTION_MAX) {
+        return send(res, 400, { error: `Captions can be up to ${CAPTION_MAX} characters.` });
+      }
+    }
     const next = { random: body.random !== false, pick: null, override: null };
 
     if (body.pick && body.pick.link) {
       const r = await lookupVideo(body.pick.link);
       if (r.error) return send(res, 400, { error: 'Pinned video: ' + r.error });
-      next.pick = { video: r.video, caption: String(body.pick.caption || '').trim().slice(0, CAPTION_MAX) || null };
+      next.pick = { video: r.video, caption: captionOf(body.pick) };
     }
     if (!next.random && !next.pick) {
       return send(res, 400, { error: 'With the random video switched off, pick a video to show instead.' });
@@ -182,7 +202,7 @@ module.exports = async (req, res) => {
       }
       const r = await lookupVideo(body.override.link);
       if (r.error) return send(res, 400, { error: 'Scheduled video: ' + r.error });
-      next.override = { video: r.video, start, end, caption: String(body.override.caption || '').trim().slice(0, CAPTION_MAX) || null };
+      next.override = { video: r.video, start, end, caption: captionOf(body.override) };
     }
 
     const saved = await writeSettings(next);

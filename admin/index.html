@@ -69,7 +69,8 @@
           </div>
           <div class="adm-preview" id="pickpreview"></div>
           <label for="pickcap">Caption, optional</label>
-          <textarea id="pickcap" rows="3" maxlength="600"></textarea>
+          <textarea id="pickcap" rows="3" maxlength="160" aria-describedby="pickcount"></textarea>
+          <p class="adm-count" id="pickcount" aria-live="polite"></p>
           <button class="btn" type="button" data-polish="pickcap" hidden>Polish with Claude</button>
         </div>
       </div>
@@ -90,7 +91,8 @@
           <div><label for="ovend">Ends</label><input id="ovend" type="datetime-local"></div>
         </div>
         <label for="ovcap">Caption, optional</label>
-        <textarea id="ovcap" rows="3" maxlength="600"></textarea>
+        <textarea id="ovcap" rows="3" maxlength="160" aria-describedby="ovcount"></textarea>
+        <p class="adm-count" id="ovcount" aria-live="polite"></p>
         <button class="btn" type="button" data-polish="ovcap" hidden>Polish with Claude</button>
         <button class="btn" type="button" id="ovclear">Clear the schedule</button>
       </div>

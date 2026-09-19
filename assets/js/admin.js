@@ -46,6 +46,17 @@
       '</span></div>';
   }
 
+  // Live count under each caption box. The limit fits the space under the
+  // featured video: four lines on a small phone, three on a laptop.
+  var CAPTION_MAX = 160;
+  function count(taId, outId) {
+    var n = $(taId).value.length, left = CAPTION_MAX - n;
+    var out = $(outId);
+    out.textContent = n + ' / ' + CAPTION_MAX + (left <= 20 ? '  \u00b7  ' + left + ' left' : '');
+    out.classList.toggle('near', left <= 20);
+  }
+  function counts() { count('pickcap', 'pickcount'); count('ovcap', 'ovcount'); }
+
   function showLogin(msg) {
     $('boot').hidden = true; $('panel').hidden = true; $('login').hidden = false;
     say('loginmsg', msg || '', !!msg);
@@ -68,6 +79,7 @@
     $('ovstart').value = toLocalInput(o ? o.start : new Date(now).toISOString());
     $('ovend').value = toLocalInput(o ? o.end : new Date(now + 48 * 3600e3).toISOString());
     document.querySelectorAll('[data-polish]').forEach(function (b) { b.hidden = !polishReady; });
+    counts();
   }
 
   async function showNow() {
@@ -148,10 +160,11 @@
     button.disabled = false; button.textContent = 'Polish with Claude';
     if (!r.ok) { say('savemsg', r.data.error || 'Could not polish that.', true); return; }
     ta.value = r.data.text;
+    counts();
     // One step back, in case the rewrite loses something.
     var undo = document.createElement('button');
     undo.type = 'button'; undo.className = 'btn'; undo.textContent = 'Undo polish';
-    undo.addEventListener('click', function () { ta.value = before; undo.remove(); });
+    undo.addEventListener('click', function () { ta.value = before; undo.remove(); counts(); });
     button.after(undo);
   }
 
@@ -192,10 +205,12 @@
       boot();
     });
     $('random').addEventListener('change', function () { $('pinbox').hidden = this.checked; });
+    $('pickcap').addEventListener('input', counts);
+    $('ovcap').addEventListener('input', counts);
     $('picklink').addEventListener('change', function () { lookup('pick'); });
     $('ovlink').addEventListener('change', function () { lookup('override'); });
     $('ovclear').addEventListener('click', function () {
-      $('ovlink').value = ''; $('ovcap').value = ''; $('ovpreview').innerHTML = ''; chosen.override = null;
+      $('ovlink').value = ''; $('ovcap').value = ''; $('ovpreview').innerHTML = ''; chosen.override = null; counts();
       say('savemsg', 'Schedule cleared. Press Save to make it stick.');
     });
     $('save').addEventListener('click', save);
