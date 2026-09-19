@@ -457,15 +457,18 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 /* ---- follow + footer ---- */
 /* Platform icons. Each mark keeps the exact color its owner allows and is never
    faded or recolored, so hover and focus draw a soft circle behind it instead.
-   32px clears the largest minimum among them (Instagram, 29px); the 44px box is
-   the touch target and leaves at least half an icon of clear space between marks. */
-.follow{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+   Marks are about 32px, which clears the largest minimum (Instagram, 29px). Each
+   sits in a 48px touch target, so with a 2px gap the marks are 18px apart, past
+   the widest clear space any owner asks for (16px). Seven targets fit one row
+   from 390px up. Narrower phones split them four and three rather than leave
+   one icon alone on a second row. Images keep their own width and height. */
+.follow{display:flex;flex-wrap:wrap;gap:6px 2px;align-items:center}
+@media(max-width:389px){.follow{max-width:198px}}
 .ficon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
   border-radius:50%;transition:background .18s}
-.ficon svg,.ficon img{width:32px;height:32px;display:block}
-.ficon img[width="38"]{width:38px}
+.ficon svg{width:32px;height:32px;display:block}
+.ficon img{display:block}
 .ficon:hover,.ficon:focus-visible{background:var(--paper-3)}
-.alsoon{margin-top:14px;font-size:16px;color:var(--ink-2)}
 @media(prefers-reduced-motion:reduce){.ficon{transition:none}}
 
 /* 40px above the rule, not 10. Every page carried a footer from 2026-09-11,
