@@ -24,6 +24,9 @@ const LOCK_S = 15 * 60;       // ...lock that address out for fifteen minutes
 // Measured under the featured video: 160 characters is four lines on a 360px
 // phone and three on a laptop. The page also clamps the caption to four lines.
 const CAPTION_MAX = 160;
+// A draft may run longer. Polish exists to cut it down, and Save refuses
+// anything still over CAPTION_MAX.
+const DRAFT_MAX = 600;
 
 function send(res, status, body, cookie) {
   res.setHeader('cache-control', 'no-store');
@@ -90,8 +93,9 @@ async function polish(text) {
         'Tighten the caption he gives you so it reads cleanly in his own voice: warm, direct, excited about ' +
         'the music, conversational rather than promotional. Fix spelling and grammar. Only ever cut or ' +
         'rephrase: never add words, details, facts or sentences, and keep every name and date exactly as ' +
-        'written. Your version must be no longer than his draft, and never over ' + CAPTION_MAX +
-        ' characters. Do not add hashtags, emojis or quotation marks. Reply with the caption text only.',
+        'written. Your version must be no longer than his draft and must be ' + CAPTION_MAX +
+        ' characters or fewer, so a long draft gets cut down to its best one or two sentences. ' +
+        'Do not add hashtags, emojis or quotation marks. Reply with the caption text only.',
       messages: [{ role: 'user', content: text }]
   };
   try {
@@ -115,8 +119,11 @@ async function polish(text) {
     // Polish only ever tightens. A few characters of slack covers a fixed
     // apostrophe or a comma; anything longer than that is padding, so it is
     // refused rather than shown.
-    if (out.length > Math.min(CAPTION_MAX, text.length + 3)) {
+    if (out.length > text.length + 3) {
       return { status: 422, body: { error: 'Claude\u2019s version came out longer than yours, so it was not used.' } };
+    }
+    if (out.length > CAPTION_MAX) {
+      return { status: 422, body: { error: `Claude could not get it under ${CAPTION_MAX} characters. Trim it a little and try again.` } };
     }
     return { status: 200, body: { text: out } };
   } catch (e) {
@@ -173,7 +180,7 @@ module.exports = async (req, res) => {
   if (action === 'polish') {
     const text = String(body.text || '').trim();
     if (!text) return send(res, 400, { error: 'Write a caption first.' });
-    if (text.length > CAPTION_MAX) return send(res, 400, { error: `Captions can be up to ${CAPTION_MAX} characters.` });
+    if (text.length > DRAFT_MAX) return send(res, 400, { error: `That draft is over ${DRAFT_MAX} characters. Shorten it first.` });
     const r = await polish(text);
     return send(res, r.status, r.body);
   }

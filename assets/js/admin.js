@@ -47,15 +47,26 @@
   }
 
   // Live count under each caption box. The limit fits the space under the
-  // featured video: four lines on a small phone, three on a laptop.
+  // featured video: four lines on a small phone, three on a laptop. A draft can
+  // run longer, and Polish cuts it down, but Save waits until it fits.
   var CAPTION_MAX = 160;
   function count(taId, outId) {
-    var n = $(taId).value.length, left = CAPTION_MAX - n;
+    var n = $(taId).value.trim().length, left = CAPTION_MAX - n;
     var out = $(outId);
-    out.textContent = n + ' / ' + CAPTION_MAX + (left <= 20 ? '  \u00b7  ' + left + ' left' : '');
-    out.classList.toggle('near', left <= 20);
+    out.textContent = left < 0
+      ? n + ' / ' + CAPTION_MAX + '  \u00b7  ' + (-left) + ' over. Polish or trim it to save.'
+      : n + ' / ' + CAPTION_MAX + (left <= 20 ? '  \u00b7  ' + left + ' left' : '');
+    out.classList.toggle('near', left >= 0 && left <= 20);
+    out.classList.toggle('over', left < 0);
+    return left >= 0;
   }
-  function counts() { count('pickcap', 'pickcount'); count('ovcap', 'ovcount'); }
+  function counts() {
+    // A caption only counts if its section is in use: the pin while random is
+    // off, the schedule while it has a link.
+    var pickOk = count('pickcap', 'pickcount') || $('random').checked;
+    var ovOk = count('ovcap', 'ovcount') || !$('ovlink').value.trim();
+    $('save').disabled = !(pickOk && ovOk);
+  }
 
   function showLogin(msg) {
     $('boot').hidden = true; $('panel').hidden = true; $('login').hidden = false;
@@ -129,7 +140,7 @@
     say('savemsg', 'Saving...');
     $('save').disabled = true;
     var r = await api(body);
-    $('save').disabled = false;
+    counts();
     if (!r.ok) { say('savemsg', r.data.error || 'Could not save.', true); return; }
     settings = r.data.settings; fillForm();
     say('savemsg', 'Saved. The homepage shows it on the next visit.');
@@ -204,9 +215,10 @@
       $('pw').value = '';
       boot();
     });
-    $('random').addEventListener('change', function () { $('pinbox').hidden = this.checked; });
+    $('random').addEventListener('change', function () { $('pinbox').hidden = this.checked; counts(); });
     $('pickcap').addEventListener('input', counts);
     $('ovcap').addEventListener('input', counts);
+    $('ovlink').addEventListener('input', counts);
     $('picklink').addEventListener('change', function () { lookup('pick'); });
     $('ovlink').addEventListener('change', function () { lookup('override'); });
     $('ovclear').addEventListener('click', function () {

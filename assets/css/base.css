@@ -462,7 +462,8 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .follow{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
 .ficon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
   border-radius:50%;transition:background .18s}
-.ficon svg{width:32px;height:32px;display:block}
+.ficon svg,.ficon img{width:32px;height:32px;display:block}
+.ficon img[width="35"]{width:35px}
 .ficon:hover,.ficon:focus-visible{background:var(--paper-3)}
 .alsoon{margin-top:14px;font-size:16px;color:var(--ink-2)}
 @media(prefers-reduced-motion:reduce){.ficon{transition:none}}
@@ -761,3 +762,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 /* The featured caption is written to fit four lines on a phone. Clamp as a
    net for unusually long words. */
 .featvid .fcap .note{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+.foot .tm{margin-top:14px;font-size:11px;color:var(--ink-muted)}
+.adm-count.over{color:var(--accent-deep);font-weight:700}
