@@ -74,13 +74,10 @@ async function lookupVideo(link) {
 async function polish(text) {
   if (!process.env.ANTHROPIC_API_KEY) return { status: 503, body: { error: 'The Claude key is not set up yet.' } };
   const client = new Anthropic();
-  try {
-    const msg = await client.beta.messages.create({
+  const request = {
       model: 'claude-opus-5',
       max_tokens: 2000,
       output_config: { effort: 'low' },
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
       system:
         "You polish short captions for T Shaw's Progressive Bluegrass, a bluegrass video and podcast site " +
         "run by Trevor Shaw. He describes himself this way: \"I document and share all things bluegrass.\" " +
@@ -89,14 +86,34 @@ async function polish(text) {
         'wrote them and add none. Keep it to one to three sentences. Fix spelling and grammar. Do not add ' +
         'hashtags, emojis or quotation marks unless his draft has them. Reply with the caption text only.',
       messages: [{ role: 'user', content: text }]
-    });
+  };
+  try {
+    let msg;
+    try {
+      // Server-side fallback: if the model declines, another finishes the job.
+      msg = await client.beta.messages.create({
+        ...request, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default'
+      });
+    } catch (e) {
+      // Measured 2026-09-18: the first live call returned 400. The fallback
+      // option is newer and not enabled on every account, so a 400 retries
+      // once as a plain request rather than failing the button.
+      if (!(e instanceof Anthropic.BadRequestError)) throw e;
+      console.error('polish with fallbacks rejected, retrying plain:', e.message);
+      msg = await client.messages.create(request);
+    }
     if (msg.stop_reason === 'refusal') return { status: 422, body: { error: 'Claude would not rewrite that one. Edit it by hand.' } };
     const out = msg.content.filter(b => b.type === 'text').map(b => b.text).join('').trim();
     return out ? { status: 200, body: { text: out } } : { status: 502, body: { error: 'Claude returned nothing. Try again.' } };
   } catch (e) {
     if (e instanceof Anthropic.RateLimitError) return { status: 429, body: { error: 'Claude is busy. Try again in a minute.' } };
     if (e instanceof Anthropic.AuthenticationError) return { status: 503, body: { error: 'The Claude key was rejected. Check it in Vercel.' } };
-    if (e instanceof Anthropic.APIError) return { status: 502, body: { error: `Claude error ${e.status}. Try again.` } };
+    if (e instanceof Anthropic.APIError) {
+      // Anthropic's own reason, so a failure can be diagnosed from the page.
+      const why = e.error && e.error.error && e.error.error.message;
+      console.error('polish failed:', e.status, why || e.message);
+      return { status: 502, body: { error: `Claude error ${e.status}${why ? ': ' + why : ''}` } };
+    }
     return { status: 502, body: { error: 'Could not reach Claude. Try again.' } };
   }
 }
