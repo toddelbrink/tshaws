@@ -463,6 +463,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    from 390px up. Narrower phones split them four and three rather than leave
    one icon alone on a second row. Images keep their own width and height. */
 .follow{display:flex;flex-wrap:wrap;gap:6px 2px;align-items:center}
+.section.followrow{padding-bottom:10px}
 @media(max-width:389px){.follow{max-width:198px}}
 .ficon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
   border-radius:50%;transition:background .18s}
@@ -695,7 +696,11 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 }
 
 /* ---- admin page (site owner only, /admin/) ---- */
-#admin{padding-block:40px 60px;max-width:760px}
+/* The admin body is the same 940px column as every other page, so its left
+   edge lines up with the name in the nav. Text and fields keep a readable
+   measure inside it rather than running the full width. */
+#admin{padding-block:40px 60px}
+#admin input,#admin textarea{max-width:62ch}
 .adm-title{font-family:var(--display);font-size:clamp(30px,6vw,42px);margin-bottom:18px}
 .adm-card{border:1px solid var(--rule);border-radius:var(--radius);background:#FBF8F1;
   padding:22px;margin-bottom:22px}
