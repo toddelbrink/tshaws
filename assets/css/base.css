@@ -704,5 +704,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .sitenav .navlogo img{width:44px;height:44px;mix-blend-mode:multiply}
 .section.toplatest{padding-top:30px}
 @media(min-width:720px){.toplatest .feature{grid-template-columns:180px 1fr}}
+/* Trevor's own line, 2026-09-18. One quiet sentence where the badge used to be. */
+.introline{font-size:18px;line-height:1.5;color:var(--ink-2);padding-top:26px}
+.introline + .section.toplatest{padding-top:18px}
+/* Phones: the logo replaces the word Home, so the row still fits on one line. */
 @media(max-width:700px){.sitenav .inner > a.navlogo{margin-left:auto}
+  .sitenav .inner > a[href="/"]:not(.navlogo){display:none}
   .sitenav .navlogo img{width:34px;height:34px}}
