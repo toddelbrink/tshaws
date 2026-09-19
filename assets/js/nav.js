@@ -41,14 +41,15 @@
     return payload;
   }
 
-  /* Pages that live under a nav item without being it. /guests/ is a tab in the
-   * Podcast menu, so Podcast should read as current while you are on it.
+  /* Pages that live under a nav item without being it. Empty since
+   * 2026-09-19, when Guests became its own nav item instead of a tab under
+   * Podcast. Kept because a future sub-page may need it.
    *
    * This has to be one function used by both paths. A hardcoded aria-current in
    * the markup survives a hard load and is then stripped by the soft-navigation
    * pass below, which matches on exact path, so the highlight would appear or
    * vanish depending on how you arrived. */
-  var SECTION = { '/guests': '/episodes' };
+  var SECTION = {};
 
   function tidy(p) { return String(p || '').replace(/\/$/, '') || '/'; }
 
@@ -151,12 +152,6 @@
       ]);
     },
     seasons: function () {
-      // Guests sits below the seasons. It is a real page
-      // and does not depend on the feed, so it is appended after the fetch
-      // resolves AND after it fails. A menu that loses the only pointer to
-      // /guests/ because the episode feed hiccuped would be worse than useless.
-      var GUESTS = { label: 'Guests', href: '/guests/' };
-
       if (!window.fetch) return Promise.resolve([]);
       return fetch('/api/episodes?mode=meta').then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -165,10 +160,9 @@
         var out = [{ label: 'All episodes', href: '/episodes/' }];
         (d.seasons || []).slice().sort(function (a, b) { return b - a; })
           .forEach(function (s) { out.push({ label: 'Season ' + s, href: '/episodes/#season-' + s }); });
-        out.push(GUESTS);
         return out;
       }).catch(function () {
-        return [{ label: 'All episodes', href: '/episodes/' }, GUESTS];
+        return [{ label: 'All episodes', href: '/episodes/' }];
       });
     }
   };

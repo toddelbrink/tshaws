@@ -157,8 +157,11 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
      as the display face, and fits Home Podcast Videos Mortgages About on one
      line at 375px with room to spare. Shortening the words was the other
      option; Videos stays plural because that is what Trevor's badge says. */
-  .sitenav a{letter-spacing:.08em}
-  .sitenav .inner{gap:8px 16px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+  /* Guests became a sixth item on 2026-09-19. Tighter tracking and a smaller
+     face keep Podcast Guests Videos Mortgages About and the logo on one line at
+     375px, measured in the browser. */
+  .sitenav a{letter-spacing:.03em;font-size:13.5px}
+  .sitenav .inner{gap:8px 12px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
   .sitenav .inner > a,.sitenav .navgroup{flex:0 0 auto}
   .navcaret{display:none}
 }
@@ -700,4 +703,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 /* Phones: the logo replaces the word Home, so the row still fits on one line. */
 @media(max-width:700px){.sitenav .inner > a.navlogo{margin-left:auto}
   .sitenav .inner > a[href="/"]:not(.navlogo){display:none}
-  .sitenav .navlogo img{width:34px;height:34px}}
+  .sitenav .navlogo img{width:30px;height:30px}}
+/* Narrow Android phones, around 360px, were 12px short of one line. */
+@media(max-width:380px){.sitenav .inner{padding-left:14px;padding-right:14px;gap:8px 10px}}
