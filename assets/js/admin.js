@@ -60,7 +60,31 @@
     out.classList.toggle('over', left < 0);
     return left >= 0;
   }
+  // What follows a schedule. The server's order is fixed: a schedule beats a
+  // pin, and when it ends the homepage falls back to the pin if random is off,
+  // otherwise to the random video of the day. These lines only say so out loud.
+  function afterText(random, pick) {
+    return random ? 'back to a random video of the day'
+      : pick ? pick.title : 'the video you pin under Video of the day';
+  }
+  function scheduleWindow() {
+    if (!$('ovlink').value.trim() || !$('ovstart').value || !$('ovend').value) return null;
+    var start = new Date($('ovstart').value).getTime(), end = new Date($('ovend').value).getTime();
+    return end > start ? { start: start, end: end } : null;
+  }
+  function thenLines() {
+    var w = scheduleWindow(), now = Date.now();
+    var after = $('ovafter');
+    after.hidden = !w || w.end <= now;
+    if (!after.hidden) after.textContent = 'When this ends: ' + afterText($('random').checked, chosen.pick) + '.';
+    // Pinning while a schedule is on the homepage does not show right away.
+    var note = $('pinnote');
+    note.hidden = $('random').checked || !w || w.start > now || w.end <= now;
+    if (!note.hidden) note.textContent = 'This pin takes over when the scheduled video ends at ' + when(new Date(w.end).toISOString()) + '.';
+  }
+
   function counts() {
+    thenLines();
     // A caption only counts if its section is in use: the pin while random is
     // off, the schedule while it has a link.
     var pickOk = count('pickcap', 'pickcount') || $('random').checked;
@@ -102,7 +126,9 @@
       var why = f.source === 'override' ? 'Scheduled, until ' + when(f.until)
               : f.source === 'pinned' ? 'Your pick, until you switch random back on'
               : 'Random video of the day';
-      box.innerHTML = videoCard(f.video, why) + (f.caption ? '<p class="note">' + esc(f.caption) + '</p>' : '');
+      box.innerHTML = videoCard(f.video, why) + (f.caption ? '<p class="note">' + esc(f.caption) + '</p>' : '') +
+        (f.source === 'override' ? '<p class="adm-help adm-then">When this ends: ' +
+          esc(afterText(settings.random !== false, settings.pick && settings.pick.video)) + '.</p>' : '');
     } catch (e) { box.innerHTML = '<p class="status">Could not load it right now.</p>'; }
   }
 
@@ -126,7 +152,7 @@
     if (!link) { preview.innerHTML = ''; return; }
     preview.innerHTML = '<p class="status">Looking it up...</p>';
     var r = await api({ action: 'lookup', link: link });
-    if (r.ok) { chosen[slot] = r.data.video; preview.innerHTML = videoCard(r.data.video); }
+    if (r.ok) { chosen[slot] = r.data.video; preview.innerHTML = videoCard(r.data.video); thenLines(); }
     else preview.innerHTML = '<p class="adm-msg bad">' + esc(r.data.error || 'Could not look that up.') + '</p>';
   }
 
@@ -219,6 +245,8 @@
     $('pickcap').addEventListener('input', counts);
     $('ovcap').addEventListener('input', counts);
     $('ovlink').addEventListener('input', counts);
+    $('ovstart').addEventListener('change', thenLines);
+    $('ovend').addEventListener('change', thenLines);
     $('picklink').addEventListener('change', function () { lookup('pick'); });
     $('ovlink').addEventListener('change', function () { lookup('override'); });
     $('ovclear').addEventListener('click', function () {

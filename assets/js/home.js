@@ -72,6 +72,8 @@
             nice(ep.published), ep.durationLabel].filter(Boolean).join('  ·  ');
   }
 
+  var ARROW = '<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 7h9.2L7.6 3.4 9 2l6 6-6 6-1.4-1.4L11.2 9H2z"/></svg>';
+
   function renderLatest(root) {
     var ep = eps.episodes[0];
     root.querySelector('#latest').innerHTML =
@@ -82,7 +84,7 @@
         (desc(ep) ? '<p class="desc">' + esc(desc(ep)) + '</p>' : '') +
         '<div class="row">' +
           listenWatch(ep) +
-          '<a class="btn" href="/episodes/#ep-' + esc(ep.slug || ep.guid) + '">Episode page</a>' +
+          '<a class="mlink" href="/episodes/#ep-' + esc(ep.slug || ep.guid) + '">Episode page' + ARROW + '</a>' +
         '</div>' +
         '<div class="rowbar"><i></i></div>' +
       '</div>';

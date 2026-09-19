@@ -61,6 +61,7 @@
         Pick a random video from the channel every day</label>
       <div id="pinbox" hidden>
         <p class="adm-help">With the random video off, the homepage shows this one until you switch random back on.</p>
+        <p class="adm-help adm-then" id="pinnote" hidden></p>
         <div class="adm-field" data-slot="pick">
           <label for="picklink">YouTube link</label>
           <div class="adm-row">
@@ -90,6 +91,7 @@
           <div><label for="ovstart">Starts</label><input id="ovstart" type="datetime-local"></div>
           <div><label for="ovend">Ends</label><input id="ovend" type="datetime-local"></div>
         </div>
+        <p class="adm-help adm-then" id="ovafter" hidden></p>
         <label for="ovcap">Caption, optional</label>
         <textarea id="ovcap" rows="3" maxlength="600" aria-describedby="ovcount"></textarea>
         <p class="adm-count" id="ovcount" aria-live="polite"></p>

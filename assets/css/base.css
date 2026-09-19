@@ -463,7 +463,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .ficon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;
   border-radius:50%;transition:background .18s}
 .ficon svg,.ficon img{width:32px;height:32px;display:block}
-.ficon img[width="35"]{width:35px}
+.ficon img[width="38"]{width:38px}
 .ficon:hover,.ficon:focus-visible{background:var(--paper-3)}
 .alsoon{margin-top:14px;font-size:16px;color:var(--ink-2)}
 @media(prefers-reduced-motion:reduce){.ficon{transition:none}}
@@ -706,6 +706,8 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   font-weight:400;color:var(--ink);margin:0}
 #admin .adm-check input{width:20px;height:20px;accent-color:var(--accent)}
 .adm-help{color:var(--ink-2);font-size:15px;margin:10px 0 4px;max-width:60ch}
+.adm-then{color:var(--ink);border-left:3px solid var(--accent);padding-left:10px}
+.adm-video .adm-then{grid-column:1/-1;margin:0}
 .adm-row{display:flex;gap:10px;flex-wrap:wrap}
 .adm-row input{flex:1 1 260px}
 .adm-dates{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
