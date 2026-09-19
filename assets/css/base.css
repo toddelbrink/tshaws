@@ -649,7 +649,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   #vdlg .x{width:100%}
 }
 
-/* ---- admin page (Trevor only, /admin/) ---- */
+/* ---- admin page (site owner only, /admin/) ---- */
 #admin{padding-block:40px 60px;max-width:760px}
 .adm-title{font-family:var(--display);font-size:clamp(30px,6vw,42px);margin-bottom:18px}
 .adm-card{border:1px solid var(--rule);border-radius:var(--radius);background:#FBF8F1;
@@ -689,20 +689,28 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 @media(max-width:560px){.adm-video,.adm-preview{grid-template-columns:1fr}.adm-video img,.adm-preview img{width:100%}}
 .foot .adminlink{color:inherit;margin-left:10px;text-decoration:underline;text-underline-offset:2px}
 
-/* ---- small logo at the right of the nav, on every page ----
-   2026-09-19: the big badge left the homepage body so content starts at the top.
-   The current badge stands in until Kat's minimal mark arrives; swap the file,
-   not the markup. */
-.sitenav .navlogo{margin-left:auto;display:inline-flex;align-items:center;min-height:44px}
-.sitenav .navlogo img{width:44px;height:44px;mix-blend-mode:multiply}
+/* ---- the Home link, set in script ----
+   The site's name, in lettering close to the badge's, stands in for both the
+   word Home and a nav logo. The face is one file: replace
+   /assets/fonts/home-lettering.woff2 to change it everywhere. That file is a
+   subset of Kaushan Script (SIL Open Font License, see home-lettering-OFL.txt),
+   renamed here as the license requires for a modified copy. */
+@font-face{font-family:'TS Home Lettering';src:url(/assets/fonts/home-lettering.woff2) format('woff2');
+  font-display:swap}
+.sitenav .inner > a.navhome{font-family:'TS Home Lettering','Brush Script MT',cursive;
+  font-size:25px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink);
+  margin-right:auto;line-height:1;padding-bottom:2px}
+.sitenav .inner > a.navhome:hover{color:var(--accent)}
+.sitenav .inner > a.navhome[aria-current="page"]{color:var(--ink);font-weight:400}
+
 .section.toplatest{padding-top:30px}
 @media(min-width:720px){.toplatest .feature{grid-template-columns:180px 1fr}}
-/* Trevor's own line, 2026-09-18. One quiet sentence where the badge used to be. */
+/* One quiet sentence at the top of the homepage. */
 .introline{font-size:18px;line-height:1.5;color:var(--ink-2);padding-top:26px}
 .introline + .section.toplatest{padding-top:18px}
-/* Phones: the logo replaces the word Home, so the row still fits on one line. */
-@media(max-width:700px){.sitenav .inner > a.navlogo{margin-left:auto}
-  .sitenav .inner > a[href="/"]:not(.navlogo){display:none}
-  .sitenav .navlogo img{width:30px;height:30px}}
-/* Narrow Android phones, around 360px, were 12px short of one line. */
-@media(max-width:380px){.sitenav .inner{padding-left:14px;padding-right:14px;gap:8px 10px}}
+@media(max-width:700px){.sitenav .inner > a.navhome{font-size:20px}}
+/* Phones up to 440px wide need tighter spacing to keep the name and all six
+   items on one line. Measured at 360, 375, 390 and 412px. */
+@media(max-width:440px){.sitenav .inner{padding-left:12px;padding-right:12px;gap:8px 8px}
+  .sitenav a{font-size:13px;letter-spacing:.02em}
+  .sitenav .inner > a.navhome{font-size:18px}}
