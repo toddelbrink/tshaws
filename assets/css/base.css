@@ -166,16 +166,27 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   .navcaret{display:none}
 }
 
-/* ---- buttons ---- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.14em;
+/* ---- buttons: one job per type ----
+   Main       .btn.solid   one per page at most. Ink pill, arrow slides right.
+   Secondary  .btn .more   outlined pill, fills on hover.
+   Listen and Watch .lw    one joined pill split down the middle.
+   Filters    .seasons .chips   underline tabs, the active one ruled in accent.
+   Minor link .mlink .back accent text, the arrow slides on hover.
+   Signature  .sig         the homepage featured video only.
+   Pills are the modern half; walnut, brass and the waveform are the bluegrass
+   half. Every control is at least 44px tall and keeps the site's focus ring. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.12em;
   text-transform:uppercase;text-decoration:none;
   min-height:48px;padding:0 24px;cursor:pointer;
-  border:1px solid var(--ink);border-radius:var(--radius);
-  background:transparent;color:var(--ink);transition:background .14s,color .14s}
+  border:0;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);
+  background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .btn:hover{background:var(--ink);color:var(--paper)}
-.btn.solid{background:var(--ink);color:var(--paper)}
-.btn.solid:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 22px 0 26px}
+.btn.solid:hover{background:var(--stage);color:var(--paper)}
+.btn[disabled]{opacity:.5;cursor:default}
+.arr{width:14px;height:14px;fill:currentColor;flex:none;transition:transform .2s}
+.btn.solid:hover .arr{transform:translateX(4px)}
 .btn svg{width:15px;height:15px;fill:currentColor}
 @media(prefers-reduced-motion:reduce){.btn{transition:none}}
 
@@ -198,17 +209,38 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;
   background:var(--stage);cursor:pointer}
 .featvid .fshot img{width:100%;height:100%;object-fit:cover}
-.featvid .fplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:78px;height:78px;border-radius:50%;background:rgba(26,23,20,.84);
-  display:grid;place-items:center;transition:background .15s}
-.featvid .fplay svg{width:34px;height:34px;fill:var(--stage-text);margin-left:4px}
-.featvid .fshot:hover .fplay,.featvid .fshot:focus-visible .fplay{background:var(--accent)}
+/* The signature control: walnut pill, brass play disc, and the homepage's
+   waveform in miniature. The bars move while the video is hovered or focused. */
+.sig{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:12px;
+  padding:6px 20px 6px 6px;border-radius:999px;background:var(--stage);color:var(--stage-text);
+  font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;box-shadow:0 2px 12px rgba(26,23,20,.3)}
+.sig .disc{width:40px;height:40px;border-radius:50%;background:var(--brass);color:var(--stage);
+  display:grid;place-items:center;flex:none;transition:transform .2s}
+.sig .disc svg{width:16px;height:16px;fill:currentColor;margin-left:2px}
+.sig .bars{display:flex;align-items:center;gap:3px;height:22px}
+.sig .bars i{display:block;width:3px;height:30%;border-radius:2px;background:var(--brass);opacity:.85}
+.sig .bars i:nth-child(2n){height:70%}
+.sig .bars i:nth-child(3n){height:100%}
+.sig .bars i:nth-child(5n){height:45%}
+.fshot:hover .sig .disc,.fshot:focus-visible .sig .disc{transform:scale(1.06)}
+.fshot:hover .sig .bars i,.fshot:focus-visible .sig .bars i{animation:tsbars .9s ease-in-out infinite alternate}
+.sig .bars i:nth-child(2){animation-delay:.1s}.sig .bars i:nth-child(3){animation-delay:.25s}
+.sig .bars i:nth-child(4){animation-delay:.05s}.sig .bars i:nth-child(5){animation-delay:.3s}
+.sig .bars i:nth-child(6){animation-delay:.15s}.sig .bars i:nth-child(7){animation-delay:.35s}
+.sig .bars i:nth-child(8){animation-delay:.2s}
+@keyframes tsbars{from{transform:scaleY(.4)}to{transform:scaleY(1.1)}}
+@media(max-width:560px){.sig{left:10px;bottom:10px;gap:9px;padding:5px 14px 5px 5px;font-size:12px}
+  .sig .disc{width:34px;height:34px}.sig .bars{height:18px}}
 .featvid .dur{position:absolute;right:10px;bottom:10px;background:rgba(26,23,20,.88);color:#fff;
   font-family:var(--sans);font-size:12px;font-weight:600;padding:3px 7px;border-radius:2px}
 .featvid .fcap{margin-top:14px}
 .featvid .fcap h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 6px}
 .featvid .fcap .note{color:var(--ink-2);margin-top:10px;max-width:60ch}
-@media(prefers-reduced-motion:reduce){.featvid .fplay{transition:none}}
+/* No bar dance and no slides for anyone who asks for less motion. */
+@media(prefers-reduced-motion:reduce){.btn,.more,.play,.arr,.sig .disc,.seasons button,.chips button{transition:none}
+  .sig .bars i{animation:none!important}.btn.solid:hover .arr,.mlink:hover .arr{transform:none}
+  .back:hover .arr{transform:scaleX(-1)}.fshot:hover .sig .disc{transform:none}}
 
 /* ---- section headers ---- */
 .section{padding-block:34px}
@@ -267,19 +299,24 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .ep .meta{margin-top:5px}
 
-/* 48px to match .btn exactly. They sit side by side in the latest-episode row
-   and a 4px height difference reads as a misalignment. */
-.play{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;
-  font-family:var(--display);font-size:12px;font-weight:500;letter-spacing:.14em;
-  text-transform:uppercase;padding:0 18px;min-height:48px;min-width:104px;cursor:pointer;
-  border:1px solid var(--ink);border-radius:var(--radius);background:transparent;color:var(--ink)}
-/* In the feature row .play sits beside .btn in a centred flex line, where its
-   own margin-top pushed it 8px lower than its neighbour. The margin exists for
-   episode rows, where the button follows a paragraph; it is wrong here. */
-.feature .row .play{margin-top:0}
+/* Listen and Watch: one joined pill split down the middle, icon and label in
+   each half. An episode with no video shows Listen alone in the same frame.
+   It replaced two separate buttons, which wrapped onto two lines on 360px
+   phones: each had a minimum width, and the second was spaced with a margin
+   that it carried onto the new line as an indent. */
+.lw{display:inline-flex;align-items:stretch;margin-top:12px;max-width:100%;
+  border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);overflow:hidden}
+.feature .row .lw{margin-top:0}
+.play{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;white-space:nowrap;padding:0 18px;min-height:46px;cursor:pointer;
+  border:0;background:transparent;color:var(--ink);transition:background .18s,color .18s}
+.lw > .play + .play{box-shadow:inset 1.5px 0 0 var(--ink)}
 .play:hover{background:var(--ink);color:var(--paper)}
-.play[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.play svg{width:13px;height:13px;fill:currentColor}
+.play[aria-pressed="true"]{background:var(--accent);color:#fff}
+.play svg{width:14px;height:14px;fill:currentColor;flex:none}
+/* The pill clips its halves, so pull the focus ring inside it. */
+.play:focus-visible{outline-offset:-5px}
 
 .rowbar{height:2px;background:var(--rule);margin-top:12px;overflow:hidden;display:none}
 .ep[data-current="true"] .rowbar{display:block}
@@ -294,7 +331,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   border:1px solid var(--rule);border-radius:var(--radius);background:#FBF8F1;
   color:var(--ink);flex:1 1 240px;min-width:0}
 .controls input[type=search]:focus{border-color:var(--ink)}
-.seasons,.chips{display:flex;gap:6px;flex-wrap:wrap}
+.seasons,.chips{display:flex;gap:0 22px;flex-wrap:wrap;border-bottom:1px solid var(--rule)}
 .lbl-short{display:none}
 @media(max-width:700px){.lbl-long{display:none}.lbl-short{display:inline}}
 
@@ -314,12 +351,13 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   .yrsel{display:flex}
 }
 .chips{margin:24px 0 4px}
-.seasons button,.chips button{font-family:var(--display);font-size:12px;letter-spacing:.12em;
-  text-transform:uppercase;padding:0 14px;min-height:44px;cursor:pointer;
-  border:1px solid var(--rule);border-radius:var(--radius);
-  background:transparent;color:var(--ink-2)}
-.seasons button:hover,.chips button:hover{border-color:var(--ink);color:var(--ink)}
-.seasons button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.seasons button,.chips button{font-family:var(--display);font-size:13px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;padding:0 1px;min-height:44px;cursor:pointer;
+  border:0;background:transparent;color:var(--ink-2);
+  box-shadow:inset 0 -2px 0 transparent;transition:color .15s,box-shadow .15s}
+.seasons button:hover,.chips button:hover{color:var(--ink);box-shadow:inset 0 -2px 0 var(--rule)}
+.seasons button[aria-pressed="true"],.chips button[aria-pressed="true"]{color:var(--ink);
+  box-shadow:inset 0 -2px 0 var(--accent)}
 
 /* ---- mortgages ---- */
 .mort-head{margin-top:26px}
@@ -400,13 +438,18 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .vcard:hover .shot{border-color:var(--ink)}
 .vcard:hover b{color:var(--accent)}
 
-.back{display:inline-flex;align-items:center;gap:7px;min-height:44px;background:transparent;
-  border:0;padding:0;cursor:pointer;color:var(--accent);font-family:var(--display);
-  font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
-.more{display:block;margin:30px auto 0;min-height:48px;padding:0 28px;cursor:pointer;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.14em;
-  text-transform:uppercase;border:1px solid var(--ink);border-radius:var(--radius);
-  background:transparent;color:var(--ink)}
+.back,.mlink{display:inline-flex;align-items:center;gap:8px;min-height:44px;background:transparent;
+  border:0;padding:0;cursor:pointer;color:var(--accent);text-decoration:none;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.back:hover,.mlink:hover{color:var(--accent-deep)}
+.mlink:hover .arr{transform:translateX(3px)}
+.back .arr{transform:scaleX(-1)}
+.back:hover .arr{transform:scaleX(-1) translateX(3px)}
+.more{display:flex;align-items:center;justify-content:center;margin:30px auto 0;
+  min-height:48px;padding:0 28px;cursor:pointer;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;border:0;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);
+  background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .more:hover{background:var(--ink);color:var(--paper)}
 .more[disabled]{opacity:.4;cursor:default}
 .more[disabled]:hover{background:transparent;color:var(--ink)}
@@ -501,7 +544,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 #vdlg .bar{display:flex;align-items:center;gap:14px;padding:12px 4px 4px;color:var(--stage-text)}
 
 #vdlg .bar b{font-family:var(--serif);font-size:16px;font-weight:600;flex:1;min-width:0}
-#vdlg .x{background:transparent;border:1px solid rgba(255,255,255,.35);color:var(--stage-text);
+#vdlg .x{background:transparent;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:var(--stage-text);
   border-radius:var(--radius);min-height:44px;padding:0 18px;cursor:pointer;
   font-family:var(--display);font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
 #vdlg .x:hover{border-color:var(--brass);color:var(--brass)}
@@ -578,9 +621,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .guests .eps{display:flex;gap:6px;flex-wrap:wrap}
 .guests .eps a{display:inline-flex;align-items:center;justify-content:center;
   min-width:44px;min-height:44px;padding:0 10px;text-decoration:none;
-  border:1px solid var(--rule);border-radius:var(--radius);
+  border:1px solid var(--rule);border-radius:999px;
   font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink)}
-.guests .eps a:hover{border-color:var(--ink);background:var(--paper-2);color:var(--accent)}
+.guests .eps a:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 @media(max-width:620px){
   .guests thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .guests tr{display:block;border-bottom:1px solid var(--rule);padding:14px 0}
@@ -588,13 +631,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   .guests td:first-child{white-space:normal;font-size:17px}
 }
 
-/* Watch-on-video affordance next to Listen. */
-.watch{margin-left:8px}
-/* The feature row is a flex line with its own 12px gap, so the margin above
-   stacks on top of it and the Play/Watch gap reads 8px wider than the
-   Watch/Episode page gap beside it. The margin is for episode rows, which are
-   not flex. */
-.feature .row .watch{margin-left:0}
+
 
 
 /* ---------------------------------------------------------------------------

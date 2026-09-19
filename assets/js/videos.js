@@ -144,7 +144,7 @@
       ? vids.length + ' videos' + (s && s.published ? '  ·  ' + year(s.published) : '')
       : '';
     el('body').innerHTML =
-      '<button type="button" class="back" id="back">&larr; All shows</button>' +
+      '<button type="button" class="back" id="back"><svg class=\"arr\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M2 7h9.2L7.6 3.4 9 2l6 6-6 6-1.4-1.4L11.2 9H2z\"/></svg>All shows</button>' +
       '<div class="sec"><h2>' + esc(heading) + '</h2>' +
       // A deep link can outlive its videos. Never render an empty grid and
       // leave the visitor wondering whether the page broke.
@@ -234,7 +234,7 @@
   // space for the same reason ("Races/Unwanted"). Each character maps on its
   // own, so anything a plain lowercase search matched still matches.
   function fold(s) {
-    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   }
 

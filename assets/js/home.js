@@ -35,6 +35,7 @@
       { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
   }
   var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  var LISTEN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 9a5 5 0 0 1 10 0v4h-3V9h1.5a3.5 3.5 0 0 0-7 0H6v4H3z"/></svg>';
 
   // Which episodes also exist as video lives in epvideo.js, shared with
   // /episodes/ so both surfaces answer the question identically. Null until it
@@ -49,8 +50,17 @@
   function watchBtn(ep) {
     var v = videoFor(ep);
     return v ? '<button type="button" class="play watch" data-video="' + esc(v.id) +
-      '" data-eptitle="' + esc(ep.title) + '">' +
+      '" data-eptitle="' + esc(ep.title) + '">' + PLAY +
       'Watch<span class="sr-only"> ' + esc(ep.title) + ' on video</span></button>' : '';
+  }
+
+  // Listen and Watch as one joined control. Listen alone when there is no video.
+  function listenWatch(ep) {
+    return '<span class="lw">' +
+      '<button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +
+        LISTEN + '<span class="verb">Listen</span>' +
+        '<span class="sr-only"> ' + esc(ep.title) + '</span></button>' +
+      watchBtn(ep) + '</span>';
   }
 
   function desc(ep) {
@@ -71,10 +81,7 @@
         '<h2>' + esc(ep.title) + '</h2>' +
         (desc(ep) ? '<p class="desc">' + esc(desc(ep)) + '</p>' : '') +
         '<div class="row">' +
-          '<button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +
-            PLAY + '<span class="verb">Play</span>' +
-            '<span class="sr-only"> ' + esc(ep.title) + '</span></button>' +
-          watchBtn(ep) +
+          listenWatch(ep) +
           '<a class="btn" href="/episodes/#ep-' + esc(ep.slug || ep.guid) + '">Episode page</a>' +
         '</div>' +
         '<div class="rowbar"><i></i></div>' +
@@ -88,10 +95,7 @@
                   : '<div class="ep-art"></div>') +
         '<div><h3>' + esc(ep.title) + '</h3>' +
         '<p class="meta">' + esc(metaLine(ep)) + '</p>' +
-        '<button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +
-          PLAY + '<span class="verb">Play</span>' +
-          '<span class="sr-only"> ' + esc(ep.title) + '</span></button>' +
-        watchBtn(ep) +
+        listenWatch(ep) +
         '<div class="rowbar"><i></i></div></div></article>';
     }).join('');
   }
@@ -126,7 +130,10 @@
     box.innerHTML =
       '<button type="button" class="fshot" data-video="' + esc(v.id) + '" data-eptitle="' + esc(v.title) + '">' +
         '<img src="' + esc(thumb) + '" alt="" decoding="async">' +
-        '<span class="fplay">' + PLAY + '</span>' +
+        // The signature control. Its label says what kind of pick this is.
+        '<span class="sig" aria-hidden="true"><span class="disc">' + PLAY + '</span>' +
+          (feat.source === 'daily' ? 'Video of the day' : 'Watch') +
+          '<span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>' +
         (v.durationLabel ? '<span class="dur">' + esc(v.durationLabel) + '</span>' : '') +
         '<span class="sr-only">Play ' + esc(v.title) + '</span>' +
       '</button>' +
@@ -148,7 +155,7 @@
       var playing = isCur && snap.playing;
       btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
       var verb = btn.querySelector('.verb');
-      if (verb) verb.textContent = playing ? 'Pause' : (isCur && snap.position > 1 ? 'Resume' : 'Play');
+      if (verb) verb.textContent = playing ? 'Pause' : (isCur && snap.position > 1 ? 'Resume' : 'Listen');
       var bar = host && host.querySelector ? host.querySelector('.rowbar i') : null;
       if (bar && isCur && snap.duration) {
         bar.style.width = ((snap.position / snap.duration) * 100).toFixed(2) + '%';

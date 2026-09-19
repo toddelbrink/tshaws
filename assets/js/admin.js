@@ -158,7 +158,7 @@
   // The picker searches the whole archive with the same matching as the
   // public video search, then drops the chosen video into the link field.
   function fold(s) {
-    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   }
   async function openFinder(slot) {
     findTarget = slot;

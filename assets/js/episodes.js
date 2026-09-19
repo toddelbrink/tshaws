@@ -3,6 +3,9 @@
 (function () {
   'use strict';
 
+  var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  var LISTEN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 9a5 5 0 0 1 10 0v4h-3V9h1.5a3.5 3.5 0 0 0-7 0H6v4H3z"/></svg>';
+
   var data = null;            // cached across soft navigations
   var state = { q: '', season: 'all' };
   var subscribed = false;     // subscribe once, not once per soft navigation
@@ -66,7 +69,7 @@
   // Same rules as video search (videos.js): case, accents and punctuation are
   // ignored, and from five letters up so are spaces.
   function fold(s) {
-    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   }
 
@@ -95,13 +98,14 @@
           '<h2>' + esc(ep.title) + '</h2>' +
           '<div class="meta">' + esc(meta) + '</div>' +
           (snippet(ep) ? '<p>' + esc(snippet(ep)) + '</p>' : '') +
-          '<button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +
-            '<span class="verb">Play</span>' +
+          // Listen and Watch as one joined control. Listen alone without a video.
+          '<span class="lw"><button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +
+            LISTEN + '<span class="verb">Listen</span>' +
             '<span class="sr-only"> ' + esc(ep.title) + '</span></button>' +
           (videoFor(ep)
-            ? '<button type="button" class="play watch" data-video="' + esc(videoFor(ep).id) + '">' +
+            ? '<button type="button" class="play watch" data-video="' + esc(videoFor(ep).id) + '">' + PLAY +
               'Watch<span class="sr-only"> ' + esc(ep.title) + ' on video</span></button>'
-            : '') +
+            : '') + '</span>' +
           '<div class="rowbar"><i></i></div>' +
         '</div></article>';
     }).join('');
@@ -120,7 +124,7 @@
       btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
       // "Resume" only means something if there is a position to resume from.
       btn.querySelector('.verb').textContent =
-        playing ? 'Pause' : (isCur && snap.position > 1 ? 'Resume' : 'Play');
+        playing ? 'Pause' : (isCur && snap.position > 1 ? 'Resume' : 'Listen');
       if (isCur && snap.duration) {
         row.querySelector('.rowbar i').style.width =
           ((snap.position / snap.duration) * 100).toFixed(2) + '%';
