@@ -44,13 +44,19 @@ const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 // library falls back to an in-memory cache, and failed reads or writes are
 // logged, not thrown, so the worst case is the old behavior.
 const { getCache, waitUntil, addCacheTag, dangerouslyDeleteByTag } = require('@vercel/functions');
-const { isAdmin, sameOrigin, readSettings, chosenFeature } = require('../lib/admin');
+const { isAdmin, sameOrigin, readSettings, chosenFeature, readPrivateJSON, writePrivateJSON } = require('../lib/admin');
 // Bump the version whenever the index's shape changes. The stored copy
 // outlives deploys, so an old shape would otherwise be served for hours.
 const INDEX_KEY = 'video-index:v1';
 const INDEX_LOCK = 'video-index:v1:rebuilding';
 const INDEX_FRESH_MS = 6 * 3600 * 1000;
 const INDEX_KEEP_S = 30 * 86400;   // a month-old index still beats a 20s wait
+// A durable copy of the index in the private Blob store. The Runtime Cache
+// lost it twice in a day, once with no Vercel incident at all (2026-09-19,
+// overnight), and each loss cost the next visitor an 18 second rebuild. The
+// backup is read only when the Runtime Cache comes back empty. It shares the
+// version in INDEX_KEY, so bumping one retires both.
+const INDEX_BACKUP = 'index/' + INDEX_KEY.replace(':', '-') + '.json';
 
 // The store has no atomic claim, so two stale requests arriving together could
 // both see no lock and both rebuild, doubling the 126 quota units. Each writes
@@ -244,24 +250,41 @@ module.exports = async (req, res) => {
     try { await addCacheTag(tag); } catch (e) { /* off Vercel there is no edge cache */ }
   }
 
-  // The index from the store when it is there, rebuilt in the background once
-  // stale. Built from YouTube only when the store has nothing.
+  // Where the index comes from, fastest first: the Runtime Cache, then the
+  // Blob backup, then YouTube. A stale copy is still served at once and rebuilt
+  // after the response. YouTube is waited on only when both stores are empty,
+  // which should now happen once, ever.
   async function loadIndex() {
     const store = getCache();
-    const kept = await store.get(INDEX_KEY);
+    let kept = await store.get(INDEX_KEY);
+    let source = 'store';
+    if (!(kept && Array.isArray(kept.videos))) {
+      kept = await readPrivateJSON(INDEX_BACKUP);
+      source = 'backup';
+      // Put it back in the fast store so the next request skips Blob.
+      if (kept && Array.isArray(kept.videos)) await store.set(INDEX_KEY, kept, { ttl: INDEX_KEEP_S });
+    }
     if (kept && Array.isArray(kept.videos)) {
       const age = Date.now() - Date.parse(kept.builtAt);
       if (!(age < INDEX_FRESH_MS) && await claimRebuild(store)) {
         waitUntil(buildIndex()
-          .then(fresh => store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S }))
+          .then(saveIndex)
           .catch(e => console.error('index rebuild failed:', e.message))
           .finally(() => store.delete(INDEX_LOCK)));
       }
-      return { index: kept, source: 'store' };
+      return { index: kept, source };
     }
     const fresh = await buildIndex();
-    await store.set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+    await saveIndex(fresh);
     return { index: fresh, source: 'youtube' };
+  }
+
+  // Both copies, every time. A failed backup write is logged, not fatal: the
+  // fast copy is already in place and the next rebuild tries again.
+  async function saveIndex(fresh) {
+    await getCache().set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+    try { await writePrivateJSON(INDEX_BACKUP, fresh); }
+    catch (e) { console.error('index backup write failed:', e.message); }
   }
 
   const mode = (req.query && req.query.mode) || 'page';
@@ -358,7 +381,7 @@ module.exports = async (req, res) => {
         return;
       }
       const fresh = await buildIndex();
-      await getCache().set(INDEX_KEY, fresh, { ttl: INDEX_KEEP_S });
+      await saveIndex(fresh);
       await dangerouslyDeleteByTag(['videos', 'episodes', 'featured']);
       res.setHeader('cache-control', 'no-store');
       res.status(200).json({ ok: true, count: fresh.count, builtAt: fresh.builtAt, elapsedMs: fresh.elapsedMs });
