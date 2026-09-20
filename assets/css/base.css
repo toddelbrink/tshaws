@@ -850,8 +850,15 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .gcredit{font-family:var(--sans);font-size:13px;color:var(--ink-muted);
   margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);clear:both}
 /* The one-line dek. Serif italic, the same voice the homepage intro uses, so it
-   reads as the show describing the guest rather than as a subtitle. */
-.dek{font-size:19px;font-style:italic;line-height:1.45;color:var(--ink-2);margin-top:12px;max-width:46ch}
+   reads as the show describing the guest rather than as a subtitle.
+
+   660px, which is what the at-a-glance table and the prose column below it both
+   come to. It was 46ch, set when the dek lived in the narrow column beside the
+   portrait; once it moved above that row nothing re-sized it and it sat at
+   450px against 660px of everything else, which read as an accident because it
+   was one. */
+.dek{font-size:19px;font-style:italic;line-height:1.45;color:var(--ink-2);margin-top:12px;
+  max-width:660px}
 @media(max-width:560px){.dek{font-size:17px}}
 
 /* At a glance. A definition table, not a layout: row headers on the left.
