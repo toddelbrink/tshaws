@@ -111,8 +111,13 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
 
 /* ---- masthead ---- */
 .sitenav{border-bottom:1px solid var(--rule);background:var(--paper)}
+/* 30px, and the carets are out of the flow. See .navcaret: a caret in the flow
+   added 33px to every gap that followed one, so the word spacing alternated
+   59px, 26px, 59px, 26px and Guests sat visibly closer to Videos than to
+   Podcast. Now every word-to-word gap is 30px and each caret hangs inside the
+   gap after its own word. */
 .sitenav .inner{max-width:940px;margin:0 auto;padding:0 var(--gut);
-  display:flex;align-items:center;gap:26px;min-height:56px}
+  display:flex;align-items:center;gap:30px;min-height:56px}
 .sitenav a{font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.14em;
   text-transform:uppercase;text-decoration:none;color:var(--ink-2);
   display:inline-flex;align-items:center;min-height:44px}
@@ -124,13 +129,26 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
 .sitenav a[aria-current="true"]{color:var(--accent)}
 
 /* ---- season menu on the Podcast item ---- */
-.navgroup{position:relative;display:inline-flex;align-items:center;gap:5px}
-.navcaret{display:inline-flex;align-items:center;justify-content:center;
-  width:28px;min-height:44px;padding:0;border:0;background:transparent;
+.navgroup{position:relative;display:inline-flex;align-items:center}
+/* Absolutely positioned, so it does not widen its group. A caret belongs to the
+   word in front of it and should sit in the space after it, not push the next
+   item along. 22px inside a 30px gap leaves 4px of air on each side. Full
+   height for the pointer target; it is a desktop-only affordance, hidden below
+   the breakpoint where the phone nav takes over.
+
+   The chevron is pushed to the left of its box rather than centred in it, so
+   it sits about 3px from its own word and about 17px from the next one. Dead
+   centre in the gap it read as floating between the two rather than belonging
+   to the word it opens. */
+.navcaret{position:absolute;left:100%;margin-left:3px;top:50%;transform:translateY(-50%);
+  display:inline-flex;align-items:center;justify-content:flex-start;
+  width:20px;height:44px;padding:0;border:0;background:transparent;
   color:var(--ink-muted);cursor:pointer}
 .navcaret:hover{color:var(--ink)}
 .navcaret svg{width:10px;height:6px;transition:transform .12s}
 .navcaret[aria-expanded="true"] svg{transform:rotate(180deg)}
+/* translateY centres the button; the flip stays on the svg so the two
+   transforms do not fight. */
 @media(prefers-reduced-motion:reduce){.navcaret svg{transition:none}}
 .navmenu{position:absolute;top:100%;left:0;z-index:40;margin:0;padding:6px 0;
   list-style:none;min-width:172px;
