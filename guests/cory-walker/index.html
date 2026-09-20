@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is a frame from one of Trevor's own videos, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. The
+  gallery below, "From Trevor's camera", is the other frames chosen for this
+  guest; each links to the second it was cut from.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-09-19, so a click costs no redirect hop. The link text is the domain as
@@ -70,10 +71,13 @@
   <p class="label">Guest</p>
 
   <div class="ghead">
-    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
-         at the top of this file for how to fill it. -->
-    <figure class="gportrait" hidden>
-      <img alt="" width="240" height="320" decoding="async">
+    <figure class="gportrait">
+      <img src="/assets/photos/guests/cory-walker.jpg"
+           srcset="/assets/photos/guests/cory-walker.jpg 480w,
+                   /assets/photos/guests/cory-walker@2x.jpg 960w"
+           sizes="(min-width:720px) 240px, 240px"
+           width="240" height="320" loading="eager" decoding="async"
+           alt="Cory Walker playing banjo on a dark stage, in a cap and sunglasses.">
     </figure>
     <div class="gintro">
       <h1>Cory Walker</h1>
@@ -218,6 +222,22 @@
         </div>
       </li>
     </ul>
+  </section>
+
+  <section class="section" aria-labelledby="gshots-h">
+    <p class="label">On Camera</p>
+    <h2 id="gshots-h" class="big">From Trevor's camera</h2>
+    <ul class="gshots">
+      <li><a href="https://youtu.be/EzsjpffohPc?t=38" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/cory-walker-3.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>&quot;Starlet Iris&quot; East Nash Grass</b><span>March 16, 2026 &middot; 0:38</span></a></li>
+      <li><a href="https://youtu.be/a9WT9uGBiYs?t=405" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/cory-walker-26.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Cory Walker Banjo Maestro of East Nash Grass</b><span>July 29, 2026 &middot; 6:45</span></a></li>
+    </ul>
+    <p class="gshots-note">Every frame on this page is from a video Trevor shot himself. Each one links to that moment in the video.</p>
   </section>
 
   <section class="section" aria-labelledby="glinks-h">

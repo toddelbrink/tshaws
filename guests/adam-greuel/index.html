@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is a frame from one of Trevor's own videos, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. The
+  gallery below, "From Trevor's camera", is the other frames chosen for this
+  guest; each links to the second it was cut from.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-09-19, so a click costs no redirect hop. The link text is the domain as
@@ -70,10 +71,13 @@
   <p class="label">Guest</p>
 
   <div class="ghead">
-    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
-         at the top of this file for how to fill it. -->
-    <figure class="gportrait" hidden>
-      <img alt="" width="240" height="320" decoding="async">
+    <figure class="gportrait">
+      <img src="/assets/photos/guests/adam-greuel.jpg"
+           srcset="/assets/photos/guests/adam-greuel.jpg 480w,
+                   /assets/photos/guests/adam-greuel@2x.jpg 960w"
+           sizes="(min-width:720px) 240px, 240px"
+           width="240" height="320" loading="eager" decoding="async"
+           alt="Adam Greuel singing into a microphone with an acoustic guitar, outdoors under a roof.">
     </figure>
     <div class="gintro">
       <h1>Adam Greuel</h1>
@@ -209,6 +213,34 @@
         </div>
       </li>
     </ul>
+  </section>
+
+  <section class="section" aria-labelledby="gshots-h">
+    <p class="label">On Camera</p>
+    <h2 id="gshots-h" class="big">From Trevor's camera</h2>
+    <ul class="gshots">
+      <li><a href="https://youtu.be/MvkiEtCqg-Q?t=449" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/adam-greuel-12.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Horseshoes &amp; Hand Grenades w Jon Stickley &quot;Darlin&#x27; Corey&quot;</b><span>June 4, 2018 &middot; 7:29</span></a></li>
+      <li><a href="https://youtu.be/D-PDeTH2gCM?t=61" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/adam-greuel-14.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Tuttle Pool n Greuel &quot;Blackwater Voodoo&quot; 4/30/2021 Nashville TN</b><span>June 1, 2021 &middot; 1:01</span></a></li>
+      <li><a href="https://youtu.be/aOdb_TPdpD8?t=153" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/adam-greuel-32.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Horseshoes and Hand Grenades &quot;Stay Awhile&quot;</b><span>February 13, 2018 &middot; 2:33</span></a></li>
+      <li><a href="https://youtu.be/aOdb_TPdpD8?t=169" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/adam-greuel-33.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Horseshoes and Hand Grenades &quot;Stay Awhile&quot;</b><span>February 13, 2018 &middot; 2:49</span></a></li>
+      <li><a href="https://youtu.be/aOdb_TPdpD8?t=185" target="_blank" rel="noopener">
+        <img src="/assets/photos/guests/adam-greuel-34.jpg" width="640" height="360"
+             loading="lazy" decoding="async" alt="">
+        <b>Horseshoes and Hand Grenades &quot;Stay Awhile&quot;</b><span>February 13, 2018 &middot; 3:05</span></a></li>
+    </ul>
+    <p class="gshots-note">Every frame on this page is from a video Trevor shot himself. Each one links to that moment in the video.</p>
   </section>
 
   <section class="section" aria-labelledby="glinks-h">

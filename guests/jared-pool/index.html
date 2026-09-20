@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is a frame from one of Trevor's own videos, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. The
+  gallery below, "From Trevor's camera", is the other frames chosen for this
+  guest; each links to the second it was cut from.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-09-19, so a click costs no redirect hop. The link text is the domain as
@@ -70,10 +71,13 @@
   <p class="label">Guest</p>
 
   <div class="ghead">
-    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
-         at the top of this file for how to fill it. -->
-    <figure class="gportrait" hidden>
-      <img alt="" width="240" height="320" decoding="async">
+    <figure class="gportrait">
+      <img src="/assets/photos/guests/jared-pool.jpg"
+           srcset="/assets/photos/guests/jared-pool.jpg 480w,
+                   /assets/photos/guests/jared-pool@2x.jpg 960w"
+           sizes="(min-width:720px) 240px, 240px"
+           width="240" height="320" loading="eager" decoding="async"
+           alt="Jared Pool sitting with a mandolin, smiling, at an indoor gathering.">
     </figure>
     <div class="gintro">
       <h1>Jared Pool</h1>
