@@ -111,11 +111,11 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
 
 /* ---- masthead ---- */
 .sitenav{border-bottom:1px solid var(--rule);background:var(--paper)}
-/* 30px, and the carets are out of the flow. See .navcaret: a caret in the flow
-   added 33px to every gap that followed one, so the word spacing alternated
-   59px, 26px, 59px, 26px and Guests sat visibly closer to Videos than to
-   Podcast. Now every word-to-word gap is 30px and each caret hangs inside the
-   gap after its own word. */
+/* One gap for every item, so the words are evenly spaced. This used to be 26px
+   with two disclosure carets in the flow, which made every gap that followed a
+   caret 33px wider than the others: 59, 26, 59, 26. The carets and the menus
+   they opened were removed on 2026-09-20, because both menus only listed what
+   the page they pointed at shows at the top anyway. */
 .sitenav .inner{max-width:940px;margin:0 auto;padding:0 var(--gut);
   display:flex;align-items:center;gap:30px;min-height:56px}
 .sitenav a{font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.14em;
@@ -128,43 +128,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    reads as loudly as the current page does. */
 .sitenav a[aria-current="true"]{color:var(--accent)}
 
-/* ---- season menu on the Podcast item ---- */
-.navgroup{position:relative;display:inline-flex;align-items:center}
-/* Absolutely positioned, so it does not widen its group. A caret belongs to the
-   word in front of it and should sit in the space after it, not push the next
-   item along. 22px inside a 30px gap leaves 4px of air on each side. Full
-   height for the pointer target; it is a desktop-only affordance, hidden below
-   the breakpoint where the phone nav takes over.
-
-   The chevron is pushed to the left of its box rather than centred in it, so
-   it sits about 3px from its own word and about 17px from the next one. Dead
-   centre in the gap it read as floating between the two rather than belonging
-   to the word it opens. */
-.navcaret{position:absolute;left:100%;margin-left:3px;top:50%;transform:translateY(-50%);
-  display:inline-flex;align-items:center;justify-content:flex-start;
-  width:20px;height:44px;padding:0;border:0;background:transparent;
-  color:var(--ink-muted);cursor:pointer}
-.navcaret:hover{color:var(--ink)}
-.navcaret svg{width:10px;height:6px;transition:transform .12s}
-.navcaret[aria-expanded="true"] svg{transform:rotate(180deg)}
-/* translateY centres the button; the flip stays on the svg so the two
-   transforms do not fight. */
-@media(prefers-reduced-motion:reduce){.navcaret svg{transition:none}}
-.navmenu{position:absolute;top:100%;left:0;z-index:40;margin:0;padding:6px 0;
-  list-style:none;min-width:172px;
-  background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
-  box-shadow:0 6px 20px rgba(26,23,20,.13)}
-.navmenu a{display:flex;width:100%;padding:0 16px;min-height:40px;
-  font-size:13px;letter-spacing:.1em;color:var(--ink-2)}
-.navmenu a:hover{background:var(--paper-2);color:var(--ink)}
-.navmenu a[aria-current="page"]{color:var(--ink-2);font-weight:500}
-
 /* Narrow screens.
- *
- * No carets. On a phone the destinations already are the menus: Videos opens
- * the chooser, Podcast opens a page whose season filter is the first thing on
- * it. A caret there buys nothing, costs 56px across two of them, and reads as
- * an unexplained mark.
  *
  * The row wraps rather than scrolls. Scrolling would hide nav items off the
  * right edge, where nobody would know to look. Two visible lines beat one line
@@ -180,8 +144,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
      375px, measured in the browser. */
   .sitenav a{letter-spacing:.03em;font-size:13.5px}
   .sitenav .inner{gap:8px 12px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
-  .sitenav .inner > a,.sitenav .navgroup{flex:0 0 auto}
-  .navcaret{display:none}
+  .sitenav .inner > a{flex:0 0 auto}
 }
 
 /* ---- buttons: one job per type ----
@@ -958,11 +921,14 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    still the box on /episodes/ and /videos/all/, and /search/ itself. */
 .navsearch{position:relative;display:none;align-items:center;margin-right:auto;
   flex:0 1 240px;min-width:150px}
-/* 800px, not the 701px where the phone nav ends. Between the two the gap is
-   too small for a 150px field and the nav ran past the window. At 701px it
-   shrank to 67px, which is a magnifier and room for about four characters.
-   Better to show nothing than a box you cannot type a band name into. */
-@media(min-width:800px){.navsearch{display:flex}}
+/* 740px, not the 701px where the phone nav ends. Below 740 the gap is too
+   small for a 150px field and the nav runs past the window; at 701px it shrank
+   to 67px, which is a magnifier and room for about four characters. Better to
+   show nothing than a box you cannot type a band name into.
+
+   This was 800px until the disclosure carets were removed. They were taking
+   46px out of the bar. */
+@media(min-width:740px){.navsearch{display:flex}}
 .navsearch svg{position:absolute;left:11px;width:14px;height:14px;fill:var(--ink-muted);
   pointer-events:none}
 .navsearch input{width:100%;font-family:var(--sans);font-size:13.5px;color:var(--ink);
@@ -973,7 +939,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 /* The wordmark pushed everything right. Where the form is shown it takes that
    job, so it can sit beside the name instead of at the far end of the bar.
    Wherever the form is hidden the wordmark keeps it. */
-@media(min-width:800px){.sitenav .inner > a.navhome{margin-right:0}}
+@media(min-width:740px){.sitenav .inner > a.navhome{margin-right:0}}
 
 /* The big field on /search/ itself. */
 .sform{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0 8px;max-width:660px}

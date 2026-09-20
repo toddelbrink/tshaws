@@ -72,7 +72,7 @@
   function markCurrent(path) {
     var here = tidy(path);
     var section = sectionFor(here);
-    document.querySelectorAll('.sitenav .inner > a, .sitenav .navgroup > a').forEach(function (a) {
+    document.querySelectorAll('.sitenav .inner > a').forEach(function (a) {
       var target = tidy(new URL(a.href, location.href).pathname);
       if (target === here) a.setAttribute('aria-current', 'page');
       // Not the page itself, but the section it belongs to. "true" rather than
@@ -134,8 +134,9 @@
   });
 
   // Hard load. The markup carries aria-current for the page itself, but no
-  // markup can carry it for a section page like /guests/, because the item to
-  // highlight is a different page's link. Only SECTION knows that.
+  // markup can carry it for a section page like /guests/john-boulware/,
+  // because the item to highlight is a different page's link. Only the rules
+  // above know that.
   markCurrent(location.pathname);
 
   /* The one seam out of this module. The nav's search form is not a link, so
@@ -143,121 +144,6 @@
    * reload the document and stop whatever is playing. search.js calls this
    * instead. */
   window.TSNav = { go: function (url) { go(url, true); } };
-})();
-
-/* Drop-down menus in the site nav.
- *
- * Hovering Videos or Podcast drops a menu down. Two groups exist, declared in the
- * markup by data-menu:
- *
- *   seasons  built from the feed, so a fifth season adds itself
- *   videos   a fixed list of the routes under /videos/
- *
- * Seasons only, no second level expanding into episodes. Forty-one items and
- * growing does not belong in a hover menu, it needs a scrollbar inside a hover
- * target, and it gets worse every year the show runs. /episodes/ does that job
- * with search and filters.
- *
- * The caret stays hidden until a menu has items, so a failed fetch or no
- * JavaScript leaves plain working links.
- */
-(function () {
-  'use strict';
-
-  var BUILDERS = {
-    videos: function () {
-      // Same order as the chooser tiles on /videos/. Two lists of the same
-      // three things in two different orders is a small cruelty.
-      return Promise.resolve([
-        { label: 'Shows', href: '/videos/shows/' },
-        { label: 'All videos', href: '/videos/all/' }
-      ]);
-    },
-    seasons: function () {
-      if (!window.fetch) return Promise.resolve([]);
-      return fetch('/api/episodes?mode=meta').then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      }).then(function (d) {
-        var out = [{ label: 'All episodes', href: '/episodes/' }];
-        (d.seasons || []).slice().sort(function (a, b) { return b - a; })
-          .forEach(function (s) { out.push({ label: 'Season ' + s, href: '/episodes/#season-' + s }); });
-        return out;
-      }).catch(function () {
-        return [{ label: 'All episodes', href: '/episodes/' }];
-      });
-    }
-  };
-
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
-
-  function setup(group) {
-    var caret = group.querySelector('.navcaret');
-    var menu = group.querySelector('.navmenu');
-    var build = BUILDERS[group.dataset.menu];
-    if (!caret || !menu || !build) return;
-
-    // Menus are a wide-screen affordance. Below the breakpoint the caret is
-    // hidden and the top-level link goes somewhere that already lists the same
-    // routes, so nothing here should open. Checked live, so a rotation or a
-    // resized desktop window gets the right behaviour.
-    var wide = window.matchMedia ? window.matchMedia('(min-width: 701px)') : null;
-    function allowed() { return !wide || wide.matches; }
-
-    var loaded = false;
-    // Set when the visitor closes the menu on purpose. Without it, Escape
-    // closes the menu, returns focus to the caret, and the resulting focusin
-    // reopens it immediately. Cleared when focus or the pointer leaves.
-    var dismissed = false;
-
-    function open() {
-      if (!loaded || dismissed || !allowed()) return;
-      menu.hidden = false;
-      caret.setAttribute('aria-expanded', 'true');
-    }
-    function close() {
-      menu.hidden = true;
-      caret.setAttribute('aria-expanded', 'false');
-    }
-    function isOpen() { return !menu.hidden; }
-
-    build().then(function (items) {
-      if (!items || !items.length) return;
-      menu.innerHTML = items.map(function (i) {
-        return '<li><a href="' + esc(i.href) + '">' + esc(i.label) + '</a></li>';
-      }).join('');
-      caret.hidden = false;
-      loaded = true;
-    });
-
-    var canHover = !window.matchMedia || window.matchMedia('(hover: hover)').matches;
-    if (canHover) {
-      group.addEventListener('mouseenter', open);
-      group.addEventListener('mouseleave', function () { dismissed = false; close(); });
-    }
-    caret.addEventListener('click', function () {
-      if (isOpen()) { dismissed = true; close(); } else { dismissed = false; open(); }
-    });
-    group.addEventListener('focusin', open);
-    group.addEventListener('focusout', function (e) {
-      if (!group.contains(e.relatedTarget)) { dismissed = false; close(); }
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && isOpen()) { dismissed = true; close(); caret.focus(); }
-    });
-    document.addEventListener('click', function (e) {
-      if (isOpen() && !group.contains(e.target)) close();
-    });
-    menu.addEventListener('click', close);   // choosing one closes it behind you
-  }
-
-  // The nav lives outside #page, so soft navigation never replaces it and this
-  // wiring happens once.
-  document.querySelectorAll('.sitenav .navgroup').forEach(setup);
 })();
 
 /* The copyright year in the site footer.
