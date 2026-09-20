@@ -227,28 +227,10 @@
     el('body').innerHTML = out + '</div>';
   }
 
-  // Search ignores case, accents and punctuation. From five letters up it also
-  // ignores spaces, so "mooseknuckle" finds "Moose Knuckle" and "green wood"
-  // finds "Greenwood". Shorter searches keep their spaces, because joined words
-  // hide short strings ("Grass Unit" contains "sun"). Punctuation becomes a
-  // space for the same reason ("Races/Unwanted"). Each character maps on its
-  // own, so anything a plain lowercase search matched still matches.
-  function fold(s) {
-    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase().replace(/[^a-z0-9]+/g, ' ');
-  }
-
-  function matches(list, needle) {
-    var s = fold(needle), joined = s.replace(/ /g, '');
-    var loose = joined.length >= 5;
-    return list.filter(function (v) {
-      var t = v.t || v.title || '';
-      // A query of only punctuation folds to nothing. Match it literally.
-      if (!joined) return String(t).toLowerCase().indexOf(needle) > -1;
-      if (v._fold === undefined) { v._fold = fold(t); v._joined = v._fold.replace(/ /g, ''); }
-      return v._fold.indexOf(s) > -1 || (loose && v._joined.indexOf(joined) > -1);
-    });
-  }
+  // The matching rules moved to assets/js/textmatch.js on 2026-09-20, so the
+  // grid and the site search cannot drift apart on what counts as a match.
+  var fold = function (s) { return window.TSMatch.fold(s); };
+  var matches = function (list, needle) { return window.TSMatch.matches(list, needle); };
 
   // Search whatever is in memory first. On a cold edge cache the full index
   // takes seconds to arrive, and the pages already loaded cover the newest

@@ -137,6 +137,12 @@
   // markup can carry it for a section page like /guests/, because the item to
   // highlight is a different page's link. Only SECTION knows that.
   markCurrent(location.pathname);
+
+  /* The one seam out of this module. The nav's search form is not a link, so
+   * it cannot ride the click handler above, and a real form submit would
+   * reload the document and stop whatever is playing. search.js calls this
+   * instead. */
+  window.TSNav = { go: function (url) { go(url, true); } };
 })();
 
 /* Drop-down menus in the site nav.

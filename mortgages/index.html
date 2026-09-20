@@ -48,6 +48,11 @@
 <a class="skip" href="#page">Skip to content</a>
 <nav class="sitenav" aria-label="Main"><div class="inner">
   <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <form class="navsearch" role="search" action="/search/" method="get">
+    <label class="sr-only" for="navq">Search the site</label>
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1a6 6 0 1 0 3.7 10.7l3.3 3.3 1.4-1.4-3.3-3.3A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+    <input id="navq" name="q" type="search" placeholder="Search" autocomplete="off">
+  </form>
   <span class="navgroup" data-menu="seasons">
     <a href="/episodes/">Podcast</a>
     <button type="button" class="navcaret" aria-expanded="false" hidden>
@@ -99,6 +104,7 @@
 <script src="/assets/js/player.js"></script>
 <script src="/assets/js/stats.js"></script>
 <script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/textmatch.js"></script>
 <script src="/assets/js/guestline.js"></script>
 <script src="/assets/js/home.js"></script>
 <script src="/assets/js/about.js"></script>
@@ -107,6 +113,7 @@
 <script src="/assets/js/episodes.js"></script>
 <script src="/assets/js/videos.js"></script>
 <script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/search.js"></script>
 <script src="/assets/js/nav.js"></script>
 </body>
 </html>
