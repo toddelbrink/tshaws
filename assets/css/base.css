@@ -959,7 +959,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 
 /* Episode hits. A directory, not a player: one tap goes to the episode, which
    loads it into the bar the way any deep link does. */
-.sresults{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+/* No border-top. The section heading above already carries a rule, and the two
+   together drew a pair of hairlines a few pixels apart, the same thing the
+   section headers were fixed for. */
+.sresults{list-style:none;margin:2px 0 0;padding:0}
 .sresults a{display:block;padding:14px 0;border-bottom:1px solid var(--rule);
   text-decoration:none;color:inherit}
 .sresults b{display:block;font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.34}

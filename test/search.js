@@ -75,6 +75,31 @@ check('textmatch.js is on all of them', !missing.textmatch.length, missing.textm
 check('search.js is on all of them', !missing.search.length, missing.search.join(' '));
 check('textmatch.js loads before videos.js', !missing.order.length, missing.order.join(' '));
 
+console.log('\nThe guest index is not stale');
+{
+  const { execFileSync } = require('child_process');
+  const tmp = path.join(require('os').tmpdir(), 'ts-guests-' + process.pid + '.json');
+  execFileSync(process.execPath, [path.join(ROOT, 'tools/build-guest-index.js'), tmp]);
+  const strip = (o) => { const c = JSON.parse(JSON.stringify(o)); delete c.built; return c; };
+  const fresh = strip(JSON.parse(fs.readFileSync(tmp, 'utf8')));
+  const shipped = strip(JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/data/guests.json'), 'utf8')));
+  fs.unlinkSync(tmp);
+  const same = JSON.stringify(fresh) === JSON.stringify(shipped);
+  const drifted = same ? [] : fresh.guests.filter((g, i) =>
+    JSON.stringify(g) !== JSON.stringify(shipped.guests[i] || {})).map((g) => g.slug);
+  check('assets/data/guests.json matches the pages it was built from',
+    same, drifted.length ? 'rerun tools/build-guest-index.js: ' + drifted.join(' ')
+                         : 'guest count changed');
+  const dirs = fs.readdirSync(path.join(ROOT, 'guests'), { withFileTypes: true })
+    .filter((d) => d.isDirectory()).map((d) => d.name).sort();
+  check('it covers every guest page (' + dirs.length + ')',
+    JSON.stringify(shipped.guests.map((g) => g.slug)) === JSON.stringify(dirs));
+  check('a band field holds band names, not instruments',
+    !shipped.guests.some((g) => /\bbanjo\b|\bmandolin\b/i.test(g.bands || '')),
+    (shipped.guests.filter((g) => /\bbanjo\b|\bmandolin\b/i.test(g.bands || ''))
+      .map((g) => g.slug)).join(' '));
+}
+
 console.log('\nThe results page');
 const sp = fs.readFileSync(path.join(ROOT, 'search/index.html'), 'utf8');
 check('it is noindex, because a results page has nothing of its own to index',
@@ -96,6 +121,21 @@ async function live() {
     const v = M.matches(idx.videos, q).length;
     check('"' + q + '" finds at least ' + least + ' videos (' + v + ')', v >= least);
   }
+  const gi = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/data/guests.json'), 'utf8'));
+  const rank = (q) => {
+    const n = M.needle(q);
+    return gi.guests.map((g) => M.hit(g.name, n) ? 1
+      : (M.hit(g.bands || '', n) ? 2
+      : (M.hit(g.dek + ' ' + g.glance + ' ' + g.heads + ' ' + g.text, n) ? 3 : 0)))
+      .filter(Boolean);
+  };
+  const best = (q) => Math.min.apply(null, rank(q).concat([9]));
+  check('a guest name ranks 1, so guests go above episodes ("jesse cobb")', best('jesse cobb') === 1);
+  check('a band ranks 2, so guests still go above ("high cold wind")', best('high cold wind') === 2);
+  check('a festival in the at-a-glance ranks 3, so guests go below ("telluride")',
+    best('telluride') === 3, 'got ' + best('telluride'));
+  check('an instrument ranks 3, not 2 ("banjo")', best('banjo') === 3, 'got ' + best('banjo'));
+
   const nn = M.needle('mason via');
   const hits = eps.episodes.filter((e) => M.hit(e.title, nn) || M.hit(e.descriptionText || '', nn));
   check('"mason via" finds his episodes (' + hits.length + ')', hits.length >= 2);
