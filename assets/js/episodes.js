@@ -33,6 +33,29 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
+
+  /* Who was on the episode, read from the same place /guests/ reads it, so the
+   * two surfaces can never name different people. A guest with a page of their
+   * own is linked to it; everyone else is plain text, which is most of them and
+   * will stay that way.
+   *
+   * An episode with no Guest: line, or whose only named guest is the host,
+   * renders nothing at all rather than an empty label. Six episodes are that
+   * case today. Affiliations are deliberately left out here: the row already
+   * carries a title, a date, a running time and three lines of show notes, and
+   * the band names belong on /guests/ where there is a column for them. */
+  function guestLine(ep) {
+    var GL = window.TSGuestLine;
+    if (!GL) return '';
+    var names = GL.parse(ep).map(function (g) { return g.name; });
+    if (!names.length) return '';
+    var list = names.map(function (n) {
+      var href = GL.pageFor(n);
+      return href ? '<a href="' + esc(href) + '">' + esc(n) + '</a>' : esc(n);
+    }).join(', ');
+    return '<p class="ep-guests"><span>' + (names.length > 1 ? 'Guests' : 'Guest') +
+           '</span>' + list + '</p>';
+  }
   function fmtDate(iso) {
     if (!iso) return '';
     var d = new Date(iso);
@@ -97,6 +120,7 @@
         '<div>' +
           '<h2>' + esc(ep.title) + '</h2>' +
           '<div class="meta">' + esc(meta) + '</div>' +
+          guestLine(ep) +
           (snippet(ep) ? '<p>' + esc(snippet(ep)) + '</p>' : '') +
           // Listen and Watch as one joined control. Listen alone without a video.
           '<span class="lw"><button type="button" class="play" data-guid="' + esc(ep.guid) + '" aria-pressed="false">' +

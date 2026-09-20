@@ -38,6 +38,11 @@ function renderWith(feed) {
     addEventListener: () => {}
   };
   global.fetch = async () => ({ ok: true, json: async () => feed });
+  // guestline.js hangs itself on window, the way every script on this site does.
+  global.window = global.window || {};
+  // It owns reading the Guest: line and must be in place first, the same order
+  // the pages load them in.
+  require(path.join(ROOT, 'assets/js/guestline.js'));
   require(path.join(ROOT, 'assets/js/guests.js'));
 
   return new Promise((resolve) => setTimeout(() => {
@@ -69,6 +74,24 @@ function assertNoHost(rows) {
   check('host absent from the guests list', !host, host && JSON.stringify(host));
 }
 function row(rows, name) { return rows.find((r) => r.name === name); }
+
+/* The declared band-name corrections, read out of the shipped guestline.js.
+ * Reversed: a corrected name maps back to the normalised keys it may have been
+ * written as. Read rather than copied, so the oracle knows what was corrected
+ * without knowing how. */
+function readFixes() {
+  const src = fs.readFileSync(path.join(ROOT, 'assets/js/guestline.js'), 'utf8');
+  const m = src.match(/var AFFILIATIONS = \{([\s\S]*?)\};/);
+  if (!m) throw new Error('AFFILIATIONS map not found in assets/js/guestline.js');
+  const back = {};
+  for (const line of m[1].split(',')) {
+    const p = line.trim().match(/^([a-z]+)\s*:\s*'(.+)'$/);
+    if (p) (back[key(p[2])] = back[key(p[2])] || []).push(p[1]);
+  }
+  return back;
+}
+const FIXES = readFixes();
+function wrote(aff) { return FIXES[key(aff)] || []; }
 
 async function synthetic() {
   const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/guest-lines.json'), 'utf8'));
@@ -142,12 +165,35 @@ async function synthetic() {
     !rows.some((r) => r.eps.includes(87)),
     rows.filter((r) => r.eps.includes(87)).map((r) => r.name).join(' / '));
 
-  // Boulware's fallback row went on 2026-09-12, and his line must still read
-  // as written.
+  // Boulware's fallback row went on 2026-09-12, and his line must still yield
+  // exactly one affiliation across both episodes, not two near-identical ones.
+  // Trevor writes "The High Cold Wind"; the band's own site says "the", and
+  // that correction is declared in guestline.js. See the band-name block there.
   const john = row(rows, 'John Boulware');
   check('a guest on two episodes keeps the one affiliation both lines name (Boulware)',
-    !!john && john.aff === 'Randy Steele and The High Cold Wind' &&
+    !!john && john.aff === 'Randy Steele and the High Cold Wind' &&
       String(john.eps) === '34,39', john && `${john.aff} / ${john.eps}`);
+
+  /* ---- declared band-name corrections ----
+   *
+   * Every correction in guestline.js is checked against the fixture, so one
+   * that stops matching (a key typo, a normalisation change) fails here rather
+   * than quietly rendering Trevor's spelling again. The fixture carries a line
+   * for each. Sources are cited in guestline.js, not repeated here. */
+  const FIXED = {
+    'Jared Pool': 'Central Virginia Bluegrass Destroyers',
+    'Thomas Cassell': 'Wood Box Heroes',
+    'Michael Prewitt': 'CrunchGrass Supreme',
+    'John Boulware': 'Randy Steele and the High Cold Wind'
+  };
+  for (const [who, want] of Object.entries(FIXED)) {
+    const r = row(rows, who);
+    check(`band name corrected: ${who} -> ${want}`,
+      !!r && (r.aff || '').split(', ').includes(want), r ? String(r.aff) : 'no row');
+  }
+  check('a band name nobody corrected is left exactly as written',
+    (row(rows, 'Cory Walker') || {}).aff === 'East Nash Grass, Winding Down Boys',
+    String((row(rows, 'Cory Walker') || {}).aff));
   // A guest with a page is linked to it; everyone else stays plain text. That
   // the slug points at a page that exists is test/guest-pages.js's job.
   check('a guest with a page of their own is linked to it (Boulware)',
@@ -229,7 +275,13 @@ async function live() {
       if (!key(lines[n]).includes(key(r.name).slice(0, 6))) leaks.push(`${r.name} not on ep ${n}`);
     }
     for (const a of (r.aff ? r.aff.split(', ') : [])) {
-      if (!r.eps.some((n) => key(lines[n]).includes(key(a)))) leaks.push(`${r.name}: "${a}"`);
+      // A corrected band name will not appear in the line it came from, by
+      // definition. Accept the spelling Trevor wrote as well as the corrected
+      // one, and nothing else: the oracle still proves the affiliation came
+      // from that episode's line.
+      const ok = r.eps.some((n) => key(lines[n]).includes(key(a)) ||
+        wrote(a).some((w) => key(lines[n]).includes(w)));
+      if (!ok) leaks.push(`${r.name}: "${a}"`);
     }
   }
   check('covered episodes show only what their Guest: lines say', !leaks.length, leaks.join('; '));

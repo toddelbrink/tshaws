@@ -298,6 +298,17 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
      wreck the rhythm of the list. */
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .ep .meta{margin-top:5px}
+/* Who was on the episode. Sans, like the meta line above it, but ink-2 rather
+   than muted, because a person's name is content and a date is furniture. The
+   label is set in the display face at label size so the names carry the weight.
+   Only the guests who have a page of their own are links, so a row of accent
+   text next to plain text is expected, not a rendering fault. */
+.ep-guests{font-family:var(--sans);font-size:13.5px;line-height:1.5;color:var(--ink-2);
+  margin-top:6px}
+.ep-guests span{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-muted);margin-right:8px}
+.ep-guests a{text-decoration:none;border-bottom:1px solid transparent;font-weight:600}
+.ep-guests a:hover{border-bottom-color:currentColor}
 
 /* Listen and Watch: one joined pill split down the middle, icon and label in
    each half. An episode with no video shows Listen alone in the same frame.

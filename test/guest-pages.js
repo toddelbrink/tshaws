@@ -31,13 +31,14 @@ function check(name, cond) {
 }
 
 /* The PAGES map, read out of the shipped file rather than duplicated here.
- * guests.js is a browser script in an IIFE with no exports, so the literal is
+ * guestline.js is a browser script with no module exports, so the literal is
  * lifted from the source. A test that kept its own copy would pass while the
  * site was broken. */
+const PAGES_FILE = 'assets/js/guestline.js';
 function readPages() {
-  const src = fs.readFileSync(path.join(ROOT, 'assets/js/guests.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, PAGES_FILE), 'utf8');
   const m = src.match(/var PAGES = \{([\s\S]*?)\};/);
-  if (!m) throw new Error('PAGES map not found in assets/js/guests.js');
+  if (!m) throw new Error('PAGES map not found in ' + PAGES_FILE);
   const out = {};
   m[1].split(',').forEach((line) => {
     const p = line.trim().match(/^([a-z]+)\s*:\s*'([a-z0-9-]+)'$/);
