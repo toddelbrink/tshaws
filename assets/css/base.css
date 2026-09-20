@@ -760,6 +760,13 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 @media(max-width:440px){.sitenav .inner{padding-left:12px;padding-right:12px;gap:8px 8px}
   .sitenav a{font-size:13px;letter-spacing:.02em}
   .sitenav .inner > a.navhome{font-size:18px}}
+/* One more tier for the narrowest phones still in use, the 320px iPhone SE and
+   the 5s. Everything above wrapped the bar onto two rows there, which pushed
+   the nav from 57px to 105px and cost a fifth of the screen before any content.
+   Measured at 320, 330 and 359px: one row with room to spare. */
+@media(max-width:359px){.sitenav .inner{padding-left:10px;padding-right:10px;gap:8px 6px}
+  .sitenav a{font-size:12px;letter-spacing:0}
+  .sitenav .inner > a.navhome{font-size:16px}}
 .contact{margin-top:18px;font-size:16px;color:var(--ink-2)}
 .adm-count{font-family:var(--sans);font-size:12px;color:var(--ink-muted);margin-top:6px}
 .adm-count.near{color:var(--accent-deep);font-weight:600}
@@ -794,6 +801,13 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   .gmeta{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start}
   /* No photo yet: the table takes the whole width rather than leaving a hole. */
   .gmeta > .gportrait[hidden] + .glance{grid-column:1 / -1}
+  /* Down by the table's own top padding. Aligning the two boxes put the hard
+     edge of the photo 13px above the first line of text beside it, because the
+     table's first row starts 12px inside its box and a photo has no such inset.
+     The edge now starts level with the text. Aligning it to the table's centre
+     instead would have landed within a pixel of the same place, so the two
+     readings agree. */
+  .gmeta .gportrait{margin-top:12px}
 }
 .gmeta .glance{margin:0}
 .gportrait{max-width:240px;margin:0 0 22px}
