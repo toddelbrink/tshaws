@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Anj Way · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Artist manager and festival marketer with Omni Arts Group, who books First City Music Festival. Anj Way on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Anj Way · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Artist manager and festival marketer with Omni Arts Group, who books First City Music Festival. Anj Way on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/anj-way/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Anj Way</h1>
+      <p class="dek">Artist manager and festival marketer with Omni Arts Group. Books
+        First City Music Festival. Started out on a Yonder Mountain String Band street
+        team.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Anj Way at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Does</th><td>Artist management, festival marketing and
+        booking, social media, tour and album-release planning</td></tr>
+      <tr><th scope="row">Company</th><td>Omni Arts Group</td></tr>
+      <tr><th scope="row">Festivals</th><td>First City Music Festival, Vincennes,
+        Indiana (co-books it). Folky Fish Fest, St. James, Missouri</td></tr>
+      <tr><th scope="row">Roster</th><td>Omni Arts Group artists include Kyle Tuttle,
+        Ettore Buzzini, Gia Welch, The Grateful String Band and Alex Thoele</td></tr>
+      <tr><th scope="row">Got started</th><td>Running a street team for Yonder Mountain
+        String Band</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 4, Episode 37</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Most guests on this show play an instrument. Anj Way works the other
+      side of the stage: the calendars, the posters, the social feeds and the phone
+      calls that get a band from one town to the next.</p>
+
+    <h2>A fan first</h2>
+    <p>Anj's first big festival was Bonnaroo. That was where she first heard Yonder
+      Mountain String Band, and she was hooked. She started seeing them all the time, 20
+      or more shows a year.</p>
+    <p>She got close to the band and started running their street team, recruiting fans
+      in different cities to spread the word. When Yonder brought in a new marketing
+      person who did not know the band well, Anj stepped in to help. From there she made
+      more connections, moved into booking, and then into management.</p>
+    <blockquote>
+      <p>"I never went to school for any of it. I just learned all of it as I got into
+        it. Some things can't be taught. But I'm still learning every day, that is for
+        sure."</p>
+    </blockquote>
+    <p>She is quick to credit that community. Without Yonder, she says, she would not
+      have any of the jobs she has or know any of the people she knows.</p>
+
+    <h2>Going full time</h2>
+    <p>For years she worked a day job and did music at night. Around 2018, Omni Arts
+      Group offered her a way to do music full time. It started small and grew from
+      there. She is still grateful for that chance.</p>
+    <p>Then came 2020. Anj had been booking a festival at Terrapin Hill Farm in
+      Kentucky, her first chance to book a whole festival, with The Infamous
+      Stringdusters, Horseshoes &amp; Hand Grenades and Old Salt Union on the bill. It
+      never happened. She kept working anyway, moving her bands' promotion online and
+      helping with small outdoor gatherings in Kentucky.</p>
+
+    <h2>Two festivals, one family</h2>
+    <p>Folky Fish Fest takes place at Maramec Spring Park in St. James, Missouri, about
+      an hour and a half from St. Louis. Anj says a lot of its people come from the John
+      Hartford festival world, a festival she also worked, and they are carrying on that
+      family feel and the picking. Her favorite part is the kids jam camp. Young players
+      learn from visiting musicians, then get to perform, including the festival's first
+      set.</p>
+    <p>First City Music Festival in Vincennes, Indiana is a nonprofit run by a board and
+      a committee. Anj came in around 2022 doing only marketing, a couple of months
+      before the fest. Now she books it with co-founder Jeff Deckard. She never knew if
+      she would get to book a festival again after Terrapin Hill, so that means a lot to
+      her.</p>
+    <p>She likes that First City has no overlapping sets, so fans never have to choose.
+      And she still talks about the year a hurricane's leftover weather rolled through
+      during the festival. The crew played through the rain the whole weekend, pretty
+      much on time.</p>
+    <blockquote>
+      <p>"Anybody that was there, you ask them, we're like, 'Man, if we can get through
+        that, we can literally get through anything.'"</p>
+    </blockquote>
+
+    <h2>What a manager does</h2>
+    <p>Anj does less booking these days. Management, as she describes it, means working
+      with booking agents to route tours, advancing shows, building timelines for album
+      releases, and handling PR and social media. The work does not stop at five. She
+      runs many social media pages, so a weekend at a festival means scheduling posts
+      ahead for the days she is away.</p>
+    <p>Her favorite part is the marketing: finding the moments that make someone wish
+      they had been there.</p>
+    <blockquote>
+      <p>"It's finding the best moments. Of course the best jams on stage, but the kids
+        blowing bubbles, the people hugging, and just the energy, and being able to
+        portray that into social media."</p>
+    </blockquote>
+    <p>Omni is reshaping itself as a boutique, meeting bands where they are. Some need a
+      full-time manager. Some just need help promoting a tour or planning an album
+      release. The plan is to connect artists with the agents, photographers and
+      production people Omni already knows. Omni has added a partner, and they are
+      adding artists.</p>
+    <p>She also chooses her clients now. Early on she worked with bands that were not
+      her style.</p>
+    <blockquote>
+      <p>"I'm at the point in my career now that if I don't enjoy it or I don't really
+        believe in it, it's not something that I'm gonna put my energy into."</p>
+    </blockquote>
+
+    <h2>The new kid on the roster</h2>
+    <p>One artist she is excited about is Ettore Buzzini, an 18-year-old banjo player
+      who was finishing high school when they talked. Her Omni colleague met him at
+      IBMA, and Anj started working with him at the start of 2026. She had not seen him
+      play in person until the Durango Bluegrass Meltdown that March. Her verdict: he
+      might look 18, but he does not play like it.</p>
+
+    <h2>How fans can help</h2>
+    <p>Trevor asked about band riders, and Anj had stories: pages and pages of requests,
+      very specific kinds of peanut butter and jelly, and one band that slipped a
+      request for a particular DVD into its rider to see if anyone was reading.</p>
+    <p>Her serious advice is for fans. Buy pre-sale tickets. Take a friend. Buy merch,
+      which she says gets bands from one place to another. Check out the vendors at
+      festivals. And spread the love beyond the biggest names.</p>
+    <blockquote>
+      <p>"Go check out a new band, or go check out a band that's not playing stadiums.
+        It goes a long way."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Anj on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="4" data-episode="37">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E37, My Conversation With Industry Professional Anj Way of Omni Arts
+            Group.</h3>
+          <p class="gep-note">How a Yonder fan became a manager, running festivals, and
+            what fans can do to help.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">She also appears in the Season 4 Wrap Up (S4E41), telling
+            rider stories.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Anj</h2>
+    <ul class="glinks">
+      <li><span>Omni Arts Group: </span><a href="https://www.omniartsgroup.com/" target="_blank" rel="noopener">omniartsgroup.com</a></li>
+      <li><span>First City Music Festival: </span><a href="https://www.firstcitymusicfestival.com/" target="_blank" rel="noopener">firstcitymusicfestival.com</a></li>
+      <li><span>Folky Fish Fest: </span><a href="https://folkyfishfest.com/" target="_blank" rel="noopener">folkyfishfest.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

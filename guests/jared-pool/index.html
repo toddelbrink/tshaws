@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Jared Pool · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Mandolin. About ten years with Larry Keel, a lifetime at Virginia fiddlers' conventions, and still a grasser. Jared Pool on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Jared Pool · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Mandolin. About ten years with Larry Keel, a lifetime at Virginia fiddlers' conventions, and still a grasser. Jared Pool on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/jared-pool/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Jared Pool</h1>
+      <p class="dek">Mandolin. About ten years with Larry Keel, a lifetime at Virginia
+        fiddlers' conventions, and still a grasser.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Jared Pool at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Mandolin, guitar, and sings</td></tr>
+      <tr><th scope="row">Home base</th><td>Charlottesville, Virginia. Grew up in the
+        Tidewater area. Lived in Richmond from 2009</td></tr>
+      <tr><th scope="row">Bands</th><td>Larry Keel Experience (mandolin, from 2016).
+        Electric Larry Land. Tuttle, Pool &amp; Greuel. Central Virginia Bluegrass
+        Destroyers. Earlier: The Whiskey Rebellion</td></tr>
+      <tr><th scope="row">Record</th><td><em>Cosmic Nudge</em>, Tuttle, Pool &amp;
+        Greuel (2021), cut in two days at Pachyderm Studios in Minnesota</td></tr>
+      <tr><th scope="row">Training</th><td>Degree in jazz studies, Christopher Newport
+        University</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 4, Episode 36</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Trevor had been trying to get Jared on the show for a long time. It
+      was worth the wait.</p>
+
+    <h2>Grunge first, then Galax</h2>
+    <p>Jared came to guitar through Green Day, Nirvana and Soundgarden. When his parents
+      finally bought him a guitar, he signed up for a Saturday beginners' class through
+      school. The teacher turned out to be a fine bluegrass player. Jared stayed on as
+      his student, learned fiddle tunes, and at about 12 went with his teacher and his
+      dad to the Old Fiddler's Convention in Galax.</p>
+    <p>By 14 or 15 he was a Galax regular, running into Danny Knicely, Nate Leath, Rex
+      McGee and Larry Keel. Festivals had been part of his childhood in the Tidewater
+      area. He later earned a degree in jazz studies at Christopher Newport
+      University.</p>
+    <p>The mandolin came by accident. In college, a Richmond band called The Whiskey
+      Rebellion needed a mandolin player at the Maury River Fiddlers' Convention in
+      Buena Vista, Virginia. Jared did the best he could and kept going. He moved to
+      Richmond in 2009 to play with them.</p>
+
+    <h2>Ten years with Larry Keel</h2>
+    <p>In 2016 Jared took the mandolin chair in the Larry Keel Experience, with Larry on
+      guitar and Jenny Keel on bass. He stayed about ten years, playing in Larry's side
+      projects too. He still plays Electric Larry Land dates when they come up.</p>
+    <p>The road brought a steady run of pinch-me moments. After the passing of Jeff
+      Austin, the Larry Keel Experience helped carry on the Grateful Ball with the
+      Travelin' McCourys. At Grey Fox, in front of the big screens, Ronnie McCoury
+      leaned over during "Friend of the Devil" and said, "Jared, just play a little
+      Friend of the Devil with me." The two of them played the mandolin intro
+      together.</p>
+    <blockquote>
+      <p>"Just to know so many of the people I consider heroes on the scene, and they
+        knew who I was."</p>
+    </blockquote>
+    <p>He has played with Sam Bush, Tyler Childers, the Travelin' McCourys and Steve
+      Earle, and recorded with Rob Ickes, Joan Osborne, Sherman Holmes and the Legendary
+      Ingramettes.</p>
+
+    <h2>Tuttle, Pool &amp; Greuel</h2>
+    <p>At the Aiken Bluegrass Festival, organizers liked to throw players together in
+      new combinations. One of those sets put Jared with banjo player Kyle Tuttle and
+      guitarist <a href="/guests/adam-greuel/">Adam Greuel</a>, and the three hit it
+      off.</p>
+    <p>In early 2021, Adam had studio time at Pachyderm Studios in Cannon Falls,
+      Minnesota, the room where Nirvana made <em>In Utero</em>. The call came with only
+      a few days' notice. The trio flew north in the Minnesota winter and cut <em>Cosmic
+      Nudge</em> in two days, playing some of the songs together for the first time. For
+      one Halloween show they dressed as dogs in knights' helmets. Three Dog Night. Of
+      course they played "Joy to the World."</p>
+    <p>He would like to do it again. They have talked about it, and as he puts it, they
+      are all keeping the same names, so they can always rely on that.</p>
+
+    <h2>Singing with Peter Rowan</h2>
+    <p>Jared had backed Peter Rowan a few times with Larry. About a year before the
+      interview, he got a night in the Outer Banks of North Carolina where he and his
+      friends were Rowan's band for the second half of the show. Rowan asked him to sing
+      "In the Pines," then took the tenor himself and left Jared the lead. Jared
+      remembered every verse. They went on to "Walls of Time" and "Midnight Moonlight,"
+      then talked for hours after the show.</p>
+    <blockquote>
+      <p>"He doesn't even really walk, he just floats. It's like a plume of smoke, and
+        it's Peter."</p>
+    </blockquote>
+    <p>His favorite place to play was the Watermelon Park Festival in Berryville,
+      Virginia, on grounds where Bill Monroe and Patsy Cline once played, with the
+      Shenandoah River bending around the site. The festival has since moved.</p>
+    <blockquote>
+      <p>"You could feel the sacred energy there."</p>
+    </blockquote>
+
+    <h2>Wednesdays in Charlottesville</h2>
+    <p>Jared stepped back from full-time road life and now lives in Charlottesville. He
+      plays a Wednesday night gig with the Central Virginia Bluegrass Destroyers, a
+      rotating crew that includes Jay Starling of Leftover Salmon. The band is booked
+      for the 2026 Richmond Folk Festival.</p>
+    <blockquote>
+      <p>"If it's everyone, it's awesome. If it's half the band, it's awesome too."</p>
+    </blockquote>
+    <p>The gig keeps him a grasser. Last winter he led the trios that played there, his
+      first real turn as a bandleader. He is thinking about a record of his own, with
+      most of the Destroyers as the band. Mostly he wants to keep playing.</p>
+    <blockquote>
+      <p>"Just trying to play and just trying to bring people happiness and joy in these
+        troubled times."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Jared on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="4" data-episode="36">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E36, The Legendary Jared Pool.</h3>
+          <p class="gep-note">Galax as a kid, ten years with Larry Keel, the two-day
+            <em>Cosmic Nudge</em> session, singing with Peter Rowan.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">He also appears in the Season 4 Wrap Up (S4E41).</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Jared</h2>
+    <ul class="glinks">
+      <li><span>Larry Keel: </span><a href="https://larrykeel.com/" target="_blank" rel="noopener">larrykeel.com</a><span>,
+        for Larry Keel Experience and Electric Larry Land dates</span></li>
+      <li><span>Central Virginia Bluegrass Destroyers at the Richmond Folk Festival:
+        </span><a href="https://www.richmondfolkfestival.org/" target="_blank" rel="noopener">richmondfolkfestival.org</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

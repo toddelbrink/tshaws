@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Michael Prewitt · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Mandolin and songs with CrunchGrass Supreme, after three years on the road with Special Consensus. Michael Prewitt on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Michael Prewitt · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Mandolin and songs with CrunchGrass Supreme, after three years on the road with Special Consensus. Michael Prewitt on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/michael-prewitt/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Michael Prewitt</h1>
+      <p class="dek">Mandolin and songs, Michael Prewitt &amp; CrunchGrass Supreme.
+        Three years on the road with Special Consensus. A band name born outside a Taco
+        Bell.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Michael Prewitt at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Mandolin, vocals, guitar</td></tr>
+      <tr><th scope="row">Home base</th><td>Williamsburg, Kentucky</td></tr>
+      <tr><th scope="row">Bands</th><td>Michael Prewitt &amp; CrunchGrass Supreme (2025
+        to now). Special Consensus (mandolin and vocals, 2021 to 2024). Back Up and Push
+        (Minneapolis)</td></tr>
+      <tr><th scope="row">Albums</th><td><em>The Peerless Mountain Sessions</em> (2024).
+        <em>Something He Can Handle</em> (2024)</td></tr>
+      <tr><th scope="row">Recognition</th><td>Two IBMA Momentum Award nominations,
+        Instrumentalist of the Year. Official showcase artist, IBMA Bluegrass Ramble,
+        Chattanooga, 2025</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 4, Episode 33</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Michael Prewitt grew up on traditional bluegrass, took a long detour
+      through graduate school in North Dakota, and came back to music by way of a
+      voicemail from Greg Cahill. Now he leads a band named after a fast food order.</p>
+
+    <h2>A bluegrass kid in southeastern Kentucky</h2>
+    <p>Michael grew up in the Cumberland Mountain foothills of southeastern Kentucky.
+      His dad was a big bluegrass fan, and the house ran on cassette tapes of J.D. Crowe
+      and Flatt &amp; Scruggs. His middle and high school had an after-school bluegrass
+      band sponsored by the school district, and every year the band went to IBMA.</p>
+    <p>He was a self-described little bluegrass nerd. He called in to Chris Jones's show
+      on SiriusXM and once left a voicemail in his best Lester Flatt voice, a memory
+      that still haunts him. He met Jones at IBMA and kept in touch for years.</p>
+    <p>As a teenager he found the Grateful Dead and John Hartford online, and his taste
+      ran from traditional toward the experimental. Old time came later, in his
+      mid-twenties.</p>
+
+    <h2>The North Dakota detour</h2>
+    <p>Michael earned a degree in English literature. Late in his senior year, a
+      professor asked if he had ever thought about grad school. He had not. Then the
+      University of North Dakota sent him an invitation, and the far north had always
+      pulled at him. He moved there two months later, earned his graduate degree, and
+      taught at UND for a couple of years. He spent most of his twenties in North Dakota
+      and Minnesota.</p>
+    <p>He had mostly quit bluegrass by then. The problem, as he saw it, was that no
+      middle ground seemed to exist.</p>
+    <blockquote>
+      <p>"Growing up, I didn't realize that there was anything in between somebody who
+        jammed every Friday at the cabin and Ricky Skaggs. You could either be a
+        superstar or you could jam."</p>
+    </blockquote>
+    <p>In his mid-twenties he found that middle ground in the Twin Cities, which has a
+      strong bluegrass and roots scene. He played with a regional band, Back Up and
+      Push, and started building a working life in music.</p>
+
+    <h2>The call from Greg Cahill</h2>
+    <p>Around 2018 or 2019, Chris Jones put Michael on the list of fill-in mandolin
+      players for Special Consensus. COVID canceled the tour he was booked for. Then, in
+      2021, band leader Greg Cahill asked Jones for a mandolin player, and Jones gave
+      him Michael's name.</p>
+    <p>Michael did not pick up the unknown number. His phone transcribed the voicemail
+      and spelled the name with a K. He thought it was a joke until he listened. It
+      really was Greg Cahill, asking if he wanted the gig. Michael was working full time
+      as a mail clerk and playing a lot of gigs on the side.</p>
+    <blockquote>
+      <p>"It didn't take me two seconds to be like, yes, I'd love this gig."</p>
+    </blockquote>
+    <p>He joined in the fall of 2021. For the next three years he toured with a band
+      that, in his words, tours as much as anyone.</p>
+
+    <h2>Two records, back to back</h2>
+    <p>On a Special Consensus flight, Michael was listening to the Kentucky Colonels'
+      live records. The sound was rough and the mics buzzed, and he loved it anyway.</p>
+    <blockquote>
+      <p>"Here I am, 50 years later, listening to it on an airplane, and loving it. This
+        is exactly what I needed to be hearing at this moment."</p>
+    </blockquote>
+    <p>That became <em>The Peerless Mountain Sessions</em>: a trio record of mandolin,
+      banjo and bass, with no guitar, to leave room in the middle. Brady Wallen, a
+      friend since high school, played banjo. Dan Eubanks, his Special Consensus
+      bandmate, played bass. They cut it live in one day with few microphones and next
+      to no arranging. The tunes ranged from Métis fiddle tunes to old-time Kentucky
+      tunes and Bill Monroe. It came out in 2024 on Common Loon Records, a small label
+      out of Dothan, Alabama. His take on "Tombstone Junction" is still his
+      most-streamed track.</p>
+    <p>That record did better than he expected, and it gave him the confidence for a
+      bigger one. <em>Something He Can Handle</em>, a full-band album of mostly original
+      songs, followed in the fall of 2024 and has earned steady SiriusXM play.</p>
+
+    <h2>CrunchGrass Supreme</h2>
+    <p>Michael left Special Consensus at the end of 2024, after giving a year's notice.
+      He wanted a break from the road and more control over when, where and how he
+      works. He moved back to Kentucky, where he teaches English online at the
+      university in Williamsburg.</p>
+    <p>The band name goes back a few years earlier. After a pickup gig at a bluegrass
+      bar on Lower Broadway in Nashville, Michael walked past the Taco Bell on Broadway,
+      which has its own stage and drum kit. He announced that his life goal was to play
+      there. He would need a band for that, and a name. "CrunchGrass Supreme" came out
+      on the spot, and he told his friends not to steal it. When dates started coming in
+      for 2025, he never came up with anything better.</p>
+    <blockquote>
+      <p>"It's not maybe the best thing in the world, but at 2:00 AM sometimes it's as
+        good as you can get."</p>
+    </blockquote>
+    <p>The band was an official showcase artist at IBMA in Chattanooga in 2025. At a
+      late-night showcase that same week, he ate a Crunchwrap Supreme on stage in the
+      middle of a song. There is video.</p>
+
+    <h2>Next up</h2>
+    <p>Next is his first album of all original songs, recorded by the band itself with
+      no session players, with a fall 2026 release in view. His website lists the new
+      collection as <em>Poor Ol' Pitiful Human</em>. The band has festival dates from
+      Colorado to Missouri to Alberta to North Dakota. Michael also plays solo shows,
+      house concerts and duo shows with bandmate Aaron Bibelhauser, and planned a
+      three-week solo tour of England.</p>
+    <blockquote>
+      <p>"I'm never happier than when I'm playing music and on the road."</p>
+    </blockquote>
+    <p>Off stage, he collects vintage trucker hats, including a 1987 Minnesota Twins
+      World Series cap. The Cincinnati Reds are his National League team. He also
+      collects vinyl, CDs and cassettes, and is working through the whole Flying Fish
+      Records catalog in order of release. Lately that means Buddy Emmons' <em>Steel
+      Guitar</em>.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Michael on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="4" data-episode="33">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E33, Michael Prewitt of Crunchgrass Supreme.</h3>
+          <p class="gep-note">Kentucky roots, North Dakota, the Greg Cahill voicemail,
+            two records and the Taco Bell origin story.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">He also appears in the Season 4 Wrap Up (S4E41).</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Michael</h2>
+    <ul class="glinks">
+      <li><a href="https://michaelprewitt.net/" target="_blank" rel="noopener">michaelprewitt.net</a><span>,
+        for shows, house concerts and records</span></li>
+      <li><span>Instagram: </span><a href="https://www.instagram.com/prewitt_michael/" target="_blank" rel="noopener">@prewitt_michael</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

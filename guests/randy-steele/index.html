@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Randy Steele · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Banjo player, songwriter and bandleader of Randy Steele and the High Cold Wind, and a friend of the show. Randy Steele on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Randy Steele · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Banjo player, songwriter and bandleader of Randy Steele and the High Cold Wind, and a friend of the show. Randy Steele on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/randy-steele/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Randy Steele</h1>
+      <p class="dek">Banjo player, songwriter and bandleader of Randy Steele and the
+        High Cold Wind. Retired Chattanooga firefighter. A friend of the show.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Randy Steele at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Banjo and vocals. Guitar and bass too</td></tr>
+      <tr><th scope="row">Home base</th><td>Chattanooga, Tennessee. Grew up in Bradley
+        County</td></tr>
+      <tr><th scope="row">Bands</th><td>Randy Steele and the High Cold Wind (bandleader,
+        2022 to now). Slim Pickins Bluegrass Band (banjo, since 2008)</td></tr>
+      <tr><th scope="row">Records</th><td><em>Songs from the Suck</em> (2016).
+        <em>Moccasin Bender</em> EP (2018). <em>High Cold Wind</em> EP (2023). Singles
+        with producer Nick Lutsko</td></tr>
+      <tr><th scope="row">Songwriting</th><td>Independent Music Award, Bluegrass Song of
+        the Year, 2018, for "Mobile Soon." Kerrville New Folk finalist, 2023</td></tr>
+      <tr><th scope="row">Telluride</th><td>Second place, Telluride Band Contest, 2026,
+        with the High Cold Wind</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 3, Episodes 25, 26 and 28</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Randy is a friend of the show and its most frequent co-host.</p>
+
+    <h2>A record player and a jam band</h2>
+    <p>Randy grew up in Bradley County, Tennessee. His grandfather loved bluegrass but
+      could not play it. What he had was a double live album from Bean Blossom, Bill
+      Monroe's festival, with the Osborne Brothers, Jim and Jesse and the rest of the
+      old guard. Randy listened to it with him over and over.</p>
+    <p>His own path ran through the Grateful Dead, Phish and the Allman Brothers. He
+      played electric guitar in a regional jam band and studied studio music and jazz
+      guitar at the University of Tennessee in Knoxville. Then he took an EMT license,
+      went to work on an ambulance, and joined the Chattanooga Fire Department. For a
+      few years music took a back seat.</p>
+
+    <h2>The banjo pulls him back</h2>
+    <p><em>O Brother, Where Art Thou?</em> sent him back to bluegrass. A friend put a
+      banjo in his hands, he found a good teacher, and he fell hard. He started on
+      fiddle first, and he recommends it as a strategy.</p>
+    <blockquote>
+      <p>"Nothing is as annoying as learning how to play the fiddle, I promise you."</p>
+    </blockquote>
+    <p>After a year or two on the banjo, he saw Noam Pikelny play a trio show with David
+      Grier and Shad Cobb at Barking Legs Theater in Chattanooga. It changed what he
+      thought the instrument could do. Trevor was in the room that night too. So were
+      the future members of Slim Pickins, none of whom knew each other yet.</p>
+    <blockquote>
+      <p>"Bluegrass banjo is what pulled me back into playing music. Ever since then,
+        I've really been attached to it."</p>
+    </blockquote>
+
+    <h2>Slim Pickins and the road</h2>
+    <p>His first bluegrass band was a weeknight picking circle with friends. When he
+      wanted to play with stronger players, he answered a Craigslist ad for a banjo
+      player and joined Slim Pickins. The band started playing out in 2008 and opened
+      for the Infamous Stringdusters early on.</p>
+    <p>In 2016 Slim Pickins toured Europe for about a month, playing Belgium and Holland
+      and something like 31 shows in 28 days. The trip showed Randy how much he wanted
+      to play live. It also formed the core of a new band. For the first half of the
+      tour they ran as a four piece, with Randy, mandolinist <a href="/guests/john-boulware/">John
+      Boulware</a>, bassist Justin Hupp and a young picker named Tyler Martelli.</p>
+
+    <h2>Songs from the Suck</h2>
+    <p>Randy wrote most of Slim Pickins' songs, and the Europe trip pushed him to make a
+      solo record. He cut much of <em>Songs from the Suck</em> at FAME Studios in Muscle
+      Shoals and finished it near Soddy-Daisy. The title points to Suck Creek, which
+      meets the Tennessee River just upstream of Chattanooga. Before the TVA dams, the
+      rapids there, known as the Suck, were among the most feared stretches of the
+      river.</p>
+    <p>One song, "Mobile Soon," won the 2018 Independent Music Award for Bluegrass Song
+      of the Year and took Randy to the ceremony at Lincoln Center in New York. The 2018
+      EP <em>Moccasin Bender</em> followed, and its song "Age of Ben" made the
+      semifinals of American Songwriter's song contest. In 2019 he played 134 solo shows
+      across more than 20 states while still working full time at the fire department.
+      In 2023 he was one of 24 finalists in the Kerrville New Folk competition for
+      emerging songwriters.</p>
+
+    <h2>The High Cold Wind</h2>
+    <p>After the pandemic, Randy wanted to play as much bluegrass as he could. The High
+      Cold Wind started as the band on a record and became a working unit in 2022. Most
+      of its members came out of Slim Pickins. The lineup now is Randy on banjo and
+      vocals, Brad Clark on guitar, John Boulware on mandolin and Justin Hupp on
+      bass.</p>
+    <p>Lately the band has worked on opening up its jams. Randy learned to improvise in
+      jam bands and jazz school before bluegrass, and he has pushed the band to stretch
+      and listen harder, even running drills at practice. In March 2025 he released "The
+      Extra Mile Is a Gravel Road," produced by Nick Lutsko.</p>
+    <blockquote>
+      <p>"It's about having a good time, and as long as we keep it about having a good
+        time, I think we're in good shape."</p>
+    </blockquote>
+    <p>In June 2026 the band drove 1,600 miles to the Telluride Band Contest in
+      Colorado. They made the final four, played the main stage, and finished second to
+      the Litch Brothers of Orcas Island, Washington.</p>
+
+    <h2>Bluegrass church on Tuesdays</h2>
+    <p>Randy hosts a free jam every Tuesday at Barrelhouse Ballroom in downtown
+      Chattanooga. It opens with a slow jam for beginners. He posts an eight-song set
+      list a week ahead, mostly songs in G, C and D, so newcomers can practice. After
+      that the floor opens to anyone. It grew fast.</p>
+    <blockquote>
+      <p>"We try to introduce ourselves to every person that comes in the door and treat
+        it like a bluegrass church."</p>
+    </blockquote>
+    <p>Festival campground jams hooked Randy as a young player. The Tuesday jam puts
+      that experience in public, where anyone can find it.</p>
+
+    <h2>Bringing the World of Bluegrass home</h2>
+    <p>When IBMA announced it would leave Raleigh, Randy sent an email to the right
+      people in Chattanooga. He is quick to hand the credit to Visit Chattanooga, who
+      took the idea and ran with it. WMOT later described him as the only musician on
+      the local organizing committee that worked with IBMA. When IBMA leaders came to
+      look at the city in late 2023, Randy made sure there was a pop-up bluegrass band
+      waiting for them at dinner. IBMA's executive director at the time, <a href="/guests/ken-white/">Ken
+      White</a>, was one of the visitors.</p>
+    <p>World of Bluegrass came to Chattanooga in September 2025. That week the High Cold
+      Wind played Noontunes downtown and two official showcases on the Bluegrass Ramble,
+      their first. Randy retired from the fire department as a captain earlier that
+      year.</p>
+    <p>Before the festival, Randy co-hosted two episodes with Trevor, walking through
+      the Ramble and main stage lineups.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Randy on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="3" data-episode="25">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E25, My Conversation with Randy Steele.</h3>
+          <p class="gep-note">From Bean Blossom records to Slim Pickins, the solo years,
+            the High Cold Wind and how IBMA came to town.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="3" data-episode="26">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E26, Randy Steele and I Briefly Cover ALL of The IBMA Ramble/Showcase
+            Schedule.</h3>
+          <p class="gep-note">Randy co-hosts a stage-by-stage tour of the 2025
+            Ramble.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="3" data-episode="28">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E28, Randy Steele and I Briefly Cover All of The IBMA Main Stage.</h3>
+          <p class="gep-note">Randy co-hosts a look at the 2025 main stage lineup.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">He also comes up as bandleader in John Boulware's two
+            episodes, S4E34 and S4E39.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Randy</h2>
+    <ul class="glinks">
+      <li><a href="https://www.randysteelemusic.com/" target="_blank" rel="noopener">randysteelemusic.com</a></li>
+      <li><span>Randy Steele and the High Cold Wind: </span><a href="https://www.highcoldwind.com/" target="_blank" rel="noopener">highcoldwind.com</a></li>
+      <li><a href="https://randysteele.bandcamp.com/" target="_blank" rel="noopener">randysteele.bandcamp.com</a></li>
+      <li><span>Slim Pickins Bluegrass Band: </span><a href="https://slimpickinsbluegrass.com/" target="_blank" rel="noopener">slimpickinsbluegrass.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Jesse Cobb · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Mandolin with The Unfaithful Servants, and a founding member of the Infamous Stringdusters. Jesse Cobb on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Jesse Cobb · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Mandolin with The Unfaithful Servants, and a founding member of the Infamous Stringdusters. Jesse Cobb on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/jesse-cobb/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Jesse Cobb</h1>
+      <p class="dek">Mandolin, The Unfaithful Servants. Founding member of the Infamous
+        Stringdusters. Raised on fiddle tunes in the Wisconsin woods.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Jesse Cobb at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Mandolin, plus some electric guitar on his own
+        records</td></tr>
+      <tr><th scope="row">Home base</th><td>Victoria, British Columbia, on Vancouver
+        Island</td></tr>
+      <tr><th scope="row">Grew up</th><td>Dairyland, Wisconsin</td></tr>
+      <tr><th scope="row">Bands</th><td>The Unfaithful Servants (mandolin, founding
+        member). The Infamous Stringdusters (mandolin, 2006 to 2011). The Cobb Brothers
+        (with his brothers, as a kid)</td></tr>
+      <tr><th scope="row">Records</th><td><em>Solitude</em> and <em>Another Road</em>
+        (2016), solo. <em>Fallen Angel</em> (2025), with The Unfaithful
+        Servants</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 3, Episodes 29 and 30</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Trevor has been a Jesse Cobb fan since 2008. This two-part
+      conversation was recorded right after IBMA 2025, Jesse's first World of Bluegrass
+      since 2008.</p>
+
+    <h2>Tunes by the wood stove</h2>
+    <p>Jesse grew up on an 80-acre subsistence farm near Dairyland, Wisconsin. For much
+      of his early childhood the house had no power and no TV. The family kept chickens
+      and a milk cow and made maple syrup. At night the entertainment was a book read
+      aloud, or music.</p>
+    <p>His father played guitar and banjo. His oldest brother, Jed, took up clawhammer
+      banjo, and his brother Shad took up fiddle. Jesse started on guitar, until an
+      older brother claimed it. The only instrument left lying around was a
+      mandolin.</p>
+    <blockquote>
+      <p>"I think my dad showed me three chords, and then I just started banging along
+        with fiddle tunes. And I'd eventually just pick out the melody."</p>
+    </blockquote>
+    <p>Later, when the house had power, the brothers borrowed records from the library
+      in Duluth and Superior, slowed them to half speed and learned them by ear. There
+      was no one nearby who played bluegrass. The Grand Ole Opry on the radio filled the
+      gap.</p>
+
+    <h2>The Cobb Brothers</h2>
+    <p>As kids the brothers played festivals around Michigan, Minnesota, Wisconsin and
+      Ohio as the Cobb Brothers. They made three recordings for Vetco Records in
+      Cincinnati when Jesse was about 12 or 13. He still has the cassettes. Jon
+      Weisberger, a past guest on this show, has long pushed for them to be
+      reissued.</p>
+    <p>When Jed turned 18 and left the band, the younger brothers followed him into the
+      logging woods. Jesse spent the next years working with his hands: logging, busking
+      on the West Coast with his brothers, helping a family friend train sled dogs in
+      Michigan's Upper Peninsula, and three and a half years repairing railroad bridges
+      from Florida to Oregon. In 1999 he and Jed quit their jobs and drove a
+      two-wheel-drive Ford pickup to Alaska in five days.</p>
+    <p>He barely touched the mandolin in those years. By his mid-twenties he was set on
+      joining the military. His father and brothers talked him into giving music one
+      more try instead.</p>
+
+    <h2>First week in Nashville</h2>
+    <p>Jesse moved to Nashville around 2000, where Shad was already part of the scene.
+      At his first jam, Mac Wiseman was holding court and Del McCoury was in the room. A
+      guitar player at that jam asked him to join a two-week tour of Canada. He had a
+      gig in his first week.</p>
+    <p>He had some catching up to do. Traditional bluegrass was never his first
+      love.</p>
+    <blockquote>
+      <p>"I was a New Grass Revival guy. That was my whole thing. Sam Bush."</p>
+    </blockquote>
+    <p>One connection led to the next. He played for a couple of years with Ronnie
+      Bowman, where he got to know Andy Hall and Jeremy Garrett.</p>
+
+    <h2>The Stringdusters years</h2>
+    <p>Jesse was the founding mandolin player in the Infamous Stringdusters. The band
+      showcased at IBMA in Nashville in 2005 or 2006, as he remembers it, with a
+      five-song EP and every showcase slot they could find. They left with offers from
+      labels and booking agents. In 2007 their debut, <em>Fork in the Road</em>, came
+      out on Sugar Hill, and the band won three IBMA awards that fall, including
+      Emerging Artist of the Year.</p>
+    <p>He played with the band until 2011. At IBMA 2025 in Chattanooga, he jammed with
+      some of his old bandmates for the first time in years.</p>
+
+    <h2>Solitude, then Another Road</h2>
+    <p>After a move to Welland, Ontario, Jesse fell in with Mark Lalama, a Toronto piano
+      player and producer with a home studio. He started sitting in on Mark's local
+      gigs, mandolin next to electric piano and bass. When Jesse said he wanted to make
+      a record, Mark asked him why. Then Mark answered for him: you make an album
+      because you have to.</p>
+    <blockquote>
+      <p>"It's in you, and you've gotta make it."</p>
+    </blockquote>
+    <p><em>Solitude</em> came out of three improvised, mostly live sessions. The title
+      fit. There were maybe two other mandolin players in town. <em>Another Road</em>
+      followed in 2016, recorded in four days with Ontario session players who did not
+      play bluegrass. The songs took a left turn, and Jesse picked up an electric guitar
+      on some of them.</p>
+
+    <h2>The Unfaithful Servants</h2>
+    <p>Back in Victoria, Jesse went to a local musicians' jam at the Duke Saloon. On a
+      break, a stranger sat down beside him.</p>
+    <p>"Hey, you look like you could use a friend."</p>
+    <p>That was Dylan Stone, a songwriter deep in the Victoria scene. They started
+      playing together, and Dylan hired Jesse for a session on his songs. Dylan called
+      the record <em>Dylan Stone and the Unfaithful Servants</em>, a band name he had
+      long wanted, taken from a song by The Band. The group grew from there. Their
+      self-titled debut earned a Canadian Folk Music Awards nomination for New Group of
+      the Year.</p>
+    <p>The pandemic stopped their momentum. The band came back with Quin
+      Etheridge-Pedden on fiddle and Mark Johnson on bass. Their second album,
+      <em>Fallen Angel</em>, produced by Adrian Dolan, came out October 17, 2025. The
+      band made its U.S. debut as an official showcase act at IBMA in Chattanooga, then
+      toured Canada with Shari Ulrich.</p>
+    <p>Coming back to IBMA after so long, Jesse found the same welcome he
+      remembered.</p>
+    <blockquote>
+      <p>"It's just like this big family. No matter how outside you are of the family,
+        you're still welcomed back in."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Jesse on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="3" data-episode="29">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E29, An Outstanding Conversation with Jesse Cobb, Part 1 of 2.</h3>
+          <p class="gep-note">IBMA in Chattanooga, a farm childhood in Wisconsin, the
+            Cobb Brothers, logging, Alaska, and the road to Nashville and the
+            Stringdusters.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="3" data-episode="30">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E30, An Outstanding Conversation with Jesse Cobb, Part 2 of 2.</h3>
+          <p class="gep-note">Two solo records, how The Unfaithful Servants began, and
+            the new album <em>Fallen Angel</em>.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Jesse</h2>
+    <ul class="glinks">
+      <li><span>The Unfaithful Servants: </span><a href="https://www.unfaithfulservants.com/" target="_blank" rel="noopener">unfaithfulservants.com</a></li>
+      <li><span><em>Fallen Angel</em> on Bandcamp: </span><a href="https://theunfaithfulservants.bandcamp.com/" target="_blank" rel="noopener">theunfaithfulservants.bandcamp.com</a></li>
+      <li><span>Jesse's solo music on Bandcamp: </span><a href="https://jessecobb.bandcamp.com/" target="_blank" rel="noopener">jessecobb.bandcamp.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

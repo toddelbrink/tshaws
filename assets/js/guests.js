@@ -70,7 +70,18 @@
    *
    * Add a line when a page ships. Nothing else on this page changes. */
   var PAGES = {
-    johnboulware: 'john-boulware'
+    adamgreuel:     'adam-greuel',
+    alexgenova:     'alex-genova',
+    anjway:         'anj-way',
+    corywalker:     'cory-walker',
+    jaredpool:      'jared-pool',
+    jessecobb:      'jesse-cobb',
+    johnboulware:   'john-boulware',
+    kenwhite:       'ken-white',
+    krishowland:    'kris-howland',
+    michaelprewitt: 'michael-prewitt',
+    randysteele:    'randy-steele',
+    thomascassell:  'thomas-cassell'
   };
   function pageFor(name) { return PAGES[key(name)] || null; }
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Kris Howland · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Founder of Heady Wax Fiends, a vinyl record club built on one rule: love what you love. Kris Howland on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Kris Howland · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Founder of Heady Wax Fiends, a vinyl record club built on one rule: love what you love. Kris Howland on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/kris-howland/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Kris Howland</h1>
+      <p class="dek">Founder of Heady Wax Fiends. A vinyl record club, a Facebook group
+        and a small label built on one rule: love what you love.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Kris Howland at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Does</th><td>Founder, curator and chief listener at Heady Wax
+        Fiends Record Club</td></tr>
+      <tr><th scope="row">Home base</th><td>Denver area, Colorado</td></tr>
+      <tr><th scope="row">Grew up</th><td>Outside Toledo, Ohio</td></tr>
+      <tr><th scope="row">The club</th><td>A monthly vinyl subscription, shipping
+        exclusive pressings since 2022</td></tr>
+      <tr><th scope="row">Bluegrass reissues</th><td>Béla Fleck, <em>Drive</em>.
+        <em>J.D. Crowe &amp; The New South</em> (Rounder 0044). The Tony Rice Unit,
+        <em>Manzanita</em>. <em>Doc Watson</em></td></tr>
+      <tr><th scope="row">Plays</th><td>Nothing. He is a fan, and says so</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 2, Episode 19</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">If you have seen HWF on a t-shirt at a bluegrass show, you have met
+      Kris Howland's work.</p>
+
+    <h2>A group with one rule</h2>
+    <p>Kris came out of the pandemic looking for company. He rejoined Facebook, joined a
+      music group, and watched it fall apart. So he started his own, built around his
+      own way of listening.</p>
+    <p>The name began as a joke. Kris borrowed it from "Blood Sucking F(r)iends," a
+      Greensky Bluegrass song by Dave Bruzza, where the "r" in parentheses lets you read
+      it either way. Trevor admits he was in the group for a year before he noticed it
+      was Fiends, not Friends.</p>
+    <p>The founding rule is simple: no dunking on anyone's taste. Members post a record,
+      name the artist and title, and talk about why they love it. Kris hits the love
+      button even on records he would never play himself.</p>
+    <blockquote>
+      <p>"Nobody likes everything. Everybody loves someone. One of my buddies said that
+        to me a few years back, and it sticks with me to this day."</p>
+    </blockquote>
+    <p>He hoped for 150 people to talk records with. It grew far past that. It mostly
+      runs itself now, he says, and he still finds music there almost every day that he
+      never knew existed.</p>
+    <blockquote>
+      <p>"If you can love something as much as I love my favorite things, we're solid.
+        It doesn't matter about my feelings on it."</p>
+    </blockquote>
+
+    <h2>"Send me money every month and I'll mail you a record"</h2>
+    <p>A member asked the group which record club he should join. Kris joked that he
+      could send him money every month and get a record in the mail. About five weeks
+      later, the club shipped 225 records to its first subscribers.</p>
+    <p>Subscribers get one pressing a month. At first, Kris bought into runs that were
+      already happening and added a signed card or an obi, the Japanese-style paper band
+      that wraps the jacket. From the fourth release on, every record had to be
+      exclusive to the club, either a color variant nobody else could sell or a pressing
+      that existed only because the club made it. The club's catalog has since passed 50
+      releases. Fulfillment runs through Ridge Runner Records in Parkersburg, West
+      Virginia, home of Kris's partner Erik Myers.</p>
+
+    <h2>Pressing records for the people who made them</h2>
+    <p>About half of the club's releases now are what Kris calls self-presses. He finds
+      an artist who should be on vinyl but has no backing to get there. From mastering
+      for vinyl to shipping, the club handles it.</p>
+    <p>The first one Kris pressed himself was Kyle Tuttle's <em>Labor of Lust</em>, a
+      record that was headed for CD and streaming only. The club got it mastered for
+      vinyl, helped rework the artwork for the bigger format, and pressed it at Gotta
+      Groove Records in Cleveland. Kyle got a stack of records for his merch table. Kris
+      calls Kyle the mayor of progressive bluegrass in Nashville, and says doing right
+      by him changed everything. Opportunities started coming to him through Kyle's
+      friends.</p>
+    <blockquote>
+      <p>"We wanna be known as the most artist-focused label, record club, in the scene
+        that we're all in together."</p>
+    </blockquote>
+
+    <h2>How a sellout led to Rounder</h2>
+    <p>The bluegrass reissues started with a crash. Real Gone Music reissued John
+      Hartford's <em>Aereo-Plain</em>, and a link to it landed in the group. It sold out
+      in about half an hour. The label went looking for the source of the traffic and
+      found a Facebook post by Kris.</p>
+    <p>Gordon Anderson of Real Gone reached out. Kris, still new at this and plenty
+      intimidated, pitched him the club. A few weeks later, Anderson came back with
+      catalogs Kris could draw from, including Rounder, Vanguard and Flying Fish.</p>
+    <p>Kris made a list on the spot. He picked records that shaped the bands he loves,
+      and records that had become too rare and too expensive to find. Béla Fleck's
+      <em>Drive</em> came first, in October 2023, its first vinyl pressing since the
+      late 1980s. Next came <em>J.D. Crowe &amp; The New South</em>, the record everyone
+      knows as Rounder 0044, then <em>Manzanita</em> by the Tony Rice Unit and Doc
+      Watson's self-titled 1964 debut on Vanguard.</p>
+    <p>Rounder 0044 is personal. At Bender Jamboree in 2019, Jarrod Walker of Billy
+      Strings's band told Kris he had to hear it before they could keep talking
+      bluegrass. Walker wrote the set list and a note that night. It hangs in a shadow
+      box at Kris's house. When the reissue came, Walker wrote new liner notes for
+      it.</p>
+    <p><em>Manzanita</em>, pressed only once when it came out in 1979, became the club's
+      most popular release. The goal, Kris says, is a clean, sealed copy of an essential
+      record at a fair price, not $100 on the used market.</p>
+
+    <h2>Working backward to John Hartford</h2>
+    <p>Bluegrass was not something Kris heard growing up. He came to it through jam
+      bands, Yonder Mountain String Band first, and then worked backward. He thought
+      plenty of Hartford songs were Yonder originals before he knew better. Hartford, he
+      says, is the trunk of his family tree on that side of his music.</p>
+    <blockquote>
+      <p>"A good band makes you listen to everything they've ever done. But a great band
+        will make you listen to everything they've ever done and why they did everything
+        that they did, all their influences."</p>
+    </blockquote>
+    <p>On the show, Kris broke the news of a club variant of <em>Aereo-Plain</em> in
+      Cubs blue. He calls it a bit of an ego project, and a rite of passage.</p>
+
+    <h2>Early on the Billy train</h2>
+    <p>Kris and Trevor both caught Billy Strings early, back when you could buy a ticket
+      at the door. The two still argue, mostly on Facebook, over whether the first
+      pressing of <em>Turmoil &amp; Tinfoil</em> came in anything other than pink. Kris
+      stood on the arena floor in Denver not long before this conversation, watching a
+      crowd bigger than all his early Billy venues put together.</p>
+    <blockquote>
+      <p>"The passion hasn't changed. The appreciation hasn't changed. It's just grown
+        to more people."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Kris on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="2" data-episode="19">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S2E19, Kris Howland and Heady Wax Fiends.</h3>
+          <p class="gep-note">How a Facebook group became a record club, the Real Gone
+            connection, and bringing Rounder classics back to vinyl.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Kris</h2>
+    <ul class="glinks">
+      <li><span>Heady Wax Fiends Record Club: </span><a href="https://www.headywaxfiends.com/" target="_blank" rel="noopener">headywaxfiends.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Alex Genova · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Banjo with the Jason Carter Band, six years with Fireside Collective, and a teaching job at ETSU. Alex Genova on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Alex Genova · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Banjo with the Jason Carter Band, six years with Fireside Collective, and a teaching job at ETSU. Alex Genova on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/alex-genova/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Alex Genova</h1>
+      <p class="dek">Banjo, Jason Carter Band. Six years with Fireside Collective. A
+        bluegrass degree, a jazz guitar master's, and a teaching job at ETSU.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Alex Genova at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Banjo. Guitar too, with a master's degree in
+        jazz guitar</td></tr>
+      <tr><th scope="row">Home base</th><td>East Nashville, Tennessee</td></tr>
+      <tr><th scope="row">Bands</th><td>Jason Carter Band (banjo, 2025 to now). Fireside
+        Collective (banjo, 2017 to 2023). Blackberry Bushes Stringband</td></tr>
+      <tr><th scope="row">Schooling</th><td>Berklee College of Music (one year).
+        Bluegrass degree, East Tennessee State University. Master's in jazz guitar,
+        Middle Tennessee State University</td></tr>
+      <tr><th scope="row">Teaches</th><td>Banjo, student bands and an online American
+        roots music class at ETSU</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 4, Episode 35</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Alex Genova plays banjo in the band Jason Carter put together after
+      leaving the Del McCoury Band. Before that he spent six years in Fireside
+      Collective, which is where Trevor first heard him.</p>
+
+    <h2>Piano, guitar, then the banjo</h2>
+    <p>Alex grew up in Wisconsin, in Waunakee. His grandparents lived next door when he
+      was small, and his grandmother gave him piano lessons from a very young age. It
+      did not stick then. As an adult he has gone back to it and is teaching
+      himself.</p>
+    <p>The first instrument that took hold was a guitar he found in his grandparents'
+      closet. It had belonged to his mother. He took lessons and played electric guitar
+      in school bands and rock bands through middle school.</p>
+    <p>Around the end of middle school he found jam bands: Phish, the Grateful Dead,
+      Béla Fleck and the Flecktones. That led to Yonder Mountain String Band, Railroad
+      Earth and Hot Buttered Rum. At the same time he joined the school orchestra and
+      took violin lessons. His teacher also taught fiddle and burned him CDs of roots
+      music, Crooked Still and Bruce Molsky among them.</p>
+    <p>Fiddle looked hard. Banjo looked closer to what he already knew.</p>
+    <blockquote>
+      <p>"I thought that banjo might be easier to learn for me than fiddle, since I had
+        a guitar background. A little more similar. No bow involved."</p>
+    </blockquote>
+
+    <h2>Berklee, the road, and Johnson City</h2>
+    <p>He started banjo in high school and went to Berklee College of Music for a year
+      while he was still a beginner. He learned a lot and met players who are now
+      familiar names, Bronwyn Keith-Hynes and Sierra Hull among them. Around 2010, that
+      was.</p>
+    <p>After Berklee he took time off, played with bands around Wisconsin, and went back
+      to school to start a jazz guitar degree at the University of Wisconsin, Stevens
+      Point. Then a Seattle band, the Blackberry Bushes Stringband, hired him. He left
+      school again and toured with them for close to two years.</p>
+    <p>Next came East Tennessee State University in Johnson City, where he earned a
+      degree in bluegrass. In class he met Joe Cicero, the guitarist in Fireside
+      Collective. Alex had already crossed paths with the band once, on a shared bill in
+      Fort Collins, Colorado, during his Blackberry Bushes days. One summer Joe called.
+      The band was looking for a fifth member and wanted him to come down and play some
+      shows around North Carolina. That was the audition.</p>
+
+    <h2>Six years with Fireside Collective</h2>
+    <p>Alex played banjo with the Asheville band from 2017 to October 2023. His last
+      show with them was at CaveFest, at The Caverns in Pelham, Tennessee. Trevor was in
+      the crowd.</p>
+    <p>RockyGrass in Lyons, Colorado, holds a special place. Alex went there for years,
+      first for the band contest and then for the banjo contest, which he won. Later he
+      came back with Fireside Collective as a main stage act, one of the high points of
+      his time in the band.</p>
+    <p>The road had its moments. One night at three in the morning the band pulled into
+      the driveway of a friend who had left a door open for them. It was the wrong
+      house. An angry neighbor in pajamas came out to ask what they were doing. They
+      backed the van out, found the right house next door, and left their host a pile of
+      CDs, merch and a poster by way of apology. Another time a slow leak and a
+      snowstorm nearly cost Alex and Joe Cicero a flight out of Denver. They made it, on
+      a nearly flat tire.</p>
+    <p>After Fireside, Alex finished what he had started almost ten years earlier. He
+      earned a master's degree in jazz guitar at Middle Tennessee State University in
+      Murfreesboro.</p>
+
+    <h2>The call from Jason Carter</h2>
+    <p>In the summer of 2025, Bronwyn Keith-Hynes asked him to fill in on some dates
+      with her new solo band. Jason Carter called shortly after. Jason had left the Del
+      McCoury Band and the Travelin' McCourys and was building his own group, and he did
+      not have a banjo player yet. Alex has played with him ever since. It is now his
+      full-time gig.</p>
+    <p>The band is new enough that it has not recorded together yet, though Alex expects
+      that to change. What he likes most so far is the company. Jason came up among the
+      first generation of bluegrass players, and he has stories about all of them.</p>
+    <blockquote>
+      <p>"Him and Bronwyn both are great band leaders, and make sure everybody's as
+        comfortable as possible when we're spending that much time on the road."</p>
+    </blockquote>
+    <p>At some of Jason's Nashville residency shows, Michael Cleveland sat in for the
+      second set. Alex calls it a pinch-me moment and admits he still watches the
+      videos.</p>
+    <blockquote>
+      <p>"Playing banjo behind Jason and Michael Cleveland twin fiddling, that's like a
+        dream come true for any banjo player."</p>
+    </blockquote>
+    <p>Another highlight: a run of shows with Bryan McDowell, Jacob Jolliff, Mark Schatz
+      and Jake Stargel, all players he calls heroes. He has not played the Ryman or the
+      Grand Ole Opry yet. He would like to.</p>
+
+    <h2>Back at ETSU</h2>
+    <p>Alex lives in East Nashville and drives to Johnson City once a week to teach at
+      ETSU. He gives one-on-one banjo lessons, leads two student bands that change from
+      semester to semester, and teaches an online American roots music class that he
+      especially enjoys. He has also worked the school's summer bluegrass camp.</p>
+
+    <h2>What's next</h2>
+    <p>For years he has talked about making his own album. He has a stack of
+      instrumental tunes and is working on arrangements. The open questions are all his
+      own: all instrumental or some vocals, hired singers or his own voice.</p>
+    <blockquote>
+      <p>"I'm nitpicky about it, and can never make up my mind on exactly how I want it
+        to sound."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Alex on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="4" data-episode="35">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E35, Alex Genova Banjo Extraordinaire.</h3>
+          <p class="gep-note">Wisconsin to Berklee to ETSU, six years in Fireside
+            Collective, and the call from Jason Carter.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">He also appears in the Season 4 Wrap Up (S4E41).</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Alex</h2>
+    <ul class="glinks">
+      <li><span>Jason Carter Band: </span><a href="https://jasoncarterband.com/" target="_blank" rel="noopener">jasoncarterband.com</a></li>
+      <li><span>ETSU Bluegrass, Old-Time, and Roots Music faculty page: </span><a href="https://www.etsu.edu/cas/das/bluegrass/facstaff/genovaalex.php" target="_blank" rel="noopener">etsu.edu/cas/das/bluegrass/facstaff/genovaalex.php</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

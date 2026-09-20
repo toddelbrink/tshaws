@@ -858,7 +858,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .glinks{list-style:none;margin:18px 0 0;padding:0;max-width:62ch}
 .glinks li{padding:11px 0;border-bottom:1px solid var(--rule);font-size:16px}
 .glinks li:first-child{border-top:1px solid var(--rule)}
-.glinks a{font-weight:600;text-decoration:none;border-bottom:1px solid transparent}
+/* A bare address is one long unbreakable token. Alex Genova's ETSU faculty
+   page is 49 characters and pushed the page 34px wider than a 375px phone. */
+.glinks a{font-weight:600;text-decoration:none;border-bottom:1px solid transparent;
+  overflow-wrap:anywhere}
 .glinks a:hover{border-bottom-color:currentColor}
 .glinks span{color:var(--ink-2);font-size:15px}
 /* A 16px link on a phone is a small tap target on a dense list. */

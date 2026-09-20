@@ -152,9 +152,11 @@ async function synthetic() {
   // the slug points at a page that exists is test/guest-pages.js's job.
   check('a guest with a page of their own is linked to it (Boulware)',
     !!john && john.page === '/guests/john-boulware/', john && String(john.page));
-  const cory2 = row(rows, 'Cory Walker');
-  check('a guest with no page is still plain text', !!cory2 && cory2.page === null,
-    cory2 && String(cory2.page));
+  // Sierra Hull, deliberately. Everyone with a page of their own gets one
+  // added to PAGES, so this check has to name someone who will not.
+  const sierra = row(rows, 'Sierra Hull');
+  check('a guest with no page is still plain text', !!sierra && sierra.page === null,
+    sierra && String(sierra.page));
 }
 
 /* ---- nobody goes missing ----

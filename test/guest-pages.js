@@ -91,6 +91,15 @@ dirs.forEach((slug) => {
       filled ? !fig[1].includes('hidden') : fig[1].includes('hidden'));
   }
 
+  /* The pages cross-reference each other, e.g. Randy Steele's page links to
+   * John Boulware's. Those hrefs are written into the copy, so a slug that
+   * does not exist is a 404 nobody would notice by reading the page it is on. */
+  const internal = [...html.matchAll(/href="\/guests\/([a-z0-9-]+)\/"/g)]
+    .map((m) => m[1]);
+  const dead = internal.filter((s) => !dirs.includes(s));
+  check(slug + ': every /guests/ link it makes has a page' +
+    (internal.length ? ' (' + internal.length + ')' : ''), dead.length === 0);
+
   const rows = [...html.matchAll(/data-season="(\d+)" data-episode="(\d+)"/g)]
     .map((m) => [Number(m[1]), Number(m[2])]);
   check(slug + ': names at least one episode', rows.length > 0);

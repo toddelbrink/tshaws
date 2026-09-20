@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-09-19, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Ken White · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Former executive director of the IBMA, who led World of Bluegrass to Chattanooga in 2025. Ken White on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Ken White · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Former executive director of the IBMA, who led World of Bluegrass to Chattanooga in 2025. Ken White on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/ken-white/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>Ken White</h1>
+      <p class="dek">Former executive director of the International Bluegrass Music
+        Association. Led World of Bluegrass to Chattanooga in 2025. Banjo champion at
+        14, guitar sideman after that.</p>
+    </div>
+  </div>
+
+
+  <table class="glance">
+    <caption class="sr-only">Ken White at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Role</th><td>Executive Director, IBMA, October 2023 to June
+        2026. Lifetime IBMA member</td></tr>
+      <tr><th scope="row">Grew up</th><td>Louisville, Kentucky</td></tr>
+      <tr><th scope="row">Plays</th><td>Guitar, banjo, mandolin</td></tr>
+      <tr><th scope="row">Titles</th><td>Kentucky State Banjo Champion at 14</td></tr>
+      <tr><th scope="row">Bands</th><td>New Tradition (guitar). Sideman work across
+        bluegrass and Americana</td></tr>
+      <tr><th scope="row">Stages</th><td>Grand Ole Opry, Telluride Bluegrass Festival,
+        RockyGrass, Walnut Valley Festival</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 3, Episode 23</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">Ken White sat down with Trevor in August 2025, a month before World
+      of Bluegrass came to Chattanooga for the first time.</p>
+
+    <h2>A banjo for Christmas</h2>
+    <p>Ken got a banjo for Christmas when he was 12 and grew up playing bluegrass in
+      Louisville, Kentucky. Two years later he won the Kentucky State Banjo
+      Championship. He does not usually lead with that. He went to the first few IBMA
+      events in Owensboro, and to the ones in Louisville after the move.</p>
+    <p>The banjo came first, but the guitar is what spoke to him. Tony Rice was his
+      hero, and Rice's work with David Grisman led him into jazz, from Grisman to Miles
+      Davis and beyond. He studied guitar at the University of Louisville with the jazz
+      guitarist Jimmy Raney.</p>
+    <blockquote>
+      <p>"Jazz appeals to my intellect, but bluegrass is my heart."</p>
+    </blockquote>
+
+    <h2>The sideman years</h2>
+    <p>In his twenties and early thirties Ken played music for a living. For about five
+      years he played guitar in New Tradition, a Nashville band whose leaders included
+      Danny Roberts. They played up to 200 dates a year. He also played with fiddlers
+      Vassar Clements and Deanie Richardson of Sister Sadie, and on stages from the
+      Grand Ole Opry to Telluride and RockyGrass. In Nashville he spent late nights at
+      the Station Inn, helping restock the bar for free nachos and pizza.</p>
+    <p>Life on the road taught him how to pick a gig.</p>
+    <blockquote>
+      <p>"There are three reasons to take a gig. It either has to be good music, good
+        people, or good money. If you've got two of those, it's a great gig. If you have
+        all three, that's the gig I want to do the rest of my life."</p>
+    </blockquote>
+
+    <h2>A hillbilly musician who reads</h2>
+    <p>Music school taught Ken to read notation, and that opened doors most pickers
+      never see. He played with the Louisville Mandolin Orchestra, the Nashville
+      Mandolin Ensemble and the Wichita Symphony Orchestra, and he calls sitting on
+      mandolin in the middle of an 80-piece orchestra a once in a lifetime thing. He
+      once played guitar onstage in an opera, in period costume, while the lead soprano
+      sang an aria. He played banjo in a performance of the original jazz band
+      orchestration of George Gershwin's <em>Rhapsody in Blue</em>.</p>
+    <p>Ken never quit playing, even after he stopped calling himself a professional. In
+      2002 he co-founded Howerton+White, a marketing agency. He also served as president
+      of the Wichita Jazz Festival. He says learning to improvise in a small group
+      shaped how he works in business, too: supporting other people and keeping the big
+      picture in view.</p>
+
+    <h2>Bringing World of Bluegrass to Chattanooga</h2>
+    <p>Ken started at IBMA on October 2, 2023, chosen from more than 70 applicants. He
+      called it a full circle moment. His first World of Bluegrass as director was the
+      last one in Raleigh, the event's home for 12 years.</p>
+    <p>His second was the move. In September 2025, IBMA held World of Bluegrass in
+      Chattanooga for the first time, the organization's 40th year. The business
+      conference ran at the Chattanooga Convention Center. The Bluegrass Ramble put 30
+      bands in five walkable downtown venues. The closing festival, IBMA Bluegrass
+      Live!, built a multi-stage site across Miller Park, Miller Plaza and Patten Square
+      instead of the riverfront, to keep everything close to the hotels and the Ramble.
+      The staff behind all of it numbered seven, backed by local partners and
+      volunteers.</p>
+    <p>The 2025 Bluegrass Music Awards were held September 18 at Soldiers and Sailors
+      Memorial Auditorium. That year's Hall of Fame class was Hot Rize, the Bluegrass
+      Cardinals and Arnold Shultz. Ken called electing Hall of Famers one of the best
+      parts of the job, a chance to meet the heroes he had when he was learning to
+      play.</p>
+    <blockquote>
+      <p>"If you're throwing the party, you don't really get to enjoy the party."</p>
+    </blockquote>
+
+    <h2>Advice for new pickers</h2>
+    <p>Ken's advice for new players is simple. Have fun, whatever your level, and find
+      other people to play with. Ken planned to stop by <a href="/guests/randy-steele/">Randy
+      Steele's</a> Tuesday jam the next time he was in town.</p>
+    <blockquote>
+      <p>"I always tell people, as soon as they learn those first three chords, you just
+        need to get out and play with somebody else, and that will teach you a lot."</p>
+    </blockquote>
+
+    <h2>After IBMA</h2>
+    <p>Ken stepped down as executive director in June 2026. In his farewell statement he
+      said he was proudest of the team he built, and that he would remain a lifetime
+      IBMA member, "singing the tenor part and picking an old Martin forevermore." World
+      of Bluegrass returns to Chattanooga October 20 to 24, 2026.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Ken on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="3" data-episode="23">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S3E23, My Conversation with Ken White Executive Director of the IBMA.</h3>
+          <p class="gep-note">Ken on the move to Chattanooga, the Ramble and the
+            festival, and his own path from banjo contests to the road.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">Randy Steele tells how IBMA came to Chattanooga, and about
+            the pop-up band that played for Ken on his first visit, in S3E25.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Ken</h2>
+    <ul class="glinks">
+      <li><span>IBMA: </span><a href="https://ibma.org/" target="_blank" rel="noopener">ibma.org</a></li>
+      <li><span>World of Bluegrass: </span><a href="https://worldofbluegrass.org/" target="_blank" rel="noopener">worldofbluegrass.org</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>
