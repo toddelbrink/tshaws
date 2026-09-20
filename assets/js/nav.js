@@ -41,21 +41,37 @@
     return payload;
   }
 
-  /* Pages that live under a nav item without being it. Empty since
-   * 2026-09-19, when Guests became its own nav item instead of a tab under
-   * Podcast. Kept because a future sub-page may need it.
+  /* Pages that live under a nav item without being it.
    *
    * This has to be one function used by both paths. A hardcoded aria-current in
    * the markup survives a hard load and is then stripped by the soft-navigation
    * pass below, which matches on exact path, so the highlight would appear or
-   * vanish depending on how you arrived. */
+   * vanish depending on how you arrived.
+   *
+   * SECTION is for one named page. PREFIX is for a family of them: every guest
+   * page is /guests/<slug>/, and there is one per guest and growing, so naming
+   * them individually here would be a second list to keep in step with the
+   * filesystem. The prefix cannot go stale. */
   var SECTION = {};
+  var PREFIX = [['/guests/', '/guests']];
 
   function tidy(p) { return String(p || '').replace(/\/$/, '') || '/'; }
 
+  function sectionFor(here) {
+    if (SECTION[here]) return SECTION[here];
+    for (var i = 0; i < PREFIX.length; i++) {
+      // The section page itself is not "under" the section, it is the section,
+      // and it gets aria-current="page" from the exact match below.
+      if (here !== tidy(PREFIX[i][0]) && (here + '/').indexOf(PREFIX[i][0]) === 0) {
+        return PREFIX[i][1];
+      }
+    }
+    return null;
+  }
+
   function markCurrent(path) {
     var here = tidy(path);
-    var section = SECTION[here] || null;
+    var section = sectionFor(here);
     document.querySelectorAll('.sitenav .inner > a, .sitenav .navgroup > a').forEach(function (a) {
       var target = tidy(new URL(a.href, location.href).pathname);
       if (target === here) a.setAttribute('aria-current', 'page');

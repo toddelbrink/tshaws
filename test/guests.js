@@ -44,7 +44,11 @@ function renderWith(feed) {
     resolve([...captured.matchAll(
       /<tr><td>(.*?)<\/td><td class="aff">(.*?)<\/td><td><div class="eps">(.*?)<\/div>/g)]
       .map((m) => ({
-        name: unescape(m[1]),
+        // Since 2026-09-19 a guest with a page of their own has their name
+        // wrapped in a link to it. The name is what these tests are about, so
+        // it is read out of the cell and the link is kept separately.
+        name: unescape(m[1].replace(/<\/?a\b[^>]*>/g, '')),
+        page: (m[1].match(/href="(\/guests\/[a-z0-9-]+\/)"/) || [])[1] || null,
         aff: unescape(m[2].replace(/<span class="meta">&mdash;<\/span>/, '').trim()) || null,
         eps: [...m[3].matchAll(/>(\d+)</g)].map((x) => +x[1])
       })));
@@ -144,6 +148,13 @@ async function synthetic() {
   check('a guest on two episodes keeps the one affiliation both lines name (Boulware)',
     !!john && john.aff === 'Randy Steele and The High Cold Wind' &&
       String(john.eps) === '34,39', john && `${john.aff} / ${john.eps}`);
+  // A guest with a page is linked to it; everyone else stays plain text. That
+  // the slug points at a page that exists is test/guest-pages.js's job.
+  check('a guest with a page of their own is linked to it (Boulware)',
+    !!john && john.page === '/guests/john-boulware/', john && String(john.page));
+  const cory2 = row(rows, 'Cory Walker');
+  check('a guest with no page is still plain text', !!cory2 && cory2.page === null,
+    cory2 && String(cory2.page));
 }
 
 /* ---- nobody goes missing ----

@@ -57,6 +57,23 @@
   var ALIASES = { johnweisberger: 'Jon Weisberger' };
   function canonical(name) { return ALIASES[key(name)] || name; }
 
+  /* ---- guests who have a page of their own ----
+   *
+   * Keys are normalised names, values are the directory under /guests/. This
+   * is NOT a guest list and must never become one: the rows on this page still
+   * come entirely from the feed, and a name missing from here simply renders as
+   * plain text, exactly as it did before pages existed.
+   *
+   * It is a list of what is in the repo, so it cannot drift from the feed. It
+   * can only drift from the filesystem, and test/guest-pages.js checks both
+   * directions: every slug here has a page, and every page is listed here.
+   *
+   * Add a line when a page ships. Nothing else on this page changes. */
+  var PAGES = {
+    johnboulware: 'john-boulware'
+  };
+  function pageFor(name) { return PAGES[key(name)] || null; }
+
   // Full names only. A bare "Trevor" is not on this list on purpose: a guest
   // called Trevor Wilson is a different person and must survive.
   var HOST_KEYS = ['Trevor Shaw', "Trevor Shaw's", 'T Shaw', "T Shaw's",
@@ -164,7 +181,11 @@
         return '<a href="/episodes/#ep-' + esc(e.slug || e.guid) + '" title="' +
                esc(e.title) + '">' + n + '</a>';
       }).join('');
-      return '<tr><td>' + esc(name) + '</td>' +
+      var slug = pageFor(name);
+      var cell = slug
+        ? '<a href="/guests/' + esc(slug) + '/">' + esc(name) + '</a>'
+        : esc(name);
+      return '<tr><td>' + cell + '</td>' +
              '<td class="aff">' + (aff ? esc(aff) : '<span class="meta">&mdash;</span>') + '</td>' +
              '<td><div class="eps">' + links + '</div></td></tr>';
     }).join('');

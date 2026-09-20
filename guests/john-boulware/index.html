@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>John Boulware · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Mandolin with Randy Steele and the High Cold Wind, fiddle for most of his life, and Chattanooga's hired gun. John Boulware on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="John Boulware · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Mandolin with Randy Steele and the High Cold Wind, fiddle for most of his life, and Chattanooga's hired gun. John Boulware on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/john-boulware/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <span class="navgroup" data-menu="seasons">
+    <a href="/episodes/">Podcast</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Seasons</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <span class="navgroup" data-menu="videos">
+    <a href="/videos/">Videos</a>
+    <button type="button" class="navcaret" aria-expanded="false" hidden>
+      <span class="sr-only">Video sections</span>
+      <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <ul class="navmenu" hidden></ul>
+  </span>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <!-- Empty until Todd picks a still from Trevor's own footage. See the note
+         at the top of this file for how to fill it. -->
+    <figure class="gportrait" hidden>
+      <img alt="" width="240" height="320" decoding="async">
+    </figure>
+    <div class="gintro">
+      <h1>John Boulware</h1>
+      <p class="dek">Mandolin, Randy Steele and the High Cold Wind. Fiddle for most of
+        his life. Chattanooga's hired gun.</p>
+    </div>
+  </div>
+
+  <table class="glance">
+    <caption class="sr-only">John Boulware at a glance</caption>
+    <tbody>
+      <tr><th scope="row">Plays</th><td>Fiddle, mandolin, guitar, bass, and the occasional odd thing</td></tr>
+      <tr><th scope="row">Home base</th><td>Chattanooga, Tennessee</td></tr>
+      <tr><th scope="row">Bands</th><td>Randy Steele and the High Cold Wind (mandolin, 2022 to now). Slim Pickins (fiddle). The Good Old Boys (fiddle, age 12)</td></tr>
+      <tr><th scope="row">Titles</th><td>Tennessee State Fiddle Champion, 2006. Alabama State Mandolin Champion, 2013. Four-time fiddle winner at Uncle Dave Macon Days</td></tr>
+      <tr><th scope="row">Telluride</th><td>Second place, Telluride Band Contest, 2026, with the High Cold Wind</td></tr>
+      <tr><th scope="row">On the show</th><td>Season 4, Episodes 34 and 39</td></tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    <p class="lead">If you have listened to this podcast, you have already heard John
+      Boulware. He wrote the intro music and played fiddle on it, a Slim Pickins tune.
+      The outro is his fiddle too.</p>
+
+    <h2>Guitar first, then the fiddle</h2>
+    <p>John grew up in Kimball, Tennessee. At a Boy Scout campout he watched a man play
+      "Smoke on the Water" on a guitar and decided it was the coolest thing he had ever
+      seen. Until then, music was something that came out of the radio. His mother had
+      the country station on, his father had classic rock.</p>
+    <p>He got a guitar for his eleventh birthday. His parents lasted a few weeks of TV
+      jingles picked out by ear, then signed him up for lessons at Opera House Music in
+      South Pittsburg. The teacher who happened to be there was a young Cody Kilby, who
+      showed him a Dylan tune, a Hendrix tune and then "St. Anne's Reel." That was the
+      one. A few months later Kilby left to go on the road with Ricky Skaggs.</p>
+    <p>The fiddle came next. It ran in the family: his grandfather played in a square
+      dance band in Chester, South Carolina, and John still has his fiddle and the
+      amplifier he ran it through. John started lessons with Bob Townsend, and by 12 he
+      had taken Townsend's place in The Good Old Boys, a band on Monteagle Mountain. He
+      stayed about six years.</p>
+    <blockquote>
+      <p>"I got along with everyone, but I didn't really have any good friends that I
+        hung out with, because all of my good friends were in their 70s playing bluegrass
+        at the pickings on the weekends."</p>
+    </blockquote>
+
+    <h2>Playing the contest game</h2>
+    <p>At a small festival in Lynchburg, John entered a fiddle contest on a whim and came
+      third. One of the judges was Jim Wood, who called the Boulware house for weeks
+      until his parents agreed to lessons. They drove an hour and a half each way, every
+      week. John credits Wood with most of what he knows about music.</p>
+    <p>What followed was a teenage contest career: the 2006 Tennessee State Fiddle
+      Championship, four fiddle wins at Uncle Dave Macon Days, and in 2013, on a whim
+      again, the Alabama State Mandolin Championship. His secret, as he tells it, was
+      knowing what the judges were listening for. Clean and in the groove beats fast.</p>
+    <blockquote>
+      <p>"Fiddle competitions, when I was growing up, it was really more like a kind of
+        reunion or a gathering that just happened to have a competition going on."</p>
+    </blockquote>
+    <p>The best part was never the stage. It was jamming in the hallway with the people
+      about to compete against him.</p>
+
+    <h2>From fiddle to mandolin</h2>
+    <p>John moved to Chattanooga for college at UTC around 2006. The members of Slim
+      Pickins found him teaching at a music store, and he played fiddle with them for
+      years. When several of them formed Randy Steele and the High Cold Wind in 2022, the
+      band needed a mandolin. John filled in, the sound worked, and he stayed. Randy
+      Steele plays banjo and writes the songs, Brad Clark plays guitar, and Justin Hupp
+      plays bass.</p>
+    <blockquote>
+      <p>"The fiddle is my love. It is my first instrument. It is the language that I
+        speak the most fluently."</p>
+    </blockquote>
+
+    <h2>Telluride, 2026</h2>
+    <p>The High Cold Wind drove 1,600 miles to the Telluride Band Contest, Randy at the
+      wheel the whole way. It was John's first time west of Texas. On the way up a
+      200-foot walk at the Continental Divide, he found out what 40 percent less oxygen
+      feels like.</p>
+    <p>They drew the first slot, the one every band dreads. John did not mind. Order does
+      not change the job. They made the final four and played the main stage, finishing
+      second to the Litch Brothers of Orcas Island, Washington.</p>
+    <blockquote>
+      <p>"It would not have been as much fun if we went up there and killed it and did a
+        great job, and the other bands were just kind of okay."</p>
+    </blockquote>
+
+    <h2>The hired gun</h2>
+    <p>John calls himself a mercenary. Most of his shows are with Randy Steele now, but
+      he plays everything: bluegrass, old time, Celtic, swing, rock. He has toured
+      Belgium, France, Ireland, Northern Ireland and Holland, soloed twice with the
+      Murfreesboro Philharmonic, helped arrange the music for a production of <em>Dark of
+      the Moon</em> at the University of the South, and played the Chattanooga Ballet's
+      bluegrass production with the High Cold Wind, where every tune had to match the
+      recording the dancers learned it from, measure for measure. He plays in the house
+      band for the dance categories at the Smithville Fiddlers' Jamboree.</p>
+    <p>He has turned down road gigs, deliberately, to keep room for the strange and
+      interesting ones.</p>
+    <blockquote>
+      <p>"I want to leave room for the things that are interesting."</p>
+    </blockquote>
+    <p>He teaches full time, and has for more than 15 years: fiddle, guitar, mandolin,
+      and one dobro student.</p>
+
+    <h2>Off the bandstand</h2>
+    <p>He does not play banjo on purpose. Getting good would take the mystery out of it,
+      the same reason he will not learn drums. He loves air drums too much.</p>
+    <p>He is a hand-tool woodworker, currently building his own kitchen cabinets far more
+      precisely than any kitchen requires. He holds a black belt in Kenpo and a shodan in
+      Iaido. His house-on-fire instruments: a French violin from 1781, a Red Diamond
+      mandolin by Don MacRostie, and a small-bodied guitar by Chris Bozung.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear John on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="4" data-episode="34">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E34, John Boulware: Road to Telluride, Part 1 of 2.</h3>
+          <p class="gep-note">Growing up in contests, the switch to mandolin, the Telluride plan.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="4" data-episode="39">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S4E39, John Boulware: Road to Telluride, Part 2 of 2.</h3>
+          <p class="gep-note">The drive, the gondolas, drawing number one, second place.</p>
+        </div>
+      </li>
+      <li class="gep plain">
+        <div>
+          <p class="gep-note">He also appears in the Season 4 Wrap Up (S4E41).</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find John</h2>
+    <ul class="glinks">
+      <li><a href="https://johnboulware.com" target="_blank" rel="noopener"
+        >johnboulware.com</a><span>, for lessons and session work</span></li>
+      <li><a href="https://music-theory-for-musicians.com" target="_blank" rel="noopener"
+        >music-theory-for-musicians.com</a></li>
+      <li><a href="https://mandocoach.com" target="_blank" rel="noopener"
+        >mandocoach.com</a><span>, his mandolin course</span></li>
+      <li><span>Randy Steele and the High Cold Wind: </span><a
+        href="https://highcoldwind.com" target="_blank" rel="noopener">highcoldwind.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="mailto:todd@elbrink.com">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>
