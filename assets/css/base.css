@@ -796,18 +796,25 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 
    The photo slot ships empty on purpose. Pages go live before anyone has
    picked a still, and swapping one in later is an edit to that page's <figure>
-   and nothing else. The [hidden] + .gintro rule is the same trick the mortgage
+   and nothing else. The [hidden] + .glance rule is the same trick the mortgage
    header uses: with no portrait the text spans rather than leaving a hole. */
-/* The portrait sits beside the name, the dek AND the at-a-glance table. With
-   only the name and dek in that column the header left a tall empty rectangle
-   to the right of the photo, because a one-line dek is much shorter than a
-   3:4 portrait. The table fills it and reads as part of the same block. */
+/* The name and the dek run the full width, and the portrait starts level with
+   the top of the at-a-glance table below them, not with the headline. Lining
+   the photo up with the h1 put its top edge against a line of 46px display
+   type and left the table stranded under a one-line dek. Against the table it
+   has something the same shape to sit beside.
+
+   The two are close in height by nature: a 3:4 portrait at 240px is 320px, and
+   a six-row table is about 300px. */
 .ghead{margin-bottom:6px}
+.ghead h1{font-size:clamp(30px,6vw,46px)}
+.gmeta{margin-top:26px}
 @media(min-width:720px){
-  .ghead{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start}
-  .ghead > .gportrait[hidden] + .gintro{grid-column:1 / -1}
+  .gmeta{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start}
+  /* No photo yet: the table takes the whole width rather than leaving a hole. */
+  .gmeta > .gportrait[hidden] + .glance{grid-column:1 / -1}
 }
-.gintro .glance{margin-top:22px}
+.gmeta .glance{margin:0}
 .gportrait{max-width:240px;margin:0 0 22px}
 @media(min-width:720px){.gportrait{margin-bottom:0}}
 .gportrait img{width:100%;border:1px solid var(--rule);border-radius:var(--radius);
@@ -842,7 +849,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    for press photography. */
 .gcredit{font-family:var(--sans);font-size:13px;color:var(--ink-muted);
   margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);clear:both}
-.gintro h1{font-size:clamp(30px,6vw,46px)}
 /* The one-line dek. Serif italic, the same voice the homepage intro uses, so it
    reads as the show describing the guest rather than as a subtitle. */
 .dek{font-size:19px;font-style:italic;line-height:1.45;color:var(--ink-2);margin-top:12px;max-width:46ch}
