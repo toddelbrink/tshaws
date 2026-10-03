@@ -93,13 +93,21 @@ window.TSGuestLine = (function () {
     alexgenova:     'alex-genova',
     anjway:         'anj-way',
     corywalker:     'cory-walker',
+    jameskee:       'james-kee',
     jaredpool:      'jared-pool',
     jessecobb:      'jesse-cobb',
     johnboulware:   'john-boulware',
+    jonweisberger:  'jon-weisberger',
+    josiahnelson:   'josiah-nelson',
+    katiekirchner:  'katie-kirchner',
     kenwhite:       'ken-white',
     krishowland:    'kris-howland',
+    lucaswhite:     'lucas-white',
+    masonvia:       'mason-via',
     michaelprewitt: 'michael-prewitt',
+    nickgeorge:     'nick-george',
     randysteele:    'randy-steele',
+    shawnspencer:   'shawn-spencer',
     thomascassell:  'thomas-cassell'
   };
   function pageFor(name) {

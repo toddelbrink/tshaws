@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-10-02, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>James Kee · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Guitar and lead vocals, and a founding member of East Nash Grass. Owner of Earl Scruggs's 1955 Martin D-18. James Kee on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="James Kee · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Guitar and lead vocals, and a founding member of East Nash Grass. Owner of Earl Scruggs's 1955 Martin D-18. James Kee on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/james-kee/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <form class="navsearch" role="search" action="/search/" method="get">
+    <label class="sr-only" for="navq">Search the site</label>
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1a6 6 0 1 0 3.7 10.7l3.3 3.3 1.4-1.4-3.3-3.3A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+    <input id="navq" name="q" type="search" placeholder="Search" autocomplete="off">
+  </form>
+  <a href="/episodes/">Podcast</a>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <a href="/videos/">Videos</a>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <h1>James Kee</h1>
+    <p class="dek">Guitar and lead vocals. Founding member of East Nash Grass. He moved
+      to Nashville wanting a Monday night bar gig and ended up with a touring band.</p>
+
+    <div class="gmeta">
+      <!-- Empty until a photo of this guest exists. See the note at the top
+           of this file. -->
+      <figure class="gportrait" hidden>
+        <img alt="" width="240" height="320" decoding="async">
+      </figure>
+    <table class="glance">
+      <caption class="sr-only">James Kee at a glance</caption>
+      <tbody>
+        <tr><th scope="row">Plays</th><td>Guitar, mandolin, lead vocals</td></tr>
+        <tr><th scope="row">Home base</th><td>Nashville, Tennessee. From
+          Chattanooga</td></tr>
+        <tr><th scope="row">Bands</th><td>East Nash Grass (founding member, mandolin
+          then guitar, through April 2026). Hamilton County Ramblers (founding member).
+          NewTown</td></tr>
+        <tr><th scope="row">Notable</th><td>IBMA New Artist of the Year with East Nash
+          Grass, 2024</td></tr>
+        <tr><th scope="row">Also</th><td>Owner of Earl Scruggs's 1955 Martin D-18.
+          Manages about 900 acres of land around Nashville</td></tr>
+        <tr><th scope="row">Now</th><td>Signed to Mountain Home Music Company for a solo
+          debut built around that guitar</td></tr>
+        <tr><th scope="row">On the show</th><td>Season 2, Episode 20</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p class="lead">James Kee is from Chattanooga and moved to Nashville in 2016. He
+      studied environmental science at the University of Tennessee at Chattanooga and
+      has been self-employed since he was a kid mowing lawns.</p>
+
+    <h2>He wanted a residency</h2>
+    <p>What Kee wanted in Nashville was a standing gig in a bar. He got one at Dee's
+      Country Cocktail Lounge in Madison, and it ran on Monday nights for about seven
+      years. The players were people he already knew from jamming around town. By 2019
+      four had settled in: Kee on mandolin, Harry Clark on guitar,
+      <a href="/guests/cory-walker/">Cory Walker</a> on banjo, Maddie Denton on
+      fiddle.</p>
+    <blockquote>
+      <p>"It wasn't an accident that we got together, but it certainly seemed like an
+        accident that it turned into a full-time profession for us."</p>
+    </blockquote>
+    <p>Getting it off the ground was slow. Every time the band gained traction, somebody
+      new and famous hired one of his bandmates away. They started a record in early
+      2020 and finished it over that year because there was nothing else to do. Kee
+      calls the first album aimless, in its songs and in its plan. It came out in
+      2021.</p>
+    <p>Tennessee stayed relatively open through the pandemic, so the band kept gathering
+      and broadcasting. Nobody realized how far those livestreams were carrying until
+      touring resumed and the name had reached places they had never played.</p>
+    <p>By 2022 the goal was clear. Make the band everybody's first priority. That took
+      until 2025, when nobody had another artist's schedule to work around and the
+      weekend runs turned into two and three week tours. East Nash Grass won IBMA New
+      Artist of the Year in 2024. Kee does not chase awards. Being nominated alongside
+      his peers, he says, is enough.</p>
+
+    <h2>Mandolin to guitar</h2>
+    <p>Kee plays mandolin on the first East Nash Grass record, which surprises people
+      who only know the band since. In 2021 a one-off band assembled for a party in
+      Idaho asked him and Harry Clark to trade instruments for the night. Both liked it.
+      It stuck.</p>
+    <blockquote>
+      <p>"I often joke that I'm the worst guitar player in the band."</p>
+    </blockquote>
+    <p>Guitar was his first instrument, but East Nash Grass was the first professional
+      job he ever had playing it. Everything before was mandolin. The switch suited a
+      lead singer. He could step up to the microphone and steer a band of substitutes
+      through songs they did not know, which he had to do often while the others were
+      out on the road. Clark's mandolin fit the sound better, and Kee never wanted to
+      switch back.</p>
+    <p>The band turned all that versatility into a bit. On stage they call it special
+      game. Everybody swaps instruments, to varying degrees of success.</p>
+
+    <h2>Earl's D-18</h2>
+    <p>The connection runs back a generation. Kee's grandfather played banjo, learned
+      Earl's style out of his book, and met him more than once in Nashville, including
+      at a banjo contest Earl was judging at Rivergate Mall in about 1984. Kee still has
+      his grandfather's Earl Scruggs model banjo, number 179 of the 1,984 built that
+      year.</p>
+    <p>The guitar is a 1955 Martin D-18. Don Gibson bought it new and had Shot Jackson
+      thin the neck, fit a truss rod and add the oversized pickguard that makes it
+      recognizable in the black and white Martha White broadcasts. Earl Scruggs bought
+      it from Gibson in 1957 and played it the rest of his life.</p>
+    <p>Kee knew it was for sale and sitting at Gruhn Guitars, in poor playing condition,
+      which he thinks is what kept other buyers away. He went down one Saturday and
+      played it for an hour. Above the fifth fret it had a resonance he had not
+      expected, and it explained why Earl worked so high up the neck with a capo.</p>
+    <blockquote>
+      <p>"I knew I would regret it. I thought that it should be played."</p>
+    </blockquote>
+    <p>The restoration finished in spring 2025, big pickguard and truss rod cover back
+      in place. Kee's deadline was East Nash Grass's own night at the Ryman Auditorium
+      on July 15, 2025, their first as headliners after three opening slots, shared with
+      AJ Lee &amp; Blue Summit. <a href="/guests/cory-walker/">Cory Walker</a> played
+      the restored guitar on stage that night.</p>
+    <blockquote>
+      <p>"One day I'll be dead and gone, and this guitar will still be out there."</p>
+    </blockquote>
+    <p>He does not intend to keep it in a closet. He will fly with it if he has to buy
+      it a seat.</p>
+
+    <h2>Wildflowers instead of lawns</h2>
+    <p>The other thing is land. He built the boyhood lawn mowing into a Chattanooga
+      landscaping company. Now he manages about 900 acres around Nashville with a small
+      crew, and everything he has learned points one direction. Mow less.</p>
+    <blockquote>
+      <p>"I don't know what it is with mankind's obsession with things that are neat and
+        even and tidy."</p>
+    </blockquote>
+    <p>Where ground is hard to reach, or does not need mowing at all, he plants it.
+      Managed grassland in the rural spots, hay where hay makes sense, food plots for
+      deer and turkey, and wildflowers where people will see them. One property keeps
+      bees, and the beekeepers keep asking for more flowers. He experiments every year
+      with pollen-heavy clovers, sunflowers, zinnias and goldenrod. After seeding he
+      waters once and leaves them alone. In a drought summer the trees go brown and the
+      flowers keep blooming.</p>
+    <p>The tall orange cosmos have become a signature of the properties he manages. The
+      hardest part, he says as a former landscaper, is keeping crews from weed eating
+      the seedlings before anyone knows what they are. He does not ever want to grow
+      grass again. Being outside through four full seasons, he says, is where a lot of
+      his reason to play music comes from.</p>
+
+    <h2>After East Nash Grass</h2>
+    <p>In April 2026 Kee stepped out of the East Nash Grass touring lineup after nearly
+      a decade. Frank Rische took the guitar chair, and Kee stays involved off the road.
+      In September 2026 he signed with Mountain Home Music Company for his first solo
+      record, built around the restored D-18 and a list of guest players.</p>
+    <p>He co-founded the Wednesday bluegrass night at American Legion Post 82 in
+      Nashville, and he has sat in with <a href="/guests/randy-steele/">Randy Steele</a>
+      and the High Cold Wind.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear James on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="2" data-episode="20">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S2E20, My Conversation with James Kee of East Nash Grass.</h3>
+          <p class="gep-note">How the band came together on Monday nights at Dee's, the
+            mandolin to guitar switch, wildflowers and land management, and buying and
+            restoring Earl Scruggs's 1955 Martin D-18.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find James</h2>
+    <ul class="glinks">
+      <li><span>East Nash Grass: </span><a href="https://www.eastnashgrass.com/" target="_blank" rel="noopener">eastnashgrass.com</a></li>
+      <li><span>Mountain Home Music Company: </span><a href="https://mountainhomemusiccompany.com/" target="_blank" rel="noopener">mountainhomemusiccompany.com</a></li>
+      <li><span>Instagram: </span><a href="https://www.instagram.com/jamesalankee/" target="_blank" rel="noopener">@jamesalankee</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="https://elbrink.com/" rel="noopener">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/textmatch.js"></script>
+<script src="/assets/js/guestline.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/search.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

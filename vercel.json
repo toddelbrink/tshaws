@@ -1,6 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm test && rm -rf test tools",
   "crons": [
-    { "path": "/api/warm", "schedule": "0 9 * * *" }
+    {
+      "path": "/api/warm",
+      "schedule": "0 9 * * *"
+    }
   ]
 }

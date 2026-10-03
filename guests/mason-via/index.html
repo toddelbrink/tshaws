@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-10-02, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Mason Via · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Guitar, mandolin and songs. Three years in Old Crow Medicine Show, then out under his own name. Mason Via on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Mason Via · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Guitar, mandolin and songs. Three years in Old Crow Medicine Show, then out under his own name. Mason Via on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/mason-via/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <form class="navsearch" role="search" action="/search/" method="get">
+    <label class="sr-only" for="navq">Search the site</label>
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1a6 6 0 1 0 3.7 10.7l3.3 3.3 1.4-1.4-3.3-3.3A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+    <input id="navq" name="q" type="search" placeholder="Search" autocomplete="off">
+  </form>
+  <a href="/episodes/">Podcast</a>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <a href="/videos/">Videos</a>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <h1>Mason Via</h1>
+    <p class="dek">Guitar, mandolin and songs. Three years inside Old Crow Medicine
+      Show, then out under his own name. A bluegrass picker with a funk band in his
+      past.</p>
+
+    <div class="gmeta">
+      <!-- Empty until a photo of this guest exists. See the note at the top
+           of this file. -->
+      <figure class="gportrait" hidden>
+        <img alt="" width="240" height="320" decoding="async">
+      </figure>
+    <table class="glance">
+      <caption class="sr-only">Mason Via at a glance</caption>
+      <tbody>
+        <tr><th scope="row">Plays</th><td>Guitar, mandolin, and sings</td></tr>
+        <tr><th scope="row">Home base</th><td>Nashville, Tennessee. Grew up in Danbury,
+          North Carolina</td></tr>
+        <tr><th scope="row">Bands</th><td>Old Crow Medicine Show (2021 to 2024).
+          Earlier: Mason Via and Hot Trail Mix, and the Mason Via Funk Band. Performs
+          under his own name</td></tr>
+        <tr><th scope="row">Records</th><td><em>New Horizons</em> (Mountain Fever,
+          2022). <em>Mason Via</em> (Mountain Fever, 2025)</td></tr>
+        <tr><th scope="row">Songs others cut</th><td>"Down Home Dispensary," Molly
+          Tuttle and Golden Highway. "Brown Paper Bag," The Del McCoury Band. "Ride
+          Forever," Off The Rails</td></tr>
+        <tr><th scope="row">Notable</th><td>IBMA New Artist of the Year nominee,
+          2026</td></tr>
+        <tr><th scope="row">On the show</th><td>Season 1, Episodes 7 and 8</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>A washed-out festival in Union Grove</h2>
+    <p>In September 2015 Mason Via played Ancient Tones, a first-year festival held on
+      the old fiddlers' convention grounds at VanHoy Farms in Union Grove, North
+      Carolina. It rained hard all weekend. The campground stayed empty and the bands
+      played to almost nobody, and Mason still talks about it as one of the good ones.
+      It was the first time he saw Mountain Heart, The Horse Flies and Seven Handle
+      Circus.</p>
+    <blockquote>
+      <p>"There was more people backstage than there were listening to the bands."</p>
+    </blockquote>
+    <p>That weekend came back around. Aaron Ramsey, who was on that bill with Mountain
+      Heart, went on to produce Mason's self-titled bluegrass album, with Jim VanCleve
+      on fiddle and Jeff Partin on bass and reso-guitar. Both are Mountain Heart alumni
+      too.</p>
+
+    <h2>The funk band</h2>
+    <p>Long before the bluegrass world knew the name, Mason spent years fronting a funk
+      band. It grew out of a friendship with Camry Harris, now the drummer for Town
+      Mountain, who grew up alongside him and brought in players from the church scene
+      around Martinsville, Virginia, including a sacred steel player raised in that
+      tradition.</p>
+    <p>One set of it survives on record by accident. Jon Lohman of the Virginia Folklife
+      Program recorded the band at Rooster Walk and did not tell Mason until afterward.
+      Mason sat on the tape for a couple of years and put it out in 2020 as <em>Live @
+      Rooster Walk</em>.</p>
+    <blockquote>
+      <p>"That's kinda my connection to a lot of these bluegrassers, is that we can
+        connect on a musical level when we can realize, all right, we can play a little
+        bit of bluegrass, but we really like to get down with the funk."</p>
+    </blockquote>
+
+    <h2>Three years with Old Crow</h2>
+    <p>He joined Old Crow Medicine Show in 2021 as its youngest member and stayed
+      through 2024. He had played the Opry once and cut a full album with the band
+      before he did much of anything else in public with them. Two of the band's records
+      topped the bluegrass chart in that stretch, <em>Paint This Town</em> in 2022 and
+      <em>Jubilee</em> in 2023, and <em>Jubilee</em> was nominated for a Grammy for Best
+      Folk Album. He headlined Salmon Fest in Alaska with them, which he counts among
+      his favorite shows he has played anywhere.</p>
+    <p>Then he left, to run his own thing.</p>
+    <blockquote>
+      <p>"I just want to play music and for people to hear it. And I think if the right
+        people hear it, then it's just gonna work."</p>
+    </blockquote>
+
+    <h2>Songs that go to other people</h2>
+    <p>His writing travels ahead of him. Molly Tuttle and Golden Highway cut "Down Home
+      Dispensary," which he co-wrote, on <em>City of Gold</em>. The Del McCoury Band cut
+      "Brown Paper Bag" on <em>Almost Proud</em>. He co-wrote "Ride Forever" with
+      Charles Humphrey III for Off The Rails, the band
+      <a href="/guests/lucas-white/">Lucas White</a> plays lead guitar in.</p>
+    <p>He writes by hearing the finished record before it exists.</p>
+    <blockquote>
+      <p>"It's kind of like a silhouette of that idea in my head."</p>
+    </blockquote>
+    <p>When Off The Rails sent back what they had done with "Ride Forever," it matched
+      the thing in his head.</p>
+    <blockquote>
+      <p>"They turned it into the thing I wanted it to be, and I didn't know if it ever
+        even could be that."</p>
+    </blockquote>
+
+    <h2>Not picking a lane</h2>
+    <p>Mason is not choosing a genre and staying in it. The model he names is Peter
+      Rowan, who will turn up with a bluegrass band one night and a Tejano band the
+      next. He has recorded an EDM track and shelved it for being too far from what he
+      is after. His own bluegrass record moves between straight bluegrass, jam grass and
+      Americana.</p>
+    <blockquote>
+      <p>"I'm trying to channel that Peter Rowan energy, the young Peter Rowan
+        vibe."</p>
+    </blockquote>
+    <blockquote>
+      <p>"It's always something new for the people, and I think it's fun for me, and
+        it's fun for everyone else, too, when you push the boundaries a little bit."</p>
+    </blockquote>
+    <p>The Nashville rooms he named as the working ones were Dee's Country Cocktail
+      Lounge up in Madison, where East Nash Grass, the band
+      <a href="/guests/cory-walker/">Cory Walker</a> and
+      <a href="/guests/james-kee/">James Kee</a> built a Monday night into a movement,
+      and Jane's Hideaway, the bluegrass supper club
+      <a href="/guests/shawn-spencer/">Shawn Spencer</a> helped open. Jane's closed in
+      2025.</p>
+    <p><em>Mason Via</em>, the self-titled album he was mixing when these episodes were
+      recorded, came out on Mountain Fever Records in April 2025. It was made in Floyd,
+      Virginia. The IBMA nominated him for New Artist of the Year in 2026.</p>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Mason on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="1" data-episode="7">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S1E7, Conversation with Mason Via, Part 1 of 2.</h3>
+          <p class="gep-note">Ancient Tones in 2015, the funk band, and the post-COVID
+            pod shows and late night jams.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="1" data-episode="8">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S1E8, Conversation with Mason Via, Part 2 of 2.</h3>
+          <p class="gep-note">Leaving Old Crow, songwriting for other bands, the
+            Nashville rooms, what he wants next.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Mason</h2>
+    <ul class="glinks">
+      <li><a href="https://masonvia.com/" target="_blank" rel="noopener">masonvia.com</a><span>,
+        for music and tour dates</span></li>
+      <li><span>@masonviamusic on </span><a href="https://www.facebook.com/masonviamusic" target="_blank" rel="noopener">Facebook</a><span>, </span><a href="https://www.tiktok.com/@masonviamusic" target="_blank" rel="noopener">TikTok</a><span> and </span><a href="https://x.com/masonviamusic" target="_blank" rel="noopener">X</a></li>
+      <li><span>Mountain Fever Records: </span><a href="https://mountainfever.com/" target="_blank" rel="noopener">mountainfever.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="https://elbrink.com/" rel="noopener">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/textmatch.js"></script>
+<script src="/assets/js/guestline.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/search.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

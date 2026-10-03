@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-10-02, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Jon Weisberger · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Bass, songs, liner notes and records. IBMA Songwriter of the Year, and A&amp;R at Mountain Home Music Company. Jon Weisberger on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Jon Weisberger · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Bass, songs, liner notes and records. IBMA Songwriter of the Year, and A&amp;R at Mountain Home Music Company. Jon Weisberger on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/jon-weisberger/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <form class="navsearch" role="search" action="/search/" method="get">
+    <label class="sr-only" for="navq">Search the site</label>
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1a6 6 0 1 0 3.7 10.7l3.3 3.3 1.4-1.4-3.3-3.3A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+    <input id="navq" name="q" type="search" placeholder="Search" autocomplete="off">
+  </form>
+  <a href="/episodes/">Podcast</a>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <a href="/videos/">Videos</a>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <h1>Jon Weisberger</h1>
+    <p class="dek">Bass, songs, liner notes, records. He arrived at every one of those
+      jobs sideways, and late.</p>
+
+    <div class="gmeta">
+      <!-- Empty until a photo of this guest exists. See the note at the top
+           of this file. -->
+      <figure class="gportrait" hidden>
+        <img alt="" width="240" height="320" decoding="async">
+      </figure>
+    <table class="glance">
+      <caption class="sr-only">Jon Weisberger at a glance</caption>
+      <tbody>
+        <tr><th scope="row">Plays</th><td>Bass</td></tr>
+        <tr><th scope="row">Home base</th><td>Brevard, North Carolina</td></tr>
+        <tr><th scope="row">Day job</th><td>A&amp;R and artist relations, Mountain Home
+          Music Company, part of Crossroads Label Group</td></tr>
+        <tr><th scope="row">Bands</th><td>Union Springs. The Wildwood Valley Boys, 2000
+          to 2001. Chris Jones &amp; the Night Drivers, 2003 to 2019. Roland White's
+          band</td></tr>
+        <tr><th scope="row">IBMA awards</th><td>Writer of the Year, 2000. Liner Notes,
+          2001 and 2023. Songwriter of the Year, 2012 and 2025. Instrumental Recorded
+          Performance, 2021, as producer</td></tr>
+        <tr><th scope="row">Grammy</th><td>Nominated for Best American Roots Song, 2024,
+          for "California Sober"</td></tr>
+        <tr><th scope="row">On the show</th><td>Season 2, Episodes 14 and 15</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>Hillbilly music, one record at a time</h2>
+    <p>Jon Weisberger was born in Ohio and went to high school in Rochester, New York.
+      Rochester had country radio, but he came from an academic family and had no
+      connection to the people listening to it, so he found the music on records. One of
+      the first he bought was Flatt and Scruggs at Carnegie Hall. He still uses the old
+      term for the field he fell into: hillbilly music.</p>
+    <p>In the late 1970s, living in New York City, he came across a Red Allen record
+      called <em>Live and Let Live</em>. Around the same time he moved to Cincinnati,
+      where Allen was from and playing. Southwest Ohio was a bluegrass town on the scale
+      of Baltimore, built by decades of migration out of Kentucky and the upper South,
+      and he found two audiences there. One was working class and hardcore. One had come
+      by way of the folk revival. By background he belonged to the second.</p>
+    <blockquote>
+      <p>"I just really liked the hardcore music, and so that put me in with the more
+        working class crowd."</p>
+    </blockquote>
+
+    <h2>A mailing list turns into a writing career</h2>
+    <p>He joined his first bluegrass band around 1980. In 1990 he quit thirteen years of
+      software engineering on mainframe computers and spent the decade at home in
+      Cincinnati. That is when the playing got serious, four and five and six nights a
+      week, in a band called Union Springs with mandolin player and singer Dwight
+      McCall, later of J.D. Crowe and the New South.</p>
+    <p>He also signed on to BGRASS-L, the bluegrass listserv Frank Godbey had started at
+      the University of Kentucky in 1991. A few hundred people were on it, a lot of them
+      working in the business. Weisberger had time and opinions, so he posted constantly
+      about records he heard and shows he went to. Ken Irwin of Rounder Records was
+      reading. Around 1995 Irwin asked him to write a magazine piece on Rounder's
+      twenty-fifth anniversary, and Bluegrass Unlimited started sending him records to
+      review. That became ten years of liner notes, something like 140 albums' worth,
+      and three IBMA writing awards, the last of them shared with Sam Bush in 2023 for
+      <em>Radio John: The Songs of John Hartford</em>.</p>
+
+    <h2>Nashville, and never one paycheck</h2>
+    <p>At the end of 1999 Aubrey Holt asked him to play bass in the Wildwood Valley
+      Boys, his son Tony's band, on Rebel Records. They toured. Afterward Weisberger
+      went back to local dates around Cincinnati and could not make a living at it, so
+      he moved to Nashville at the start of 2003 and Chris Jones hired him for the Night
+      Drivers. He stayed sixteen years, on bass and harmony vocals, through seven
+      albums. He joined Roland White's band in 2004. From 2006 to 2018 he co-hosted
+      <em>Hand Picked</em> with Del McCoury on Sirius, then in syndication, then on
+      SiriusXM's Bluegrass Junction.</p>
+    <blockquote>
+      <p>"I didn't make even 50% of my income from any one source."</p>
+    </blockquote>
+
+    <h2>Backing into songwriting</h2>
+    <p>He wrote his first song because a Cincinnati label owner told Union Springs he
+      would cut their record if they brought original material. He was in his forties.
+      Co-writing came after the move to Nashville, and it stuck. He has now written with
+      close to 150 different people, and the credits run to nearly 200 cuts.</p>
+    <p>Writing with the artist solves a problem he never had to learn to solve. He does
+      not pitch songs. Several of his co-writes with Billy Strings are on <em>Home</em>,
+      including "Away From the Mire." "California Sober," written with Aaron Allen and
+      Strings, was recorded by Strings and Willie Nelson and nominated for a Grammy. "A
+      Hard Life Makes a Good Song," written with Jeremy Garrett, is on the Infamous
+      Stringdusters album <em>Laws of Gravity</em>. "Autumn Leaves Don't Fall" is a
+      co-write with <a href="/guests/thomas-cassell/">Thomas Cassell</a>. IBMA gave him
+      the first Songwriter of the Year award in 2012, and he won it again in 2025.</p>
+    <blockquote>
+      <p>"With co-writing, you look for productive relationships where people's
+        strengths balance each other out."</p>
+    </blockquote>
+
+    <h2>The desk job that is still a music job</h2>
+    <p>In 2018 Asheville Music Publishing brought him in as a writer and a partner to
+      build a bluegrass catalog. Then the label asked him to do A&amp;R part time, then
+      full time, which meant leaving the band. He moved to Brevard, North Carolina in
+      2019. Mountain Home is small for the record business and large for bluegrass,
+      about thirty artists and a staff of a dozen. He does artist relations, writes
+      press copy, produces, and sometimes ships CDs out of the warehouse.</p>
+    <p>The producing has settled into large collaborative projects, more by accident
+      than design. He co-produced <em>Roland White and Friends: A Tribute to the
+      Kentucky Colonels</em> with Ty Gilpin in 2018, and <em>Bluegrass Sings
+      Paxton</em>, an album of Tom Paxton songs sung by bluegrass artists, with Cathy
+      Fink. He produced the Bluegrass at the Crossroads sessions, one of which, a cut of
+      Earl Scruggs's "Ground Speed," won an IBMA award in 2021. He is the A&amp;R person
+      for Sister Sadie, whose album <em>No Fear</em> was nominated for a Grammy.</p>
+    <blockquote>
+      <p>"I feel very well recognized."</p>
+    </blockquote>
+
+    <h2>The streaming argument</h2>
+    <p>Weisberger is the one who speaks up when a post goes around saying streaming pays
+      artists nothing. His point is not that the complaint is wrong. It is that the
+      transaction changed shape. Selling a CD at the merch table feels like being a
+      musician, but economically it is retail, and once you have the money you have all
+      of it. Streaming pays a little every time somebody listens, and keeps paying. Past
+      roughly 1,200 streams of a track it passes what the sale would have paid.</p>
+    <p>So: sell merch for cash flow, because a CD is only one kind of merch and not a
+      good one. And pay for a subscription rather than listening on the ad tier, because
+      a paid stream pays more.</p>
+    <blockquote>
+      <p>"Think of your recorded music revenues as your retirement plan."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Jon on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="2" data-episode="14">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S2E14, My Conversation with Jon Weisberger, Part 1 of 2.</h3>
+          <p class="gep-note">Rochester to Cincinnati, the listserv, the writing career,
+            and the move to Nashville.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="2" data-episode="15">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S2E15, My Conversation with Jon Weisberger, Part 2 of 2.</h3>
+          <p class="gep-note">Co-writing, streaming economics, the awards, and two
+            listening recommendations.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Jon</h2>
+    <ul class="glinks">
+      <li><span>Mountain Home Music Company: </span><a href="https://mountainhomemusiccompany.com/" target="_blank" rel="noopener">mountainhomemusiccompany.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="https://elbrink.com/" rel="noopener">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/textmatch.js"></script>
+<script src="/assets/js/guestline.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/search.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

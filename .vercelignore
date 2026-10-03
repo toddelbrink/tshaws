@@ -1,6 +1,6 @@
 # Working files — not for deployment
-test/
-tools/
+# test/ and tools/ are uploaded so the build can run them. buildCommand in
+# vercel.json runs the tests, then deletes both folders before anything is served.
 exports/
 CLAUDE.md
 BUILD_BRIEF.md

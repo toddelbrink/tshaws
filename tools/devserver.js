@@ -12,7 +12,7 @@
  * cost real time on 2026-09-11: a fix was reported as failing when the browser
  * was simply still running the file from before it.
  *
- * Not deployed. tools/ is in .vercelignore.
+ * Not served. The Vercel build runs the tests, then deletes tools/ and test/.
  */
 'use strict';
 const http = require('http');

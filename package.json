@@ -2,6 +2,9 @@
   "name": "tshaws",
   "private": true,
   "description": "Website for T Shaw's Progressive Bluegrass",
+  "scripts": {
+    "test": "node test/guest-pages.js && node test/guests.js && node test/search.js && node test/watch-buttons.js"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
     "@vercel/blob": "^2.8.0",

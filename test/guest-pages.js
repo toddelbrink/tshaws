@@ -107,6 +107,35 @@ dirs.forEach((slug) => {
   eps[slug] = rows;
 });
 
+/* The same question for every page on the site, not only the guest pages.
+ * Twenty pages now link each other in their copy, and a renamed directory
+ * would 404 every link pointing at it. This runs on every Vercel build (see
+ * buildCommand in vercel.json), so a dead guest link stops the deploy instead
+ * of shipping. */
+console.log('\nEvery /guests/ link on the site has a page');
+function htmlFiles(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
+    if (d.name.startsWith('.') || d.name === 'node_modules') return [];
+    const p = path.join(dir, d.name);
+    if (d.isDirectory()) return htmlFiles(p);
+    return d.name.endsWith('.html') ? [p] : [];
+  });
+}
+const linkFiles = htmlFiles(ROOT);
+let linkCount = 0;
+linkFiles.forEach((file) => {
+  const html = fs.readFileSync(file, 'utf8');
+  [...html.matchAll(/href="(?:https:\/\/www\.tshawsprogressivebluegrass\.com)?\/guests\/([^"#?]+)"/g)]
+    .forEach((m) => {
+      linkCount++;
+      const slug = m[1].replace(/\/$/, '');
+      check(path.relative(ROOT, file) + ' -> /guests/' + m[1],
+        dirs.includes(slug) && m[1] === slug + '/');
+    });
+});
+check('found guest links to check (' + linkCount + ' across ' + linkFiles.length + ' files)',
+  linkCount > 0);
+
 async function live() {
   console.log('\nAgainst the live feed');
   const r = await fetch(BASE + '/api/episodes');

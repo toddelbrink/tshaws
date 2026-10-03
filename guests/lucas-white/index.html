@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<!--
+  A guest page. The prose, the at-a-glance rows and the sentence under each
+  episode are written copy and live here as markup. Everything that can change
+  on its own does not: the episode artwork, dates, running times and the Listen
+  and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
+  the season and episode numbers in data-season and data-episode.
+
+  The lead photo slot is empty and hidden. Pages ship before a still has been
+  picked. To add one: drop the file in /assets/photos/guests/, give the img in
+  the gportrait figure below a src and an alt, and take the hidden attribute off
+  the figure. Nothing else on the site needs to change.
+
+  Outbound addresses are the ones each domain actually resolves to, checked
+  2026-10-02, so a click costs no redirect hop. The link text is the domain as
+  the copy writes it.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F0E6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+<title>Lucas White · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Lead guitar in Off The Rails and bandleader of Nash Grass Unit, a Texas guitar champion who worked copyright policy in Washington. Lucas White on the podcast.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Lucas White · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Lead guitar in Off The Rails and bandleader of Nash Grass Unit, a Texas guitar champion who worked copyright policy in Washington. Lucas White on the podcast.">
+<meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/lucas-white/">
+<meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The T Shaw's Progressive Bluegrass badge: a guitar headstock above the show's name">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip" href="#page">Skip to content</a>
+<nav class="sitenav" aria-label="Main"><div class="inner">
+  <a class="navhome" href="/" aria-label="T Shaw’s Progressive Bluegrass, home">T Shaw’s</a>
+  <form class="navsearch" role="search" action="/search/" method="get">
+    <label class="sr-only" for="navq">Search the site</label>
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 1a6 6 0 1 0 3.7 10.7l3.3 3.3 1.4-1.4-3.3-3.3A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+    <input id="navq" name="q" type="search" placeholder="Search" autocomplete="off">
+  </form>
+  <a href="/episodes/">Podcast</a>
+  <a href="/guests/" aria-current="true">Guests</a>
+  <a href="/videos/">Videos</a>
+  <a href="/mortgages/">Mortgages</a>
+  <a href="/about/">About</a>
+</div></nav>
+
+<main id="page">
+<div class="wrap narrow" id="guestpage">
+
+  <p class="label">Guest</p>
+
+  <div class="ghead">
+    <h1>Lucas White</h1>
+    <p class="dek">Lead guitar in Off The Rails. Bandleader of Nash Grass Unit. A Texas
+      guitar champion who went to Washington and helped change how songwriters get
+      paid.</p>
+
+    <div class="gmeta">
+      <!-- Empty until a photo of this guest exists. See the note at the top
+           of this file. -->
+      <figure class="gportrait" hidden>
+        <img alt="" width="240" height="320" decoding="async">
+      </figure>
+    <table class="glance">
+      <caption class="sr-only">Lucas White at a glance</caption>
+      <tbody>
+        <tr><th scope="row">Plays</th><td>Guitar. Started on fiddle.</td></tr>
+        <tr><th scope="row">From</th><td>Corsicana, Texas</td></tr>
+        <tr><th scope="row">Home base</th><td>Nashville, Tennessee</td></tr>
+        <tr><th scope="row">Bands</th><td>Off The Rails (lead guitar, from the band's
+          first gig in 2023). Nash Grass Unit (guitar, bandleader)</td></tr>
+        <tr><th scope="row">Titles</th><td>Texas State Guitar Champion at 15</td></tr>
+        <tr><th scope="row">With Off The Rails</th><td>Second place, SPBGMA band
+          championship, 2024. First place, band contest at the Old Fiddlers' Convention
+          in Galax and at RockyGrass, 2024. "Concrete and Steel" won the instrumental
+          category at the Walnut Valley NewSong Showcase, 2024</td></tr>
+        <tr><th scope="row">On the show</th><td>Season 1, Episodes 9 and 10</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>A Texas kid on the bluegrass circuit</h2>
+    <p>Lucas White is from Corsicana, Texas. He started on fiddle at seven and moved to
+      guitar as a teenager. By 15 he had won the Texas State Guitar Championship.</p>
+    <p>School bent around the music. His district was persuaded that playing bluegrass
+      counted as an education, and he got the latitude to leave in the fall for IBMA
+      week. Summers went to Camp Bluegrass at South Plains College in Levelland and to
+      IBMA's Kids on Bluegrass. The cost was that nobody back home knew what he was
+      doing.</p>
+    <blockquote>
+      <p>"Everybody knew a Black Eyed Peas song, and they were all dancing to it in
+        lunch or something, and I have no clue what in the world they're even
+        referencing, because I've just been listening to Tony Rice Unit, Mountain
+        Heart."</p>
+    </blockquote>
+
+    <h2>Tony Rice's phone number</h2>
+    <p>He met Tony Rice in Argyle, Texas, when he was a kid. Rice gave him his phone
+      number.</p>
+    <blockquote>
+      <p>"He made the mistake of giving me his phone number. I think that was like in
+        October. And so what did I do? Thanksgiving, gave him a call. Christmas, gave
+        him a call. New Year's, gave him a call. Easter, gave him a call."</p>
+    </blockquote>
+    <p>Rice took the calls, and kept taking them for years. The connection went deeper
+      through Snuffy Smith, the luthier in King, North Carolina, who looked after Rice's
+      1935 Martin D-28. White spent three days at Smith's place as a young teenager,
+      before he could drive, playing the guitar and helping put it back in order. Rice
+      lived over in Reidsville and would turn up around midnight to see how it was
+      going.</p>
+    <blockquote>
+      <p>"Here I am pounding frets into the 1935 antique Tony Rice guitar."</p>
+    </blockquote>
+
+    <h2>Learning the business from the inside</h2>
+    <p>At 14 and 15 the producer and fiddler Jim VanCleve had him out on the road with
+      Mountain Heart. He changed strings, flipped merch and made sure the carts were
+      where they needed to be. Mostly he watched how the machinery worked.</p>
+    <p>VanCleve has produced Off The Rails from the start. Before the band's first
+      session he played a private show with them, so he would know how they sounded
+      together rather than on paper.</p>
+
+    <h2>The suit and the guitar</h2>
+    <p>White went to Washington and worked copyright policy on Capitol Hill. He was
+      there for the Music Modernization Act, the 2018 law that made streaming services
+      account to songwriters and publishers, and he has worked on the HITS Act, which
+      would let working artists write off what they spend making records.</p>
+    <blockquote>
+      <p>"All the societies, when they were coming in, they weren't talking to a suit or
+        a politician. They actually did get to talk to a musician who was in a position
+        of policymaking."</p>
+    </blockquote>
+    <p>He puts the motive plainly. He was making sure that when he is 70 he still gets
+      paid for the work he is doing now.</p>
+
+    <h2>Off The Rails</h2>
+    <p>The band came together sideways. Cory Chubb on guitar and lead vocals, Ben Hill
+      on mandolin and Taylor Gerber on bass were all in the Washington area when White
+      moved up for work. Hill, a friend since childhood, pulled him into the jam. A
+      festival offer came through White's contacts, and the group played its first gig
+      at the Red Daisy Festival in March 2023, on Doc Watson's hundredth birthday. Billy
+      Strings and his band played a night of Doc's music that weekend, which left a
+      crowd primed for a jam band and nobody scheduled to be one. Off The Rails did it
+      instead.</p>
+    <p>They came off that weekend deciding it would not be a side project. Frank Evans
+      on banjo and Cody Bauer on fiddle filled out the six-piece. Since then the band
+      has won band contests at Galax and RockyGrass and put out singles produced by
+      VanCleve: "Coming Home to You," "Ride Forever," written by
+      <a href="/guests/mason-via/">Mason Via</a> and Charles Humphrey III, and "She
+      Flies," co-written by <a href="/guests/jon-weisberger/">Jon Weisberger</a>.</p>
+
+    <h2>Three in the morning at Galax</h2>
+    <p>"Concrete and Steel" started in a campsite at the Old Fiddlers' Convention at
+      three in the morning, when Ben Hill put down the mandolin and picked up a
+      clawhammer banjo. White made everybody stop and asked him to play it again. The
+      instruments were already out, so the band built the tune on the spot.</p>
+    <p>The next afternoon they played it again in the campground, and a kid and his
+      grandmother walking the aisles stopped and started flatfooting to something that
+      had not existed twelve hours earlier.</p>
+    <blockquote>
+      <p>"You have two totally different eras of people enjoying one thing together, and
+        we created that."</p>
+    </blockquote>
+    <p>The tune went on to win the instrumental category at the Walnut Valley NewSong
+      Showcase.</p>
+
+    <h2>Nashville now</h2>
+    <p>White makes the case that Nashville has taken the progressive bluegrass scene
+      back from Colorado, and he has backed it with work. Approached by a bar in the
+      Nations neighborhood about becoming its house band, he turned the slot down and
+      built the room a weekly Saturday bluegrass night instead.</p>
+    <p>He leads Nash Grass Unit, a Nashville progressive bluegrass band recording its
+      first album. He has played the Grand Ole Opry and the Ryman and shared stages with
+      members of the Tony Rice Unit and with Vince Herman.</p>
+    <blockquote>
+      <p>"It's awesome that we can feel so euphoric and almost feel like it's a drug,
+        and get to call it bluegrass music."</p>
+    </blockquote>
+  </div>
+
+  <section class="section" aria-labelledby="geps-h">
+    <p class="label">Listen</p>
+    <h2 id="geps-h" class="big">Hear Lucas on the podcast</h2>
+    <ul class="geps">
+      <li class="gep" data-season="1" data-episode="9">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S1E9, My conversation with Lucas White from Off The Rails Part 1 of
+            2.</h3>
+          <p class="gep-note">How the band formed, the SPBGMA weekend, the first singles
+            and the plan.</p>
+        </div>
+      </li>
+      <li class="gep" data-season="1" data-episode="10">
+        <img class="gep-art ph" alt="" width="116" height="116">
+        <div>
+          <h3>S1E10, My conversation with Lucas White from Off The Rails part 2 of
+            2.</h3>
+          <p class="gep-note">Tony Rice's guitar, copyright law, and writing "Concrete
+            and Steel" at Galax.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="glinks-h">
+    <p class="label">Elsewhere</p>
+    <h2 id="glinks-h" class="big">Find Lucas</h2>
+    <ul class="glinks">
+      <li><span>Off The Rails: </span><a href="https://officialofftherails.com/" target="_blank" rel="noopener">officialofftherails.com</a></li>
+      <li><span>Nash Grass Unit: </span><a href="https://www.nashgrassunit.com/" target="_blank" rel="noopener">nashgrassunit.com</a></li>
+    </ul>
+  </section>
+
+  <section class="section onlybtn">
+    <a class="btn" href="/guests/">All guests</a>
+  </section>
+
+  <footer class="foot">
+    <div class="dotrule" style="margin-bottom:22px"></div>
+    <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="credit">Site by <a href="https://elbrink.com/" rel="noopener">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
+  </footer>
+
+</div>
+</main>
+
+<script src="/assets/js/player.js"></script>
+<script src="/assets/js/stats.js"></script>
+<script src="/assets/js/epvideo.js"></script>
+<script src="/assets/js/textmatch.js"></script>
+<script src="/assets/js/guestline.js"></script>
+<script src="/assets/js/home.js"></script>
+<script src="/assets/js/about.js"></script>
+<script src="/assets/js/guests.js"></script>
+<script src="/assets/js/guest.js"></script>
+<script src="/assets/js/episodes.js"></script>
+<script src="/assets/js/videos.js"></script>
+<script src="/assets/js/mortgages.js"></script>
+<script src="/assets/js/search.js"></script>
+<script src="/assets/js/nav.js"></script>
+</body>
+</html>

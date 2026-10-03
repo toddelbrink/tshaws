@@ -48,17 +48,24 @@ for (const slug of fs.readdirSync(path.join(ROOT, 'guests'), { withFileTypes: tr
    * belongs at the top of a search the way a name does. "Telluride", "Plays"
    * and "Home base" are facts about them, and a hit there is a page that
    * happens to mention a word. Lumping them together put two guest pages above
-   * the four episodes actually about Telluride. */
+   * the four episodes actually about Telluride.
+   * "Band" and "Before that" joined on 2026-10-02: the second set of pages
+   * labels a single current band that way, and Josiah Nelson's Mountain Grass
+   * Unit was otherwise invisible to a band search. Those rows write the role
+   * after a comma ("Mountain Grass Unit, fiddle"), so only the name before the
+   * first comma is kept. */
   const glanceHtml = between(html, '<table class="glance">', '</table>');
   const rows = [...glanceHtml.matchAll(/<th[^>]*>([\s\S]*?)<\/th>\s*<td[^>]*>([\s\S]*?)<\/td>/g)]
     .map((m) => [text(m[1]), text(m[2])]);
-  const IDENTITY = ['bands', 'company', 'role', 'does'];
+  const IDENTITY = ['bands', 'band', 'before that', 'company', 'role', 'does'];
   /* Parentheticals come out: "Wood Box Heroes (mandolin, 2024 to now)" is a
    * band name plus an instrument and a date, and leaving them in meant a
    * search for "banjo" counted as a band hit and pushed guests above the
    * episodes. What is left is band names, which is what rank 2 is for. */
+  const SINGLE = ['band', 'before that'];
   const bands = rows.filter((r) => IDENTITY.includes(r[0].toLowerCase()))
-    .map((r) => r[1].replace(/\s*\([^)]*\)/g, '')).join('. ');
+    .map((r) => SINGLE.includes(r[0].toLowerCase()) ? r[1].split(',')[0]
+      : r[1].replace(/\s*\([^)]*\)/g, '')).join('. ');
   const glance = rows.filter((r) => !IDENTITY.includes(r[0].toLowerCase()))
     .map((r) => r.join(': ')).join('. ');
   const prose = text(between(html, '<div class="prose">', '\n  </div>'));
