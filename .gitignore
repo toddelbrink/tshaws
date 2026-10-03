@@ -39,3 +39,9 @@ FROM_COWORK_copy-delivery.md
 # The 2 MB logo master. Source of the derivatives, never served, and it
 # carries editor metadata. Kept locally, never committed.
 assets/logo/t-shaws-logo.jpg
+
+# Full-size badge and headstock artwork, 2 to 4 MB each. Source files for
+# derivatives, never served. Kept locally, never committed.
+assets/logo/TShaw s.png
+assets/logo/tShaw s trns.png
+assets/logo/Guitar Stock/
