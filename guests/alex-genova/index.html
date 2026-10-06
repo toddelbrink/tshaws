@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is the guest's own, sent through Trevor, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. If the
+  guest asked for a photographer credit it is the figcaption; with no credit,
+  leave the figcaption out and nothing renders.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-09-19, so a click costs no redirect hop. The link text is the domain as
@@ -66,10 +67,13 @@
       bluegrass degree, a jazz guitar master's, and a teaching job at ETSU.</p>
 
     <div class="gmeta">
-      <!-- Empty until a photo of this guest exists. See the note at the top
-           of this file. -->
-      <figure class="gportrait" hidden>
-        <img alt="" width="240" height="320" decoding="async">
+      <figure class="gportrait">
+        <img src="/assets/photos/guests/alex-genova.jpg"
+             srcset="/assets/photos/guests/alex-genova.jpg 480w,
+                     /assets/photos/guests/alex-genova@2x.jpg 960w"
+             sizes="(min-width:720px) 240px, 240px"
+             width="240" height="320" loading="eager" decoding="async"
+             alt="Alex Genova with a banjo, in front of a piano.">
       </figure>
     <table class="glance">
       <caption class="sr-only">Alex Genova at a glance</caption>
@@ -82,8 +86,8 @@
         <tr><th scope="row">Schooling</th><td>Berklee College of Music (one year).
           Bluegrass degree, East Tennessee State University. Master's in jazz guitar,
           Middle Tennessee State University</td></tr>
-        <tr><th scope="row">Teaches</th><td>Banjo, student bands and an online American
-          roots music class at ETSU</td></tr>
+        <tr><th scope="row">Teaches</th><td>Banjo, student bands, an online American roots
+          music class and an in-person roots music theory course at ETSU</td></tr>
         <tr><th scope="row">On the show</th><td>Season 4, Episode 35</td></tr>
       </tbody>
     </table>
@@ -177,7 +181,8 @@
     <p>Alex lives in East Nashville and drives to Johnson City once a week to teach at
       ETSU. He gives one-on-one banjo lessons, leads two student bands that change from
       semester to semester, and teaches an online American roots music class that he
-      especially enjoys. He has also worked the school's summer bluegrass camp.</p>
+      especially enjoys. In fall 2026 he added an in-person course, "Bluegrass,
+      Old-Time and Roots Music Theory." He has also worked the school's summer bluegrass camp.</p>
 
     <h2>What's next</h2>
     <p>For years he has talked about making his own album. He has a stack of

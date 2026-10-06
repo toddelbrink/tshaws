@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is the guest's own, sent through Trevor, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. If the
+  guest asked for a photographer credit it is the figcaption; with no credit,
+  leave the figcaption out and nothing renders.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-10-02, so a click costs no redirect hop. The link text is the domain as
@@ -27,10 +28,10 @@
 <link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
 <title>Lucas White · T Shaw's Progressive Bluegrass</title>
-<meta name="description" content="Lead guitar in Off The Rails and bandleader of Nash Grass Unit, a Texas guitar champion who worked copyright policy in Washington. Lucas White on the podcast.">
+<meta name="description" content="Bandleader of Nash Grass Unit, founding lead guitarist of Off The Rails, a Texas guitar champion who worked on copyright law. Lucas White on the podcast.">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="Lucas White · T Shaw's Progressive Bluegrass">
-<meta property="og:description" content="Lead guitar in Off The Rails and bandleader of Nash Grass Unit, a Texas guitar champion who worked copyright policy in Washington. Lucas White on the podcast.">
+<meta property="og:description" content="Bandleader of Nash Grass Unit, founding lead guitarist of Off The Rails, a Texas guitar champion who worked on copyright law. Lucas White on the podcast.">
 <meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
 <meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/guests/lucas-white/">
 <meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
@@ -62,15 +63,18 @@
 
   <div class="ghead">
     <h1>Lucas White</h1>
-    <p class="dek">Lead guitar in Off The Rails. Bandleader of Nash Grass Unit. A Texas
-      guitar champion who went to Washington and helped change how songwriters get
-      paid.</p>
+    <p class="dek">Bandleader of Nash Grass Unit. Founding lead guitarist of Off The
+      Rails, the band he came on the show to talk about. A Texas guitar champion who
+      went to Washington and helped change how songwriters get paid.</p>
 
     <div class="gmeta">
-      <!-- Empty until a photo of this guest exists. See the note at the top
-           of this file. -->
-      <figure class="gportrait" hidden>
-        <img alt="" width="240" height="320" decoding="async">
+      <figure class="gportrait">
+        <img src="/assets/photos/guests/lucas-white.jpg"
+             srcset="/assets/photos/guests/lucas-white.jpg 480w,
+                     /assets/photos/guests/lucas-white@2x.jpg 960w"
+             sizes="(min-width:720px) 240px, 240px"
+             width="240" height="320" loading="eager" decoding="async"
+             alt="Lucas White with an acoustic guitar.">
       </figure>
     <table class="glance">
       <caption class="sr-only">Lucas White at a glance</caption>
@@ -78,8 +82,8 @@
         <tr><th scope="row">Plays</th><td>Guitar. Started on fiddle.</td></tr>
         <tr><th scope="row">From</th><td>Corsicana, Texas</td></tr>
         <tr><th scope="row">Home base</th><td>Nashville, Tennessee</td></tr>
-        <tr><th scope="row">Bands</th><td>Off The Rails (lead guitar, from the band's
-          first gig in 2023). Nash Grass Unit (guitar, bandleader)</td></tr>
+        <tr><th scope="row">Bands</th><td>Nash Grass Unit (guitar, bandleader). Off The
+          Rails (founding lead guitarist, from the band's first gig in 2023)</td></tr>
         <tr><th scope="row">Titles</th><td>Texas State Guitar Champion at 15</td></tr>
         <tr><th scope="row">With Off The Rails</th><td>Second place, SPBGMA band
           championship, 2024. First place, band contest at the Old Fiddlers' Convention
@@ -220,8 +224,8 @@
     <p class="label">Elsewhere</p>
     <h2 id="glinks-h" class="big">Find Lucas</h2>
     <ul class="glinks">
-      <li><span>Off The Rails: </span><a href="https://officialofftherails.com/" target="_blank" rel="noopener">officialofftherails.com</a></li>
       <li><span>Nash Grass Unit: </span><a href="https://www.nashgrassunit.com/" target="_blank" rel="noopener">nashgrassunit.com</a></li>
+      <li><span>Off The Rails: </span><a href="https://officialofftherails.com/" target="_blank" rel="noopener">officialofftherails.com</a></li>
     </ul>
   </section>
 

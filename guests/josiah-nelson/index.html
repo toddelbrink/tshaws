@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is the guest's own, sent through Trevor, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. If the
+  guest asked for a photographer credit it is the figcaption; with no credit,
+  leave the figcaption out and nothing renders.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-10-02, so a click costs no redirect hop. The link text is the domain as
@@ -66,17 +67,21 @@
       ETSU, and by his own account the old man of a very young band.</p>
 
     <div class="gmeta">
-      <!-- Empty until a photo of this guest exists. See the note at the top
-           of this file. -->
-      <figure class="gportrait" hidden>
-        <img alt="" width="240" height="320" decoding="async">
+      <figure class="gportrait">
+        <img src="/assets/photos/guests/josiah-nelson.jpg"
+             srcset="/assets/photos/guests/josiah-nelson.jpg 480w,
+                     /assets/photos/guests/josiah-nelson@2x.jpg 960w"
+             sizes="(min-width:720px) 240px, 240px"
+             width="240" height="320" loading="eager" decoding="async"
+             alt="Josiah Nelson playing fiddle on a lit stage.">
+        <figcaption>Photo by Alex Culbreth</figcaption>
       </figure>
     <table class="glance">
       <caption class="sr-only">Josiah Nelson at a glance</caption>
       <tbody>
         <tr><th scope="row">Plays</th><td>Fiddle, mandolin, octave mandolin,
           guitar</td></tr>
-        <tr><th scope="row">Home base</th><td>Bristol, Tennessee</td></tr>
+        <tr><th scope="row">Home base</th><td>Nashville, Tennessee</td></tr>
         <tr><th scope="row">Band</th><td>Mountain Grass Unit, fiddle</td></tr>
         <tr><th scope="row">Before that</th><td>Tray Wellington Band, mandolin</td></tr>
         <tr><th scope="row">Teaches</th><td>Adjunct faculty in bluegrass, old-time and
@@ -107,8 +112,8 @@
 
     <h2>East Tennessee</h2>
     <p>He started college at Colorado State and was not happy there. East Tennessee
-      State had a bluegrass program, so he transferred, and he has been in the region
-      ever since. He had picked up a mandolin in high school. He got serious about it
+      State had a bluegrass program, so he transferred, and he stayed in the region
+      for years. He had picked up a mandolin in high school. He got serious about it
       the summer before the move, and more serious once he landed in Johnson City, where
       he lived with <a href="/guests/thomas-cassell/">Thomas Cassell</a>. Then Tray
       Wellington asked him to join his band on mandolin, which settled the question of

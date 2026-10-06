@@ -6,10 +6,11 @@
   and Watch controls are resolved at runtime by /assets/js/guest.js, matched on
   the season and episode numbers in data-season and data-episode.
 
-  The lead photo slot is empty and hidden. Pages ship before a still has been
-  picked. To add one: drop the file in /assets/photos/guests/, give the img in
-  the gportrait figure below a src and an alt, and take the hidden attribute off
-  the figure. Nothing else on the site needs to change.
+  The lead photo is the guest's own, sent through Trevor, cropped to the
+  portrait slot and stripped of metadata. To swap it, replace the two files in
+  /assets/photos/guests/ named for this page and update the alt text. If the
+  guest asked for a photographer credit it is the figcaption; with no credit,
+  leave the figcaption out and nothing renders.
 
   Outbound addresses are the ones each domain actually resolves to, checked
   2026-10-02, so a click costs no redirect hop. The link text is the domain as
@@ -66,10 +67,13 @@
       out of Grand Haven, Michigan. Founding member of Full Cord.</p>
 
     <div class="gmeta">
-      <!-- Empty until a photo of this guest exists. See the note at the top
-           of this file. -->
-      <figure class="gportrait" hidden>
-        <img alt="" width="240" height="320" decoding="async">
+      <figure class="gportrait">
+        <img src="/assets/photos/guests/katie-kirchner.jpg"
+             srcset="/assets/photos/guests/katie-kirchner.jpg 480w,
+                     /assets/photos/guests/katie-kirchner@2x.jpg 960w"
+             sizes="(min-width:720px) 240px, 240px"
+             width="240" height="320" loading="eager" decoding="async"
+             alt="Katie Kirchner in a green hat and glasses.">
       </figure>
     <table class="glance">
       <caption class="sr-only">Katie Kirchner at a glance</caption>
