@@ -5,7 +5,10 @@
   'use strict';
 
   var settings = null, polishReady = false, index = null, findTarget = null;
-  var chosen = { pick: null, override: null };   // looked-up videos, by slot
+  var chosen = { pick: null, override: null, now: null };   // looked-up videos, by slot
+  var stopNow = false;   // Stop was pressed, so Save clears Feature now outright
+  // Each slot's link field and preview box.
+  var SLOT = { pick: ['picklink', 'pickpreview'], override: ['ovlink', 'ovpreview'], now: ['nowlink', 'nowpreview'] };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -72,7 +75,26 @@
     var start = new Date($('ovstart').value).getTime(), end = new Date($('ovend').value).getTime();
     return end > start ? { start: start, end: end } : null;
   }
+  // Feature now beats a schedule while both run, and with random on it can
+  // hand the bumped random video its day back. Say both out loud.
+  function nowLines() {
+    var on = !!$('nowlink').value.trim(), random = $('random').checked;
+    $('nowrestorebox').hidden = !on || !random;
+    var after = $('nowafter');
+    after.hidden = !on;
+    if (!on) return;
+    var end = $('nowend').value ? new Date($('nowend').value).getTime() : null;
+    var w = scheduleWindow();
+    var then = !random ? 'your pinned video comes back'
+      : $('nowrestore').checked ? 'today\u2019s random video gets its full day back, 24 hours from then'
+      : 'back to a random video of the day';
+    if (end && w && w.start < end && w.end > end) then = 'the scheduled video takes over until ' + when(new Date(w.end).toISOString());
+    after.textContent = 'When this ends: ' + then + '.' +
+      (end && w && w.start < end && w.end > Date.now() ? ' The scheduled video is covered while this one is up.' : '');
+  }
+
   function thenLines() {
+    nowLines();
     var w = scheduleWindow(), now = Date.now();
     var after = $('ovafter');
     after.hidden = !w || w.end <= now;
@@ -89,7 +111,8 @@
     // off, the schedule while it has a link.
     var pickOk = count('pickcap', 'pickcount') || $('random').checked;
     var ovOk = count('ovcap', 'ovcount') || !$('ovlink').value.trim();
-    $('save').disabled = !(pickOk && ovOk);
+    var nowOk = count('nowcap', 'nowcount') || !$('nowlink').value.trim();
+    $('save').disabled = !(pickOk && ovOk && nowOk);
   }
 
   function showLogin(msg) {
@@ -113,6 +136,20 @@
     var now = Date.now();
     $('ovstart').value = toLocalInput(o ? o.start : new Date(now).toISOString());
     $('ovend').value = toLocalInput(o ? o.end : new Date(now + 48 * 3600e3).toISOString());
+    // Feature now. Once its time is up the form is empty and ready for the
+    // next one, and a line says whether the bumped video is having its day.
+    var n = settings.now, running = n && Date.parse(n.end) > now;
+    chosen.now = running ? n.video : null;
+    $('nowlink').value = running ? 'https://youtu.be/' + n.video.id : '';
+    $('nowcap').value = running && n.caption || '';
+    $('nowpreview').innerHTML = videoCard(chosen.now);
+    $('nowend').value = toLocalInput(running ? n.end : new Date(now + 24 * 3600e3).toISOString());
+    $('nowrestore').checked = running ? n.restore !== false : true;
+    var giving = n && !running && n.restore && settings.random !== false && Date.parse(n.end) + 864e5 > now;
+    $('nowended').hidden = !giving;
+    if (giving) $('nowended').textContent = '\u201c' + n.video.title + '\u201d ended ' + when(n.end) +
+      '. The random video it bumped is back until ' + when(new Date(Date.parse(n.end) + 864e5).toISOString()) + '.';
+    stopNow = false;
     document.querySelectorAll('[data-polish]').forEach(function (b) { b.hidden = !polishReady; });
     counts();
   }
@@ -123,7 +160,9 @@
       // A unique query skips the edge cache, so this is what a visitor gets next.
       var r = await fetch('/api/videos?mode=featured&admin=' + Date.now());
       var f = await r.json();
-      var why = f.source === 'override' ? 'Scheduled, until ' + when(f.until)
+      var why = f.source === 'now' ? 'Featured now, until ' + when(f.until)
+              : f.source === 'restored' ? 'Today\u2019s random video, given its day back until ' + when(f.until)
+              : f.source === 'override' ? 'Scheduled, until ' + when(f.until)
               : f.source === 'pinned' ? 'Your pick, until you switch random back on'
               : 'Random video of the day';
       box.innerHTML = videoCard(f.video, why) + (f.caption ? '<p class="note">' + esc(f.caption) + '</p>' : '') +
@@ -145,8 +184,8 @@
 
   // Look a link up as soon as it is pasted, so Trevor sees what he picked.
   async function lookup(slot) {
-    var input = slot === 'pick' ? $('picklink') : $('ovlink');
-    var preview = slot === 'pick' ? $('pickpreview') : $('ovpreview');
+    var input = $(SLOT[slot][0]);
+    var preview = $(SLOT[slot][1]);
     var link = input.value.trim();
     chosen[slot] = null;
     if (!link) { preview.innerHTML = ''; return; }
@@ -157,7 +196,13 @@
   }
 
   async function save() {
-    var body = { action: 'save', random: $('random').checked, pick: null, override: null };
+    var body = { action: 'save', random: $('random').checked, pick: null, override: null, now: null };
+    if ($('nowlink').value.trim()) {
+      body.now = { link: $('nowlink').value.trim(), caption: $('nowcap').value,
+        end: fromLocalInput($('nowend').value), restore: $('nowrestore').checked };
+    } else if (stopNow) {
+      body.stopNow = true;
+    }
     if (!body.random) body.pick = { link: $('picklink').value.trim(), caption: $('pickcap').value };
     if ($('ovlink').value.trim()) {
       body.override = { link: $('ovlink').value.trim(), caption: $('ovcap').value,
@@ -249,6 +294,20 @@
     $('ovend').addEventListener('change', thenLines);
     $('picklink').addEventListener('change', function () { lookup('pick'); });
     $('ovlink').addEventListener('change', function () { lookup('override'); });
+    $('nowlink').addEventListener('change', function () { lookup('now'); });
+    $('nowlink').addEventListener('input', function () {
+      // Emptying the field of a running feature is the same as pressing Stop.
+      if (!this.value.trim() && settings && settings.now && Date.parse(settings.now.end) > Date.now()) stopNow = true;
+      counts();
+    });
+    $('nowcap').addEventListener('input', counts);
+    $('nowend').addEventListener('change', thenLines);
+    $('nowrestore').addEventListener('change', thenLines);
+    $('nowstop').addEventListener('click', function () {
+      $('nowlink').value = ''; $('nowcap').value = ''; $('nowpreview').innerHTML = ''; chosen.now = null;
+      stopNow = true; counts();
+      say('savemsg', 'Feature now stopped. Press Save to make it stick.');
+    });
     $('ovclear').addEventListener('click', function () {
       $('ovlink').value = ''; $('ovcap').value = ''; $('ovpreview').innerHTML = ''; chosen.override = null; counts();
       say('savemsg', 'Schedule cleared. Press Save to make it stick.');
@@ -267,7 +326,7 @@
     $('findres').addEventListener('click', function (e) {
       var b = e.target.closest('button[data-id]');
       if (!b) return;
-      var input = findTarget === 'pick' ? $('picklink') : $('ovlink');
+      var input = $(SLOT[findTarget][0]);
       input.value = 'https://youtu.be/' + b.dataset.id;
       $('finder').close();
       lookup(findTarget);

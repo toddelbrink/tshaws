@@ -44,7 +44,7 @@ const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 // library falls back to an in-memory cache, and failed reads or writes are
 // logged, not thrown, so the worst case is the old behavior.
 const { getCache, waitUntil, addCacheTag, dangerouslyDeleteByTag } = require('@vercel/functions');
-const { isAdmin, sameOrigin, readSettings, chosenFeature, readPrivateJSON, writePrivateJSON } = require('../lib/admin');
+const { isAdmin, sameOrigin, readSettings, chosenFeature, nextChange, readPrivateJSON, writePrivateJSON } = require('../lib/admin');
 // Bump the version whenever the index's shape changes. The stored copy
 // outlives deploys, so an old shape would otherwise be served for hours.
 const INDEX_KEY = 'video-index:v1';
@@ -411,42 +411,60 @@ module.exports = async (req, res) => {
     // about eight and a half years. The day turns at 2 a.m. Eastern.
     if (mode === 'featured') {
       await tagged('featured');
-      // Trevor's own choice from the admin page wins: a scheduled video while
-      // its window runs, or a pinned one while the random rotation is off.
+
+      // The random pick for whatever day `date` falls in. Skips anything
+      // YouTube will not embed, rather than feature a dead frame.
+      async function dailyVideo(date) {
+        const { index } = await loadIndex();
+        const day = easternDay(date);
+        const order = shuffled(index.videos);
+        for (let k = 0; k < 5; k++) {
+          const pick = order[(day.number + k) % order.length];
+          const d = await yt('/videos', { part: 'snippet,contentDetails,status', id: pick.i });
+          const v = d.items && d.items[0];
+          if (v && v.status && v.status.embeddable !== false && v.status.privacyStatus !== 'private') {
+            const sec = parseIsoDuration(v.contentDetails && v.contentDetails.duration);
+            return {
+              day: day.key,
+              video: {
+                id: v.id, title: v.snippet.title, published: v.snippet.publishedAt,
+                thumbnail: pickThumb(v.snippet.thumbnails),
+                duration: sec, durationLabel: formatDuration(sec)
+              }
+            };
+          }
+        }
+        throw Object.assign(new Error('no_embeddable_video'), { httpStatus: 502 });
+      }
+
+      // Trevor's own choice from the admin page wins. The order is in
+      // chosenFeature: Feature now, a schedule, the day Feature now bumped,
+      // then a pin while random is off.
       const now = Date.now();
       const settings = await readSettings();
       const chosen = chosenFeature(settings, now);
+      // Never let the edge hold an answer past the moment it changes: an
+      // override ending, a schedule starting, a bumped day running out.
+      const next = nextChange(settings, now);
+      const left = next ? Math.max(5, Math.floor((next - now) / 1000)) : null;
+      const edge = left != null ? `s-maxage=${Math.min(300, left)}` : null;
+
+      if (chosen && chosen.source === 'restored') {
+        // The random video of the day Feature now displaced, for its full day.
+        const d = await dailyVideo(new Date(chosen.restoreFrom));
+        res.setHeader('cache-control', edge || 's-maxage=300');
+        res.status(200).json({ mode: 'featured', source: 'restored', day: d.day, video: d.video, caption: null, until: chosen.until });
+        return;
+      }
       if (chosen) {
-        // Never let the edge hold an override past its end time.
-        const left = chosen.until ? Math.max(5, Math.floor((Date.parse(chosen.until) - now) / 1000)) : 300;
-        res.setHeader('cache-control', `s-maxage=${Math.min(300, left)}`);
+        res.setHeader('cache-control', edge || 's-maxage=300');
         res.status(200).json({ mode: 'featured', source: chosen.source, video: chosen.video, caption: chosen.caption, until: chosen.until });
         return;
       }
-      // A scheduled video that has not started yet must appear on time.
-      const o = settings.override;
-      const startsIn = o && Date.parse(o.start) > now ? Math.floor((Date.parse(o.start) - now) / 1000) : null;
-      const { index } = await loadIndex();
-      const day = easternDay(new Date());
-      const order = shuffled(index.videos);
-      let video = null;
-      // Skip anything YouTube will not embed, rather than feature a dead frame.
-      for (let k = 0; k < 5 && !video; k++) {
-        const pick = order[(day.number + k) % order.length];
-        const d = await yt('/videos', { part: 'snippet,contentDetails,status', id: pick.i });
-        const v = d.items && d.items[0];
-        if (v && v.status && v.status.embeddable !== false && v.status.privacyStatus !== 'private') {
-          const sec = parseIsoDuration(v.contentDetails && v.contentDetails.duration);
-          video = {
-            id: v.id, title: v.snippet.title, published: v.snippet.publishedAt,
-            thumbnail: pickThumb(v.snippet.thumbnails),
-            duration: sec, durationLabel: formatDuration(sec)
-          };
-        }
-      }
-      if (!video) throw Object.assign(new Error('no_embeddable_video'), { httpStatus: 502 });
-      res.setHeader('cache-control', startsIn != null ? `s-maxage=${Math.max(5, Math.min(300, startsIn))}` : 's-maxage=300, stale-while-revalidate=300');
-      res.status(200).json({ mode: 'featured', source: 'daily', day: day.key, video, caption: null });
+      // Nothing chosen: today's random video.
+      const d = await dailyVideo(new Date(now));
+      res.setHeader('cache-control', edge || 's-maxage=300, stale-while-revalidate=300');
+      res.status(200).json({ mode: 'featured', source: 'daily', day: d.day, video: d.video, caption: null });
       return;
     }
 

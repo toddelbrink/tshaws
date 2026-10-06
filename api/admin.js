@@ -4,7 +4,7 @@
 //   POST { action: 'login', password }
 //   POST { action: 'logout' }
 //   POST { action: 'lookup', link }            resolve a YouTube link or id
-//   POST { action: 'save', random, pick, override }
+//   POST { action: 'save', random, pick, override, now, stopNow }
 //   POST { action: 'polish', text }            rewrite a caption with Claude
 //
 // Every POST must come from this site (Origin check), and every action but
@@ -186,12 +186,12 @@ module.exports = async (req, res) => {
   }
 
   if (action === 'save') {
-    for (const slot of [body.pick, body.override]) {
+    for (const slot of [body.pick, body.override, body.now]) {
       if (slot && String(slot.caption || '').trim().length > CAPTION_MAX) {
         return send(res, 400, { error: `Captions can be up to ${CAPTION_MAX} characters.` });
       }
     }
-    const next = { random: body.random !== false, pick: null, override: null };
+    const next = { random: body.random !== false, pick: null, override: null, now: null };
 
     if (body.pick && body.pick.link) {
       const r = await lookupVideo(body.pick.link);
@@ -210,6 +210,32 @@ module.exports = async (req, res) => {
       const r = await lookupVideo(body.override.link);
       if (r.error) return send(res, 400, { error: 'Scheduled video: ' + r.error });
       next.override = { video: r.video, start, end, caption: captionOf(body.override) };
+    }
+
+    // Feature now: up from the moment it is first saved, until its end time.
+    // Saving the same video again keeps its original start, because the start
+    // decides which day's random video it bumped and gives back afterward.
+    if (body.now && body.now.link) {
+      const end = isoOrNull(body.now.end);
+      if (!end || Date.parse(end) <= Date.now()) {
+        return send(res, 400, { error: 'Feature now needs an end time later than now.' });
+      }
+      const r = await lookupVideo(body.now.link);
+      if (r.error) return send(res, 400, { error: 'Feature now: ' + r.error });
+      const prev = (await readSettings()).now;
+      const same = prev && prev.video && prev.video.id === r.video.id && Date.parse(prev.end) > Date.now();
+      next.now = {
+        video: r.video, start: same ? prev.start : new Date().toISOString(), end,
+        caption: captionOf(body.now), restore: body.now.restore !== false
+      };
+    } else if (!body.stopNow) {
+      // An ended Feature now still matters while it is giving the bumped video
+      // its day back. The form shows it as ended and sends nothing, so saving
+      // the pin or a schedule must not quietly drop it. Stop is the only way
+      // to clear it early.
+      const prev = (await readSettings()).now;
+      const ended = prev && Date.parse(prev.end) <= Date.now();
+      if (ended && prev.restore && Date.parse(prev.end) + 86400000 > Date.now()) next.now = prev;
     }
 
     const saved = await writeSettings(next);

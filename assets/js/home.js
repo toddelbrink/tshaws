@@ -137,7 +137,7 @@
         '<img src="' + esc(thumb) + '" alt="" decoding="async">' +
         // The signature control. Its label says what kind of pick this is.
         '<span class="sig" aria-hidden="true"><span class="disc">' + PLAY + '</span>' +
-          (feat.source === 'daily' ? 'Video of the day' : 'Watch') +
+          (feat.source === 'daily' || feat.source === 'restored' ? 'Video of the day' : 'Watch') +
           '<span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>' +
         (v.durationLabel ? '<span class="dur">' + esc(v.durationLabel) + '</span>' : '') +
         '<span class="sr-only">Play ' + esc(v.title) + '</span>' +
