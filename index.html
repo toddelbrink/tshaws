@@ -56,9 +56,21 @@
 
   <p class="wrap introline">Documenting and sharing all things bluegrass.</p>
 
-  <section class="section wrap toplatest" aria-label="Latest episode">
-    <p class="label">Latest Episode</p>
-    <div id="latest" class="feature"><p class="status">Loading the latest episode...</p></div>
+  <!-- The newest podcast episode, and beside it the newest YouTube video for
+       seven days after it is published. home.js fills both and unhides the
+       video tile only when there is one to show; with none, the episode sits
+       alone, as it always did. -->
+  <section class="section wrap toplatest" aria-label="Latest">
+    <div class="latestpair">
+      <div class="lt-pod">
+        <p class="label">Latest Podcast Episode</p>
+        <div id="latest" class="feature"><p class="status">Loading the latest episode...</p></div>
+      </div>
+      <div class="lt-yt" hidden>
+        <p class="label">Latest YouTube Video</p>
+        <div id="latestyt" class="ytile"></div>
+      </div>
+    </div>
   </section>
 
   <section class="section wrap featured" aria-label="Featured video">

@@ -1,11 +1,14 @@
-/* Homepage. Pulls the latest episode, three more, today's featured video and
- * the newest videos.
+/* Homepage. Pulls the latest episode, the latest YouTube video, three more
+ * episodes, today's featured video and the newest videos.
  * Owns no audio and no video: it hands off to TSPlayer and to the shared
  * lightbox that videos.js installs. */
 (function () {
   'use strict';
 
   var eps = null, vids = null, feat = null, subscribed = false;
+  // The latest-video tile needs all three answers before it can choose, so it
+  // waits on each one settling, whether it worked or not.
+  var epvDone = false, vidsDone = false, featDone = false;
 
   // ZenCast serves the same artwork at several sizes and the feed hands us the
   // 3000x3000 "large" one, which is 470 KB. Measured 2026-09-07: a full season
@@ -145,6 +148,78 @@
       '</div>';
   }
 
+  /* The latest YouTube video, beside the latest episode.
+   *
+   * Decided on the 2026-10-04 call: the tile shows the newest video for seven
+   * days after it was published, then drops off and the episode sits alone
+   * again. When Trevor publishes a batch, the last one published wins.
+   *
+   * Two videos never qualify, so the tile cannot repeat something already on
+   * screen. The video of the latest episode is that episode's Watch button
+   * (Todd, 2026-10-05). Today's featured video is the full-width frame just
+   * below. Either one passes the tile to the next newest video, and that one
+   * still has to be inside its seven days. */
+  var TILE_DAYS = 7;
+
+  function norm(t) { return String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+
+  // The same rule epvideo.js uses for a Watch button: a video YouTube will not
+  // play in an iframe is a tile that does nothing, and unknown fails closed.
+  function playable(v) {
+    return !!v && !!v.id && v.embeddable === true &&
+      v.privacyStatus === 'public' && v.regionRestricted !== true;
+  }
+
+  function latestVideo() {
+    if (!vids || !vids.videos) return null;
+    var ep = eps && eps.episodes && eps.episodes[0];
+    var skip = {};
+    var epv = ep && videoFor(ep);
+    if (epv) skip[epv.id] = 1;
+    if (feat && feat.video) skip[feat.video.id] = 1;
+    // A backstop for the episode's own video in case the playlist lookup
+    // failed: Trevor titles the upload the same as the episode.
+    var epTitle = ep ? norm(ep.title) : '';
+    var cutoff = Date.now() - TILE_DAYS * 86400000;
+    var list = vids.videos.slice().sort(function (a, b) {
+      return (Date.parse(b.published) || 0) - (Date.parse(a.published) || 0);
+    });
+    for (var i = 0; i < list.length; i++) {
+      var v = list[i];
+      var when = Date.parse(v.published);
+      if (!(when >= cutoff)) return null;       // newest first, so nothing later qualifies
+      if (skip[v.id] || !playable(v)) continue;
+      if (epTitle && norm(v.title) === epTitle) continue;
+      return v;
+    }
+    return null;
+  }
+
+  function renderLatestVideo(root) {
+    if (!(epvDone && vidsDone && featDone)) return;
+    var wrap = root.querySelector('.lt-yt');
+    var pair = root.querySelector('.latestpair');
+    if (!wrap || !pair) return;
+    var v = latestVideo();
+    if (!v) {
+      wrap.hidden = true;
+      pair.classList.remove('paired');
+      return;
+    }
+    var thumb = v.thumbnail ? gridThumb(v.thumbnail.url) : 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+    root.querySelector('#latestyt').innerHTML =
+      '<button type="button" class="yshot" data-video="' + esc(v.id) + '" data-eptitle="' + esc(v.title) + '">' +
+        '<img src="' + esc(thumb) + '" alt="" decoding="async">' +
+        '<span class="disc" aria-hidden="true">' + PLAY + '</span>' +
+        (v.durationLabel ? '<span class="dur">' + esc(v.durationLabel) + '</span>' : '') +
+        '<span class="sr-only">Play ' + esc(v.title) + '</span>' +
+      '</button>' +
+      '<div class="ycap"><h2>' + esc(v.title) + '</h2>' +
+        '<p class="meta">' + esc(nice(v.published)) + '</p></div>';
+    wrap.hidden = false;
+    pair.classList.add('paired');
+  }
+
   // One subscription for the whole page, matching the episodes page pattern.
   function sync(root, snap) {
     snap = snap || { guid: null, playing: false, position: 0, duration: 0 };
@@ -201,13 +276,20 @@
 
       // Episodes paint immediately; the Watch affordance arrives a beat later
       // and re-renders. Listening must never wait on the YouTube round trip.
-      if (window.TSEpVideo) {
+      if (window.TSEpVideo && !epvDone) {
         window.TSEpVideo.load(eps.episodes).then(function () {
           var h = document.getElementById('home');
           if (h && window.TSEpVideo.count()) { renderLatest(h); renderRecent(h); sync(h); }
+        }, function () {}).then(function () {
+          epvDone = true;
+          var h = document.getElementById('home');
+          if (h) renderLatestVideo(h);
         });
+      } else {
+        epvDone = true;
       }
     } catch (e) {
+      epvDone = true;
       root.querySelector('#latest').innerHTML =
         '<p class="status">Could not load episodes right now.</p>';
     }
@@ -220,8 +302,9 @@
           feat = rf.ok ? await rf.json() : { video: null };
         }
       } catch (e) { feat = { video: null }; }
+      featDone = true;
       var hf = document.getElementById('home');
-      if (hf) renderFeatured(hf);
+      if (hf) { renderFeatured(hf); renderLatestVideo(hf); }
     })();
 
     try {
@@ -231,6 +314,8 @@
       }
       renderVideos(root);
     } catch (e) { /* the section simply stays empty */ }
+    vidsDone = true;
+    renderLatestVideo(root);
 
     if (!subscribed) {
       subscribed = true;

@@ -768,6 +768,49 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .introline{font-size:21px;font-style:italic;line-height:1.45;color:var(--ink-2);padding-top:24px}
 @media(max-width:560px){.introline{font-size:19px}}
 .introline + .section.toplatest{padding-top:18px}
+
+/* ---- the Latest pair: episode, and the newest video for seven days ----
+   With no video tile the episode keeps the full width, exactly as before.
+   When there is one, wide screens split the row in two and the episode
+   tightens to fit its half. Below 820px the video drops under it as a compact row,
+   thumbnail beside title, so the page does not open on two full-width video
+   frames in a row with the featured video just under it. */
+.latestpair .label{margin-bottom:22px}
+.lt-yt{margin-top:30px}
+.ytile .yshot{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;
+  border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;
+  background:var(--stage);cursor:pointer}
+.ytile .yshot img{width:100%;height:100%;object-fit:cover}
+.ytile .disc{position:absolute;left:12px;bottom:12px;width:40px;height:40px;border-radius:50%;
+  background:var(--brass);color:var(--stage);display:grid;place-items:center;
+  box-shadow:0 2px 12px rgba(26,23,20,.3);transition:transform .2s}
+.ytile .disc svg{width:16px;height:16px;fill:currentColor;margin-left:2px}
+.ytile .yshot:hover .disc,.ytile .yshot:focus-visible .disc{transform:scale(1.06)}
+.ytile .dur{position:absolute;right:8px;bottom:8px;background:rgba(26,23,20,.88);color:#fff;
+  font-family:var(--sans);font-size:12px;font-weight:600;padding:3px 7px;border-radius:2px}
+.ytile .ycap{margin-top:12px}
+.ytile .ycap h2{font-size:clamp(20px,2.6vw,24px);margin:0 0 6px}
+@media(prefers-reduced-motion:reduce){.ytile .disc{transition:none}.ytile .yshot:hover .disc{transform:none}}
+@media(min-width:820px){
+  .latestpair.paired{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .latestpair.paired .lt-yt{margin-top:0}
+  .latestpair.paired .feature{grid-template-columns:120px 1fr;gap:20px}
+  .latestpair.paired .feature h2{font-size:24px;margin:4px 0 8px}
+  .latestpair.paired .feature .desc{-webkit-line-clamp:3;margin:10px 0 16px}
+}
+@media(max-width:819px){
+  .ytile{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+  .ytile .ycap{margin-top:0}
+  .ytile .ycap h2{font-size:20px;margin:0 0 4px}
+}
+@media(max-width:600px){
+  .ytile{grid-template-columns:150px 1fr;gap:14px}
+  .ytile .ycap h2{font-size:18px}
+  .ytile .disc{left:8px;bottom:8px;width:30px;height:30px}
+  .ytile .disc svg{width:12px;height:12px}
+  .ytile .dur{right:5px;bottom:5px;font-size:11px;padding:2px 5px}
+  .lt-yt{margin-top:24px}
+}
 /* Phones up to 440px wide need tighter spacing to keep the name and all six
    items on one line. Measured at 360, 375, 390 and 412px. */
 @media(max-width:440px){.sitenav .inner{padding-left:12px;padding-right:12px;gap:8px 8px}
