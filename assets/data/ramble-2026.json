@@ -1,0 +1,503 @@
+{
+ "event": "IBMA Bluegrass Ramble 2026",
+ "city": "Chattanooga, TN",
+ "timezone": "America/New_York",
+ "source": "https://worldofbluegrass.org/ramble-schedule/",
+ "last_checked": "2026-10-07",
+ "notes": [
+  "All times are PM, Eastern.",
+  "Tue Barrelhouse, The Price Sisters: IBMA's page prints 5:50 - 7:30, which overlaps The Litch Brothers on the same stage. Entered as 6:50 - 7:30 pending IBMA's confirmation."
+ ],
+ "stages": [
+  {
+   "id": "rv",
+   "short": "Riverview",
+   "name": "Riverview",
+   "venue": "Chattanooga Convention Center",
+   "building": "cc"
+  },
+  {
+   "id": "mk",
+   "short": "McKenzie",
+   "name": "McKenzie",
+   "venue": "Chattanooga Convention Center",
+   "building": "cc"
+  },
+  {
+   "id": "bb",
+   "short": "Barrelhouse",
+   "name": "Barrelhouse Ballroom",
+   "venue": "",
+   "building": "bb"
+  },
+  {
+   "id": "hf",
+   "short": "Hi-Fi Clyde's",
+   "name": "Hi-Fi Clyde's",
+   "venue": "",
+   "building": "hf"
+  },
+  {
+   "id": "sb",
+   "short": "Songbirds",
+   "name": "Songbirds",
+   "venue": "",
+   "building": "sb"
+  },
+  {
+   "id": "st",
+   "short": "Stratus",
+   "name": "Stratus Rooftop at Caption",
+   "venue": "",
+   "building": "st"
+  },
+  {
+   "id": "ft",
+   "short": "Feed Table",
+   "name": "Feed Table & Tavern Event Space",
+   "venue": "",
+   "building": "ft"
+  }
+ ],
+ "days": [
+  {
+   "id": "tue",
+   "date": "2026-10-20",
+   "label": "Tue 20"
+  },
+  {
+   "id": "wed",
+   "date": "2026-10-21",
+   "label": "Wed 21"
+  }
+ ],
+ "sets": [
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "5:40",
+   "end": "6:10",
+   "act": "Weary Ramblers"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "6:20",
+   "end": "6:50",
+   "act": "Dave Adkins & Mountain Soul"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "7:00",
+   "end": "7:30",
+   "act": "Nick Dumas & Branchline"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "7:40",
+   "end": "8:10",
+   "act": "Williamson Branch"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "8:20",
+   "end": "8:50",
+   "act": "The Slocan Ramblers"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "9:00",
+   "end": "9:30",
+   "act": "Tony Kamel & Kym Warner"
+  },
+  {
+   "day": "tue",
+   "stage": "rv",
+   "start": "9:40",
+   "end": "10:10",
+   "act": "Nick Chandler & Delivered"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "5:50",
+   "end": "6:20",
+   "act": "Veranda"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "6:30",
+   "end": "7:00",
+   "act": "Seth Mulder & Midnight Run"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "7:10",
+   "end": "7:40",
+   "act": "The Amanda Cook Band"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "7:50",
+   "end": "8:20",
+   "act": "Pickers Anonymous"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "8:30",
+   "end": "9:00",
+   "act": "Crying Uncle Bluegrass Band"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "9:10",
+   "end": "9:40",
+   "act": "Missy Raines & Allegheny"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "9:50",
+   "end": "10:20",
+   "act": "Pitney Meyer"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "10:30",
+   "end": "11:00",
+   "act": "Wood Box Heroes"
+  },
+  {
+   "day": "tue",
+   "stage": "bb",
+   "start": "6:00",
+   "end": "6:30",
+   "act": "The Litch Brothers"
+  },
+  {
+   "day": "tue",
+   "stage": "bb",
+   "start": "6:50",
+   "end": "7:30",
+   "act": "The Price Sisters"
+  },
+  {
+   "day": "tue",
+   "stage": "bb",
+   "start": "7:50",
+   "end": "8:30",
+   "act": "Thunder and Rain"
+  },
+  {
+   "day": "tue",
+   "stage": "bb",
+   "start": "8:50",
+   "end": "9:30",
+   "act": "The Cleverlys"
+  },
+  {
+   "day": "tue",
+   "stage": "hf",
+   "start": "6:20",
+   "end": "7:00",
+   "act": "Pickers Anonymous"
+  },
+  {
+   "day": "tue",
+   "stage": "hf",
+   "start": "7:20",
+   "end": "8:00",
+   "act": "Tonewood String Band"
+  },
+  {
+   "day": "tue",
+   "stage": "hf",
+   "start": "8:20",
+   "end": "9:00",
+   "act": "Seth Mulder & Midnight Run"
+  },
+  {
+   "day": "tue",
+   "stage": "sb",
+   "start": "6:30",
+   "end": "7:10",
+   "act": "NEWGRASSLANDS"
+  },
+  {
+   "day": "tue",
+   "stage": "sb",
+   "start": "7:30",
+   "end": "8:10",
+   "act": "Wood Belly String Band"
+  },
+  {
+   "day": "tue",
+   "stage": "sb",
+   "start": "8:30",
+   "end": "9:10",
+   "act": "Veranda"
+  },
+  {
+   "day": "tue",
+   "stage": "st",
+   "start": "6:40",
+   "end": "7:20",
+   "act": "Kristy Cox"
+  },
+  {
+   "day": "tue",
+   "stage": "st",
+   "start": "7:40",
+   "end": "8:20",
+   "act": "Lonesome Ace Stringband"
+  },
+  {
+   "day": "tue",
+   "stage": "st",
+   "start": "8:40",
+   "end": "9:20",
+   "act": "Country Gongbang"
+  },
+  {
+   "day": "tue",
+   "stage": "ft",
+   "start": "6:50",
+   "end": "7:30",
+   "act": "Rock Hearts"
+  },
+  {
+   "day": "tue",
+   "stage": "ft",
+   "start": "7:50",
+   "end": "8:30",
+   "act": "Pitney Meyer"
+  },
+  {
+   "day": "tue",
+   "stage": "ft",
+   "start": "8:50",
+   "end": "9:30",
+   "act": "Rick Faris Band"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "5:40",
+   "end": "6:10",
+   "act": "John Hartford Fiddle Tune Project"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "6:20",
+   "end": "6:50",
+   "act": "Kristy Cox"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "7:00",
+   "end": "7:30",
+   "act": "Wood Belly String Band"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "7:40",
+   "end": "8:10",
+   "act": "Thunder and Rain"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "8:20",
+   "end": "8:50",
+   "act": "Tonewood String Band"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "9:00",
+   "end": "9:30",
+   "act": "The Litch Brothers"
+  },
+  {
+   "day": "wed",
+   "stage": "rv",
+   "start": "9:40",
+   "end": "10:10",
+   "act": "The Cleverlys"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "5:50",
+   "end": "6:20",
+   "act": "Water Tower"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "6:30",
+   "end": "7:00",
+   "act": "Stillhouse Junkies"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "7:10",
+   "end": "7:40",
+   "act": "Rock Hearts"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "7:50",
+   "end": "8:20",
+   "act": "Rick Faris Band"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "8:30",
+   "end": "9:00",
+   "act": "NEWGRASSLANDS"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "9:10",
+   "end": "9:40",
+   "act": "The Price Sisters"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "9:50",
+   "end": "10:20",
+   "act": "Country Gongbang"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "10:30",
+   "end": "11:00",
+   "act": "Lonesome Ace Stringband"
+  },
+  {
+   "day": "wed",
+   "stage": "st",
+   "start": "6:10",
+   "end": "6:50",
+   "act": "Wood Box Heroes"
+  },
+  {
+   "day": "wed",
+   "stage": "st",
+   "start": "7:10",
+   "end": "7:50",
+   "act": "Crying Uncle Bluegrass Band"
+  },
+  {
+   "day": "wed",
+   "stage": "st",
+   "start": "8:10",
+   "end": "8:50",
+   "act": "Water Tower"
+  },
+  {
+   "day": "wed",
+   "stage": "hf",
+   "start": "6:20",
+   "end": "7:00",
+   "act": "Nick Dumas & Branchline"
+  },
+  {
+   "day": "wed",
+   "stage": "hf",
+   "start": "7:20",
+   "end": "8:00",
+   "act": "Weary Ramblers"
+  },
+  {
+   "day": "wed",
+   "stage": "hf",
+   "start": "8:20",
+   "end": "9:00",
+   "act": "The Slocan Ramblers"
+  },
+  {
+   "day": "wed",
+   "stage": "sb",
+   "start": "6:30",
+   "end": "7:10",
+   "act": "Dave Adkins & Mountain Soul"
+  },
+  {
+   "day": "wed",
+   "stage": "sb",
+   "start": "7:30",
+   "end": "8:10",
+   "act": "Tony Kamel & Kym Warner"
+  },
+  {
+   "day": "wed",
+   "stage": "sb",
+   "start": "8:30",
+   "end": "9:10",
+   "act": "John Hartford Fiddle Tune Project"
+  },
+  {
+   "day": "wed",
+   "stage": "bb",
+   "start": "6:40",
+   "end": "7:20",
+   "act": "Ralph Stanley II & The Clinch Mountain Boys"
+  },
+  {
+   "day": "wed",
+   "stage": "bb",
+   "start": "7:40",
+   "end": "8:20",
+   "act": "The Amanda Cook Band"
+  },
+  {
+   "day": "wed",
+   "stage": "bb",
+   "start": "8:40",
+   "end": "9:20",
+   "act": "Stillhouse Junkies"
+  },
+  {
+   "day": "wed",
+   "stage": "ft",
+   "start": "6:50",
+   "end": "7:30",
+   "act": "Nick Chandler & Delivered"
+  },
+  {
+   "day": "wed",
+   "stage": "ft",
+   "start": "7:50",
+   "end": "8:30",
+   "act": "Missy Raines & Allegheny"
+  },
+  {
+   "day": "wed",
+   "stage": "ft",
+   "start": "8:50",
+   "end": "9:30",
+   "act": "Williamson Branch"
+  }
+ ]
+}

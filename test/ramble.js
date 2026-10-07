@@ -1,0 +1,112 @@
+/* Ramble schedule data tests, offline.
+ *
+ *   node test/ramble.js
+ *
+ * assets/data/ramble-2026.json is the only source for /ramble/. It is typed
+ * by hand from IBMA's schedule page, so a typo would otherwise ship as a set
+ * at the wrong time or on a stage that does not exist. Any failure here stops
+ * the deploy.
+ *
+ * The set count is pinned. If IBMA adds or drops a set, change SET_COUNT.
+ */
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const ROOT = path.join(__dirname, '..');
+const FILE = path.join(ROOT, 'assets/data/ramble-2026.json');
+const SET_COUNT = 61;
+
+let failures = 0;
+function check(name, cond, detail) {
+  if (cond) { console.log('  ok   ' + name); return; }
+  failures++;
+  console.log('  FAIL ' + name + (detail ? '  -> ' + detail : ''));
+}
+
+// Every time is PM and written as on IBMA's page, "5:40" or "10:30".
+const TIME = /^(1[0-2]|[1-9]):[0-5]\d$/;
+function minutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return (h % 12 + 12) * 60 + m;
+}
+const label = (s) => `${s.day} ${s.stage} ${s.start} ${s.act}`;
+
+// Returns a list of problems, empty when the data is good. Kept separate from
+// the checks so the self-test below can feed it broken copies.
+function problems(d) {
+  const out = [];
+  if (!d || !Array.isArray(d.stages) || !Array.isArray(d.days) || !Array.isArray(d.sets)) {
+    return ['stages, days and sets must all be lists'];
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d.last_checked || '')) out.push('last_checked is not a YYYY-MM-DD date');
+  const stages = new Set(), days = new Set(), ids = new Set();
+  for (const s of d.stages) {
+    if (stages.has(s.id)) out.push('duplicate stage ' + s.id);
+    stages.add(s.id);
+    if (!s.short || !s.name || !s.building) out.push('stage ' + s.id + ' is missing short, name or building');
+  }
+  for (const x of d.days) {
+    if (days.has(x.id)) out.push('duplicate day ' + x.id);
+    days.add(x.id);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(x.date || '') || !x.label) out.push('day ' + x.id + ' is missing a date or label');
+  }
+  for (const s of d.sets) {
+    if (!days.has(s.day)) out.push('unknown day: ' + label(s));
+    if (!stages.has(s.stage)) out.push('unknown stage: ' + label(s));
+    if (!s.act || typeof s.act !== 'string') out.push('no act name: ' + label(s));
+    if (!TIME.test(s.start) || !TIME.test(s.end)) { out.push('bad time: ' + label(s)); continue; }
+    if (minutes(s.end) <= minutes(s.start)) out.push('ends before it starts: ' + label(s));
+    // The page builds each set's id from day, stage and start, and saved picks
+    // use that id, so it has to be unique.
+    const id = s.day + s.stage + s.start.replace(':', '');
+    if (ids.has(id)) out.push('two sets share an id: ' + label(s));
+    ids.add(id);
+  }
+  const good = d.sets.filter((s) => TIME.test(s.start) && TIME.test(s.end));
+  for (let i = 0; i < good.length; i++) {
+    for (let j = i + 1; j < good.length; j++) {
+      const a = good[i], b = good[j];
+      if (a.day === b.day && a.stage === b.stage &&
+          minutes(a.start) < minutes(b.end) && minutes(b.start) < minutes(a.end)) {
+        out.push('same stage overlap: ' + label(a) + ' / ' + label(b));
+      }
+    }
+  }
+  if (d.sets.length !== SET_COUNT) out.push(`${d.sets.length} sets, expected ${SET_COUNT}`);
+  return out;
+}
+
+console.log('\nThe Ramble data file');
+let data = null;
+try { data = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (e) { /* reported below */ }
+check('is valid JSON', data !== null);
+if (data) {
+  const p = problems(data);
+  check('has no problems', p.length === 0, p.join('; '));
+  check('says its times are Eastern', data.timezone === 'America/New_York');
+}
+
+// The checks above only mean something if they can fail. Break a copy of the
+// data one way at a time and make sure each break is caught.
+console.log('\nThe checks catch a broken file');
+if (data) {
+  const broken = (name, edit) => {
+    const copy = JSON.parse(JSON.stringify(data));
+    edit(copy);
+    check(name, problems(copy).length > 0);
+  };
+  broken('an unknown stage', (d) => { d.sets[0].stage = 'zz'; });
+  broken('an unknown day', (d) => { d.sets[0].day = 'thu'; });
+  broken('an end time before the start', (d) => { d.sets[0].end = d.sets[0].start; });
+  broken('a malformed time', (d) => { d.sets[0].start = '17:40'; });
+  broken('two sets overlapping on one stage', (d) => {
+    const a = d.sets.find((s) => s.day === 'tue' && s.stage === 'bb' && s.start === '6:50');
+    a.start = '5:50';
+  });
+  broken('a missing set', (d) => { d.sets.pop(); });
+  broken('a bad last_checked', (d) => { d.last_checked = 'Oct 7'; });
+}
+
+console.log('');
+if (failures) { console.log(failures + ' failing'); process.exit(1); }
+console.log('all passing');
