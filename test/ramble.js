@@ -107,6 +107,39 @@ if (data) {
   broken('a bad last_checked', (d) => { d.last_checked = 'Oct 7'; });
 }
 
+// The page's "On the podcast" links. Each act must be in the data under that
+// exact name, and each guest page must exist, or the link is dead.
+console.log('\nOn the podcast links');
+const JS = fs.readFileSync(path.join(ROOT, 'assets/js/ramble.js'), 'utf8');
+const block = (JS.match(/var PODCAST = \{([\s\S]*?)\n  \};/) || [])[1] || '';
+const entries = [...block.matchAll(/'([^']+)':\s*\{[^}]*href:\s*'([^']+)'/g)];
+check('the map is readable', entries.length > 0);
+for (const [, act, href] of entries) {
+  check(act + ' is an act in the data', !!data && data.sets.some((s) => s.act === act));
+  const m = href.match(/^\/guests\/([a-z0-9-]+)\/$/);
+  check(href + ' is a guest page that exists',
+    !!m && fs.existsSync(path.join(ROOT, 'guests', m[1], 'index.html')));
+}
+
+// Pages swap without reloading, so a visitor who clicks through to /ramble/
+// runs whatever scripts the first page loaded. Every page that soft-navigates
+// has to carry ramble.js, or the schedule never draws.
+console.log('\nEvery page loads the schedule script');
+const pages = [];
+(function walk(d) {
+  for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+    if (['node_modules', '.git', 'test', 'tools'].includes(e.name)) continue;
+    const p = path.join(d, e.name);
+    if (e.isDirectory()) walk(p);
+    else if (e.name === 'index.html') pages.push(p);
+  }
+})(ROOT);
+const missing = pages.filter((p) => {
+  const h = fs.readFileSync(p, 'utf8');
+  return h.includes('/assets/js/nav.js') && !h.includes('/assets/js/ramble.js');
+}).map((p) => path.relative(ROOT, p));
+check(pages.length + ' pages checked, none missing it', missing.length === 0, missing.join(', '));
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');

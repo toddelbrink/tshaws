@@ -1,24 +1,11 @@
 <!DOCTYPE html>
 <!--
-  Mortgages. Trevor is a loan officer and the podcast was built in part to
-  reach this audience as a lender, so this page is the business behind the
-  hobby.
+  The Bluegrass Ramble schedule. Everything inside #ramble is drawn by
+  /assets/js/ramble.js from /assets/data/ramble-2026.json, the only copy of the
+  schedule. Fix a set time there, not here. test/ramble.js checks that file on
+  every deploy.
 
-  Everything a human has to confirm lives in the block at the top of
-  /assets/js/mortgages.js. Nothing on this page needs editing to change it.
-
-  The states sentence and the footer block are approved by Alameda Mortgage
-  compliance, and both are built from the COMPLIANCE and REFERRAL blocks in the
-  JS. Do not hand-edit either here.
-
-  Both NMLS numbers stay on this page: Trevor's #929381 in the role line, and
-  Alameda Mortgage's #271603 in the compliance footer, which also repeats his.
-  The destination application carries both, so a page that links into it should
-  too. Do not drop either in a copy swap. Grep for 929381 and 271603 before
-  committing anything that touches this page.
-
-  The apply button works while MORTGAGE_CTA_ENABLED is true in
-  /assets/js/mortgages.js. It is on, and it must be off on a Hobby plan.
+  Picks are kept in the visitor's own browser. Nothing is sent anywhere.
 -->
 <html lang="en">
 <head>
@@ -31,13 +18,13 @@
 <link rel="stylesheet" href="/assets/css/base.css">
 <link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
-<title>Mortgages · T Shaw's Progressive Bluegrass</title>
-<meta name="description" content="Trevor Shaw is a loan officer as well as a bluegrass documentarian.">
+<title>Ramble Schedule · T Shaw's Progressive Bluegrass</title>
+<meta name="description" content="Plan your nights at IBMA's Bluegrass Ramble in Chattanooga, Oct 20 and 21. Star the sets you want, see what overlaps, and share your plan.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Mortgages · T Shaw's Progressive Bluegrass">
-<meta property="og:description" content="Trevor Shaw is a loan officer as well as a bluegrass documentarian.">
+<meta property="og:title" content="Ramble Schedule · T Shaw's Progressive Bluegrass">
+<meta property="og:description" content="Plan your nights at IBMA's Bluegrass Ramble in Chattanooga, Oct 20 and 21. Star the sets you want, see what overlaps, and share your plan.">
 <meta property="og:site_name" content="T Shaw's Progressive Bluegrass">
-<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/mortgages/">
+<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/ramble/">
 <meta property="og:image" content="https://www.tshawsprogressivebluegrass.com/assets/logo/share-1200x630.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -56,31 +43,30 @@
   <a href="/episodes/">Podcast</a>
   <a href="/guests/">Guests</a>
   <a href="/videos/">Videos</a>
-  <a href="/mortgages/" aria-current="page">Mortgages</a>
+  <a href="/mortgages/">Mortgages</a>
   <a href="/about/">About</a>
 </div></nav>
 
 <main id="page">
-<div class="wrap narrow" id="mortgages">
+<div class="wrap" id="ramble">
 
-  <p class="label">Mortgages</p>
-  <h1>Trevor Shaw</h1>
-  <p class="meta" id="role"></p>
+  <h1 class="label plain rhead">IBMA Bluegrass Ramble · Oct 20-21</h1>
 
-  <div class="mort-head">
-    <div class="portrait" id="portrait" hidden></div>
-    <div class="prose" id="bio"></div>
+  <div class="rbar">
+    <div class="rrow">
+      <div class="rseg" id="rday" role="group" aria-label="Night"></div>
+      <label class="rsel" id="rstagewrap"><span class="sr-only">Stage</span><select id="rstage"></select></label>
+      <div class="rtabs" id="rtabs" role="group" aria-label="View"></div>
+    </div>
   </div>
 
-  <div class="cta">
-    <button type="button" class="btn solid" id="apply">Start your application<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 7h9.2L7.6 3.4 9 2l6 6-6 6-1.4-1.4L11.2 9H2z"/></svg></button>
-  </div>
-
-  <div class="disclosure" id="disclosure"></div>
+  <div id="rout"><p class="status">Loading the schedule…</p></div>
 
   <footer class="foot">
     <div class="dotrule" style="margin-bottom:22px"></div>
     <p>&copy; <span class="yr"></span> Trevor Shaw. All rights reserved.</p>
+    <p>Email the show: <a href="mailto:progressivebluegrass@gmail.com">progressivebluegrass@gmail.com</a></p>
+    <p class="tm">Apple and Apple Podcasts are trademarks of Apple Inc., registered in the U.S. and other countries.</p>
     <p class="credit">Site by <a href="https://elbrink.com/" rel="noopener">Todd Elbrink</a><a class="adminlink" href="/admin/" data-hard-nav>Admin</a></p>
   </footer>
 
