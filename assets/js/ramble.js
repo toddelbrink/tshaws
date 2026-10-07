@@ -7,11 +7,18 @@
  * Picks live in the visitor's browser under one localStorage key. Every read
  * and write is wrapped, because private windows and locked-down browsers throw
  * on storage, and the schedule must still work there; picks just will not
- * outlast the visit.
+ * outlast the visit. Safari also clears a site's storage after seven days of
+ * use without a visit, which is why My Ramble pushes the share link: the link
+ * carries the whole plan and never expires.
  *
  * A set's id is its night, stage and start time, "tuemk1030". A saved pick
  * survives a deploy as long as that set does not move. If IBMA moves a set, its
  * id changes and the old pick is dropped on load, which is the honest result.
+ *
+ * The share link is /ramble/#plan= and the ids joined by dots. It lives in the
+ * hash so the server never sees it. Opening one shows that plan without
+ * touching the visitor's own saved picks. The first change they make adopts it
+ * as theirs and saves it. Unknown ids are ignored.
  *
  * Every page loads every script, so this one does nothing unless #ramble is on
  * the page, and it redraws on the soft-navigation 'tspage' event. */
@@ -20,6 +27,7 @@
 
   var DATA_URL = '/assets/data/ramble-2026.json';
   var STORE = 'tshaws-ramble-2026';
+  var GRID_START = '5:40', GRID_END = '11:00', PX = 1.8; // pixels per minute
 
   /* Acts with a guest on the podcast. Act name exactly as in the data file,
    * then the guest and their page. Add one only when the page exists:
@@ -28,11 +36,12 @@
     'Wood Box Heroes': { guest: 'Thomas Cassell', href: '/guests/thomas-cassell/' }
   };
 
-  var data = null;     // the parsed file, with sets built out below
+  var data = null;     // the parsed file
   var sets = [];       // every set, sorted by night then start
   var byId = {};
-  var picks = null;    // Set of ids
-  var S = { tab: 'browse', day: null, stage: 'all', open: null, toast: '' };
+  var picks = null;    // Set of ids on screen: the visitor's own, or a shared plan
+  var own = null;      // the visitor's saved picks while a shared plan is showing
+  var S = { tab: 'browse', day: null, view: 'list', stage: 'all', open: null, toast: '', link: '' };
 
   /* ---- helpers ---- */
 
@@ -40,6 +49,7 @@
     var p = t.split(':');
     return (Number(p[0]) % 12 + 12) * 60 + Number(p[1]);
   }
+  function clock(m) { return (Math.floor(m / 60) % 12 || 12) + ':' + String(m % 60).padStart(2, '0'); }
   function esc(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -62,7 +72,7 @@
       { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
   }
 
-  /* ---- storage ---- */
+  /* ---- storage and the share link ---- */
 
   function load() {
     var ids = [];
@@ -73,11 +83,31 @@
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(Array.from(picks))); } catch (e) { /* see top */ }
   }
+  function fromHash() {
+    var m = location.hash.match(/^#plan=([a-z0-9.]*)$/);
+    if (!m) return null;
+    var ids = m[1].split('.').filter(function (i) { return byId[i]; });
+    return ids.length ? new Set(ids) : null;
+  }
+  function shareUrl() {
+    return location.origin + '/ramble/#plan=' + picked().map(function (x) { return x.id; }).join('.');
+  }
+  function dropHash() {
+    if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+  }
+
+  // Any change to a shared plan makes it the visitor's own.
+  function changed() {
+    if (own) { own = null; dropHash(); }
+    save();
+  }
 
   /* ---- markup ---- */
 
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.8 6.1 6.7.7-5 4.5 1.4 6.6L12 17.1l-5.9 3.4 1.4-6.6-5-4.5 6.7-.7z"/></svg>';
   var CROSS = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.4 2L8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>';
+  var LIST = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 3h12v2H2zM2 7h12v2H2zM2 11h12v2H2z"/></svg>';
+  var GRID = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M1.5 1.5h5.5v5.5H1.5zM9 1.5h5.5v5.5H9zM1.5 9h5.5v5.5H1.5zM9 9h5.5v5.5H9z"/></svg>';
 
   function button(key, value, label, extra) {
     var on = String(S[key]) === String(value);
@@ -87,21 +117,32 @@
 
   function controls(root) {
     var browse = S.tab === 'browse';
+    // "Tue 20" on most phones, "Tue" where the row would otherwise crush the
+    // stage menu. CSS picks one.
     root.querySelector('#rday').innerHTML = data.days.map(function (d) {
-      return button('day', d.id, esc(d.label));
+      return button('day', d.id, '<span class="rlong">' + esc(d.label) + '</span><span class="rshort" aria-hidden="true">' +
+        esc(d.label.split(' ')[0]) + '</span>');
     }).join('');
+    root.querySelector('#rview').innerHTML = button('view', 'list', LIST, ' aria-label="List view"') +
+      button('view', 'grid', GRID, ' aria-label="Grid view"');
     root.querySelector('#rtabs').innerHTML = button('tab', 'browse', 'Schedule') +
       button('tab', 'mine', 'My Ramble<span class="rcount">' + picks.size + '</span>');
     var sel = root.querySelector('#rstage');
+    // Short names, the same ones every row shows, so a chosen stage fits the
+    // menu on a narrow phone.
     if (!sel.options.length) {
       sel.innerHTML = '<option value="all">All stages</option>' + data.stages.map(function (s) {
-        return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
+        return '<option value="' + s.id + '">' + esc(s.short) + '</option>';
       }).join('');
     }
     sel.value = S.stage;
     sel.classList.toggle('active', S.stage !== 'all');
     root.querySelector('#rday').hidden = !browse;
+    root.querySelector('#rview').hidden = !browse;
     root.querySelector('#rstagewrap').hidden = !browse;
+    // Hidden but still holding its space in grid view, so the switch beside
+    // it does not jump sideways under the visitor's thumb.
+    root.querySelector('#rstagewrap').classList.toggle('off', S.view === 'grid');
   }
 
   function detail(x) {
@@ -112,6 +153,10 @@
     }).join('') : '<span>This is the only Ramble set for this act.</span>';
     if (pod) h += '<span>On the podcast: <a href="' + pod.href + '">' + esc(pod.guest) + '</a></span>';
     return h + '</div>';
+  }
+
+  function starLabel(x, on) {
+    return esc((on ? 'Remove ' : 'Add ') + x.act + ', ' + dayLabel(x.day) + ' ' + x.start + ' to ' + x.end + ', ' + x.stageShort);
   }
 
   function list() {
@@ -132,10 +177,38 @@
           '<div class="rm one">' + esc(x.stageShort) + ' · to ' + x.end +
           (c ? ' · <b>Overlap</b>' : '') + (PODCAST[x.act] ? ' · <b>On the podcast</b>' : '') + '</div></div>' +
           '<button type="button" class="rstar" data-pick="' + x.id + '" aria-pressed="' + on + '" aria-label="' +
-          esc((on ? 'Remove ' : 'Add ') + x.act + ', ' + dayLabel(x.day) + ' ' + x.start + ', ' + x.stageShort) + '">' + STAR + '</button>' +
+          starLabel(x, on) + '">' + STAR + '</button>' +
           (open ? detail(x) : '') + '</div>';
       }).join('') + '</div></div>';
     }).join('') + '</div>';
+  }
+
+  /* Stages across, time down. On a phone it scrolls sideways inside its own
+   * box, never the page. Tapping a block toggles the pick. */
+  function grid() {
+    var t0 = minutes(GRID_START), t1 = minutes(GRID_END), H = (t1 - t0) * PX + 16;
+    var y = function (m) { return Math.round((m - t0) * PX + 8); };
+    var h = '<p class="rhint">Tap a set to pick it. Scroll sideways for every stage.</p>' +
+      '<div class="rgridbox" tabindex="0" role="region" aria-label="Every stage, ' + esc(dayLabel(S.day)) + '">' +
+      '<div class="rgrid" style="grid-template-columns:40px repeat(' + data.stages.length + ',minmax(104px,1fr))">' +
+      '<div class="rgh"></div>' + data.stages.map(function (s) {
+        return '<div class="rgh one">' + esc(s.short) + '</div>';
+      }).join('');
+    h += '<div class="rcol rtime" style="height:' + H + 'px">';
+    for (var t = Math.ceil(t0 / 30) * 30; t <= t1; t += 30) {
+      h += '<span style="top:' + y(t) + 'px">' + clock(t) + '</span>';
+    }
+    h += '</div>';
+    data.stages.forEach(function (s) {
+      h += '<div class="rcol" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
+        sets.filter(function (x) { return x.day === S.day && x.stage === s.id; }).map(function (x) {
+          var on = picks.has(x.id), c = on && clashes(x).length > 0;
+          return '<button type="button" class="rblk' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +
+            '" aria-pressed="' + on + '" aria-label="' + starLabel(x, on) + '" style="top:' + y(x.s) + 'px;height:' +
+            (Math.round((x.e - x.s) * PX) - 3) + 'px"><span>' + esc(x.act) + '</span><small>' + x.start + ' to ' + x.end + '</small></button>';
+        }).join('') + '</div>';
+    });
+    return h + '</div></div>';
   }
 
   /* An overlap note sits under the earlier of the two picks. If either act has
@@ -156,10 +229,14 @@
 
   function mine() {
     var P = picked();
-    if (!P.length) {
-      return '<div class="rempty"><p><strong>Nothing picked yet.</strong> Tap the star on any set in the Schedule. Tap an act’s name to see when it plays again.</p></div>';
-    }
     var h = '';
+    if (own) {
+      h += '<div class="rshared"><p><strong>This is a plan someone shared with you.</strong> Change anything and it becomes yours, replacing your own picks on this device.</p>' +
+        (own.size ? '<button type="button" class="btn" data-mine="1">Show my own picks</button>' : '') + '</div>';
+    }
+    if (!P.length) {
+      return h + '<div class="rempty"><p><strong>Nothing picked yet.</strong> Tap the star on any set in the Schedule. Tap an act’s name to see when it plays again.</p></div>';
+    }
     data.days.forEach(function (d) {
       var L = P.filter(function (x) { return x.day === d.id; });
       if (!L.length) return;
@@ -187,8 +264,11 @@
         h += '</div>';
       });
     });
-    h += '<div class="ractions"><button type="button" class="btn" data-clear="1">Clear all</button>' +
-      '<span class="rtoast" role="status">' + esc(S.toast) + '</span></div>';
+    h += '<div class="ractions"><button type="button" class="btn solid" data-share="1">Copy my plan</button>' +
+      '<button type="button" class="btn" data-clear="1">Clear all</button></div>' +
+      '<p class="rtoast" role="status">' + esc(S.toast) + '</p>' +
+      (S.link ? '<label class="rlink"><span class="sr-only">Your plan link</span><input type="text" readonly value="' + esc(S.link) + '"></label>' : '') +
+      '<p class="rkeep">Picks are saved on this device only, and some phones clear them after a week away. Text yourself the link to keep your plan safe.</p>';
     return h;
   }
 
@@ -197,9 +277,10 @@
   function focusKey(el) {
     if (!el || !el.dataset) return null;
     var d = el.dataset;
-    if (d.pick) return '[data-pick="' + d.pick + '"]' + (el.classList.contains('rx') ? '.rx' : '.rstar');
+    if (d.pick) return '[data-pick="' + d.pick + '"].' + el.classList[0];
     if (d.open) return '[data-open="' + d.open + '"]';
     if (d.k) return '[data-k="' + d.k + '"][data-v="' + d.v + '"]';
+    if (d.share) return '[data-share]';
     return null;
   }
 
@@ -207,8 +288,11 @@
     var root = document.getElementById('ramble');
     if (!root || !data) return;
     var key = root.contains(document.activeElement) ? focusKey(document.activeElement) : null;
+    var box = root.querySelector('.rgridbox'), sx = box ? box.scrollLeft : 0;
     controls(root);
-    root.querySelector('#rout').innerHTML = S.tab === 'mine' ? mine() : list();
+    root.querySelector('#rout').innerHTML = S.tab === 'mine' ? mine() : S.view === 'grid' ? grid() : list();
+    box = root.querySelector('.rgridbox');
+    if (box) box.scrollLeft = sx;
     if (key) {
       var el = root.querySelector(key);
       if (el) el.focus({ preventScroll: true });
@@ -217,29 +301,46 @@
 
   /* ---- events, bound once for the life of the document ---- */
 
-  function toggle(id) {
-    if (picks.has(id)) picks.delete(id); else picks.add(id);
-    save();
+  function copyPlan() {
+    var url = shareUrl();
+    var text = 'My Ramble plan\n' + picked().map(function (x) {
+      return dayLabel(x.day) + ' ' + x.start + ' ' + x.act + ', ' + x.stageName;
+    }).join('\n') + '\n\n' + url;
+    var done = function (ok) {
+      S.toast = ok ? 'Copied. Paste it into a text to yourself or a friend.' : 'Copy did not work here. Copy the link below instead.';
+      S.link = ok ? '' : url;
+      render();
+      var input = document.querySelector('#ramble .rlink input');
+      if (input) input.select();
+    };
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } catch (e) { done(false); }
   }
 
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('#ramble button');
     if (!b || !data) return;
     var d = b.dataset;
+    S.toast = ''; S.link = '';
     if (d.k) {
       S[d.k] = d.v;
-      S.toast = '';
       if (d.k === 'tab') window.scrollTo(0, 0);
     } else if (d.pick) {
-      toggle(d.pick);
-      S.toast = '';
+      if (picks.has(d.pick)) picks.delete(d.pick); else picks.add(d.pick);
+      changed();
     } else if (d.open) {
       S.open = S.open === d.open ? null : d.open;
     } else if (d.swap) {
-      picks.delete(d.swap); picks.add(d.to); save();
+      picks.delete(d.swap); picks.add(d.to); changed();
     } else if (d.clear) {
       if (!window.confirm('Clear every pick from your Ramble?')) return;
-      picks.clear(); save();
+      picks.clear(); changed();
+    } else if (d.mine) {
+      picks = own; own = null; dropHash();
+    } else if (d.share) {
+      copyPlan();
+      return;
     } else {
       return;
     }
@@ -250,6 +351,11 @@
     if (e.target.id !== 'rstage' || !data) return;
     S.stage = e.target.value;
     render();
+  });
+
+  // A shared link opened while the page is already up.
+  window.addEventListener('hashchange', function () {
+    if (document.getElementById('ramble') && data && fromHash()) start();
   });
 
   /* ---- start ---- */
@@ -275,6 +381,20 @@
     data = d;
   }
 
+  function start() {
+    var shared = fromHash();
+    if (shared) {
+      own = load();
+      picks = shared;
+      S.tab = 'mine';
+    } else {
+      own = null;
+      picks = load();
+    }
+    if (!S.day) S.day = data.days[0].id;
+    render();
+  }
+
   async function init() {
     var root = document.getElementById('ramble');
     if (!root) return;
@@ -289,9 +409,7 @@
         '<a href="https://worldofbluegrass.org/ramble-schedule/" rel="noopener">See the official schedule</a>.</p>';
       return;
     }
-    picks = load();
-    if (!S.day) S.day = data.days[0].id;
-    render();
+    start();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
