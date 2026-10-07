@@ -27,6 +27,9 @@
 
   var DATA_URL = '/assets/data/ramble-2026.json';
   var STORE = 'tshaws-ramble-2026';
+  // The homepage banner comes down at midnight Eastern as Oct 22 begins.
+  // index.html carries the same instant for a page load.
+  var BANNER_UNTIL = Date.UTC(2026, 9, 22, 4);
   var GRID_START = '5:40', GRID_END = '11:00', PX = 1.8; // pixels per minute
 
   /* Acts with a guest on the podcast. Act name exactly as in the data file,
@@ -392,10 +395,21 @@
       picks = load();
     }
     if (!S.day) S.day = data.days[0].id;
+    var checked = document.getElementById('rchecked');
+    if (checked && /^\d{4}-\d{2}-\d{2}$/.test(data.last_checked || '')) {
+      checked.textContent = new Date(data.last_checked + 'T12:00:00Z').toLocaleDateString('en-US',
+        { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    }
     render();
   }
 
+  function banner() {
+    var b = document.getElementById('rbanner');
+    if (b && Date.now() >= BANNER_UNTIL) b.remove();
+  }
+
   async function init() {
+    banner();
     var root = document.getElementById('ramble');
     if (!root) return;
     try {

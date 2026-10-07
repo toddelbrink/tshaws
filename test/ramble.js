@@ -140,6 +140,31 @@ const missing = pages.filter((p) => {
 }).map((p) => path.relative(ROOT, p));
 check(pages.length + ' pages checked, none missing it', missing.length === 0, missing.join(', '));
 
+// The homepage banner removes itself at one instant, written in two places:
+// index.html for a page load and ramble.js for arriving inside the site.
+console.log('\nThe homepage banner');
+const HOME = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const inline = (HOME.match(/Date\.now\(\) >= Date\.UTC\(([\d, ]+)\)\) document\.getElementById\('rbanner'\)/) || [])[1];
+const inJs = (JS.match(/var BANNER_UNTIL = Date\.UTC\(([\d, ]+)\);/) || [])[1];
+check('index.html removes it on a date', !!inline);
+check('ramble.js removes it on a date', !!inJs);
+check('the two dates match', inline === inJs, inline + ' / ' + inJs);
+const until = inline ? Date.UTC.apply(null, inline.split(',').map(Number)) : 0;
+check('that date is Oct 22, midnight Eastern', until === Date.parse('2026-10-22T00:00:00-04:00'));
+check('it links to /ramble/', /id="rbanner"[\s\S]*?href="\/ramble\/"/.test(HOME));
+
+console.log('\nThe page around the schedule');
+const PAGE = fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8');
+for (const src of ['/assets/brand/ibma-wob-2026.png', '/assets/brand/ibma-icon-60.jpg']) {
+  check(src + ' exists', fs.existsSync(path.join(ROOT, src)));
+}
+check('the credit shows the logo with its alt text',
+  PAGE.includes('src="/assets/brand/ibma-wob-2026.png"') && PAGE.includes('alt="IBMA World of Bluegrass 2026"'));
+check('the sitemap lists /ramble/',
+  fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8').includes('tshawsprogressivebluegrass.com/ramble/</loc>'));
+check('the link preview points at /ramble/',
+  PAGE.includes('<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/ramble/">'));
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');

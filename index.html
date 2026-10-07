@@ -54,6 +54,19 @@
   -->
   <h1 class="sr-only">T Shaw's Progressive Bluegrass</h1>
 
+  <!-- The Ramble banner. Removes itself from 2026-10-22, midnight Eastern
+       (04:00 UTC), with no deploy: the line below handles a page load, and
+       ramble.js handles arriving here by a link inside the site. The two dates
+       must match, and test/ramble.js checks that they do. -->
+  <div class="wrap rbanwrap" id="rbanner">
+    <a class="rbanner" href="/ramble/">
+      <img src="/assets/brand/ibma-icon-60.jpg" width="30" height="30" alt="">
+      <span class="one">Plan your Ramble<em> · Oct 20-21</em></span>
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.6 2L4.2 3.4 8.8 8l-4.6 4.6L5.6 14l6-6z"/></svg>
+    </a>
+  </div>
+  <script>if (Date.now() >= Date.UTC(2026, 9, 22, 4)) document.getElementById('rbanner').remove();</script>
+
   <p class="wrap introline">Documenting and sharing all things bluegrass.</p>
 
   <!-- The newest podcast episode, and beside it the newest YouTube video for
