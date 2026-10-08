@@ -171,6 +171,20 @@ check('the banner has a past-tense line', /class="one rb-past"/.test(HOME));
 check('the page has its ended note', fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8').includes('id="rover" hidden'));
 check('it links to /ramble/', /id="rbanner"[\s\S]*?href="\/ramble\/"/.test(HOME));
 
+// The banner is on every page until the Ramble ends, copied from the
+// homepage's master by tools/sync-banner.js. Never on the schedule itself,
+// where it would link to the page it is on, and never on /admin/.
+const SYNC = require(path.join(ROOT, 'tools/sync-banner.js'));
+const copy = SYNC.pageCopy(SYNC.master());
+const drifted = SYNC.pages().filter((p) => !fs.readFileSync(path.join(ROOT, p), 'utf8').includes(copy));
+check(SYNC.pages().length + ' pages carry the homepage banner, unchanged', drifted.length === 0,
+  'run node tools/sync-banner.js: ' + drifted.join(', '));
+check('every copy but the homepage leaves when the Ramble ends', copy.includes('id="rbanner" data-event-only>') &&
+  !SYNC.master().includes('data-event-only>'));
+check('the schedule page has no banner', !fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8').includes('id="rbanner"'));
+check('the admin page has no banner', !fs.readFileSync(path.join(ROOT, 'admin/index.html'), 'utf8').includes('id="rbanner"'));
+check('ramble.js applies the same every-page rule', /RAMBLE_OVER && b\.hasAttribute\('data-event-only'\)/.test(JS));
+
 console.log('\nThe page around the schedule');
 const PAGE = fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8');
 for (const src of ['/assets/brand/ibma-wob-2026.png', '/assets/brand/ibma-icon-60.jpg']) {

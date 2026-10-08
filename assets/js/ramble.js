@@ -660,7 +660,9 @@
   function banner() {
     var b = document.getElementById('rbanner'), now = Date.now();
     if (!b) return;
-    if (now >= BANNER_UNTIL) b.remove();
+    // Every page carries it until the Ramble ends; then only the homepage,
+    // in the past tense, until it goes. Same rule as the line in each page.
+    if (now >= BANNER_UNTIL || (now >= RAMBLE_OVER && b.hasAttribute('data-event-only'))) b.remove();
     else if (now >= RAMBLE_OVER) b.classList.add('past');
   }
 
