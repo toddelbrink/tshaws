@@ -3,10 +3,9 @@
  *   node tools/sync-banner.js
  *
  * The block between the ramble-banner markers in index.html is the master.
- * Every other page gets the same block as the first thing inside #page, with
- * data-event-only on the banner so it leaves those pages when the Ramble ends
- * and stays only on the homepage. A page that already has a copy has it
- * replaced. /ramble/ and /admin/ never get one.
+ * Every other page gets the same block, unchanged, as the first thing inside
+ * #page. A page that already has a copy has it replaced. /ramble/ and /admin/
+ * never get one.
  *
  * test/ramble.js fails the build if any page's copy drifts from the master,
  * so run this after any edit to the banner. Not served: the build deletes
@@ -27,10 +26,10 @@ function master() {
   return home.slice(a, b + END.length);
 }
 
-// The copy every other page carries.
+// The copy every other page carries: the same, on Trevor's call that it stays
+// everywhere until it goes.
 function pageCopy(block) {
-  return block.replace('<div class="wrap rbanwrap" id="rbanner">',
-    '<div class="wrap rbanwrap" id="rbanner" data-event-only>');
+  return block;
 }
 
 function pages() {

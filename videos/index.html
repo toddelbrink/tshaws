@@ -44,13 +44,12 @@
   <!-- The Ramble banner. This copy on the homepage is the master: run
        node tools/sync-banner.js to copy it onto every page, and test/ramble.js
        fails the build if any page's copy differs. Never on /ramble/ or /admin/.
-       By date, with no deploy: until Oct 22, midnight Eastern (04:00 UTC), it
-       is on every page. From then, pages marked data-event-only drop it and the
-       homepage reads in the past tense. From Nov 21, midnight Eastern (05:00
-       UTC, after the clocks change), it is gone everywhere. The lines below
+       By date, with no deploy: from Oct 22, midnight Eastern (04:00 UTC), it
+       reads in the past tense. From Nov 21, midnight Eastern (05:00 UTC, after
+       the clocks change), it is gone from every page. The lines below
        handle a page load, and ramble.js handles arriving by a link inside the
        site. The test checks both places carry the same two dates. -->
-  <div class="wrap rbanwrap" id="rbanner" data-event-only>
+  <div class="wrap rbanwrap" id="rbanner">
     <a class="rbanner" href="/ramble/">
       <img src="/assets/brand/ibma-icon-60.jpg" width="30" height="30" alt="">
       <span class="one rb-now">Plan your IBMA Ramble<em> · Oct 20-21</em></span>
@@ -61,8 +60,7 @@
   <script>(function () {
     var until = Date.UTC(2026, 10, 21, 5), over = Date.UTC(2026, 9, 22, 4);
     var b = document.getElementById('rbanner'), now = Date.now();
-    if (now >= until || (now >= over && b.hasAttribute('data-event-only'))) b.remove();
-    else if (now >= over) b.classList.add('past');
+    if (now >= until) b.remove(); else if (now >= over) b.classList.add('past');
   })();</script>
   <!-- ramble-banner:end -->
   <div class="wrap" id="videos" data-view="chooser">
