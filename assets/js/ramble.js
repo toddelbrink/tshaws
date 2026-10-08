@@ -127,25 +127,54 @@
       return button('day', d.id, '<span class="rlong">' + esc(d.label) + '</span><span class="rshort" aria-hidden="true">' +
         esc(d.label.split(' ')[0]) + '</span>');
     }).join('');
-    root.querySelector('#rview').innerHTML = button('view', 'list', 'List') + button('view', 'grid', 'Grid');
     root.querySelector('#rtabs').innerHTML = button('tab', 'browse', 'Schedule') +
       button('tab', 'mine', 'My Ramble<span class="rcount">' + picks.size + '</span>');
     var sel = root.querySelector('#rstage');
-    // Short names, the same ones every row shows, so a chosen stage fits the
-    // menu on a narrow phone.
+    // The two areas first, since most people settle on one per night, then
+    // each stage by the short name every row shows, so a choice fits the menu
+    // on a narrow phone.
     if (!sel.options.length) {
-      sel.innerHTML = '<option value="all">All stages</option>' + data.stages.map(function (s) {
-        return '<option value="' + s.id + '">' + esc(s.short) + '</option>';
-      }).join('');
+      sel.innerHTML = '<option value="all">All stages</option>' +
+        '<optgroup label="Areas">' + data.areas.map(function (a) {
+          return '<option value="area:' + a.id + '">' + esc(a.name) + '</option>';
+        }).join('') + '</optgroup>' +
+        '<optgroup label="Stages">' + data.stages.map(function (s) {
+          return '<option value="' + s.id + '">' + esc(s.short) + '</option>';
+        }).join('') + '</optgroup>';
     }
     sel.value = S.stage;
     sel.classList.toggle('active', S.stage !== 'all');
     root.querySelector('#rday').hidden = !browse;
-    root.querySelector('#rview').hidden = !browse;
     root.querySelector('#rstagewrap').hidden = !browse;
-    // Hidden but still holding its space in grid view, so the switch beside
-    // it does not jump sideways under the visitor's thumb.
-    root.querySelector('#rstagewrap').classList.toggle('off', S.view === 'grid');
+  }
+
+  /* ---- the menu's choice, and the two areas ----
+   * "all", "area:cc" for a whole area, or a stage id. The list and the grid
+   * read it the same way. */
+  function shows(f, stage) {
+    return f === 'all' || f === stage.id || f === 'area:' + stage.area;
+  }
+  function stagesShown(f) {
+    return data.stages.filter(function (s) { return shows(f, s); });
+  }
+
+  /* One night's sets under the two area headings, each in time order and
+   * grouped by start time. Areas with nothing to show are left out. */
+  function listGroups(day, f) {
+    var shown = {};
+    stagesShown(f).forEach(function (s) { shown[s.id] = true; });
+    return data.areas.map(function (a) {
+      var slots = [], last = null;
+      sets.forEach(function (x) {
+        if (x.day !== day || x.area !== a.id || !shown[x.stage]) return;
+        if (!last || last.t !== x.start) { last = { t: x.start, rows: [] }; slots.push(last); }
+        last.rows.push(x);
+      });
+      return {
+        area: a.id, name: a.name, slots: slots,
+        stages: data.stages.filter(function (s) { return s.area === a.id; }).map(function (s) { return s.short; })
+      };
+    }).filter(function (g) { return g.slots.length; });
   }
 
   function detail(x) {
@@ -163,16 +192,16 @@
   }
 
   function list() {
-    var rows = sets.filter(function (x) {
-      return x.day === S.day && (S.stage === 'all' || x.stage === S.stage);
-    });
-    if (!rows.length) return key('list') + '<p class="status">No sets on this stage that night.</p>';
-    var groups = [], last = null;
-    rows.forEach(function (x) {
-      if (!last || last.t !== x.start) { last = { t: x.start, rows: [] }; groups.push(last); }
-      last.rows.push(x);
-    });
-    return key('list') + '<div class="rlist">' + groups.map(function (g) {
+    var areas = listGroups(S.day, S.stage);
+    if (!areas.length) return key('list') + '<p class="status">No sets on this stage that night.</p>';
+    return key('list') + areas.map(function (a) {
+      return '<section class="rareasec" aria-label="' + esc(a.name) + '"><h2 class="rarea">' + esc(a.name) +
+        ' <span>' + esc(a.stages.join(' · ')) + '</span></h2>' + slotsHtml(a.slots) + '</section>';
+    }).join('');
+  }
+
+  function slotsHtml(groups) {
+    return '<div class="rlist">' + groups.map(function (g) {
       return '<div class="rslot"><div class="rt">' + g.t + '</div><div class="rrows">' + g.rows.map(function (x) {
         var on = picks.has(x.id), c = on && clashes(x).length > 0, open = S.open === x.id;
         return '<div class="rset' + (on ? ' on' : '') + (c ? ' clash' : '') + '">' +
@@ -191,18 +220,27 @@
   function grid() {
     var t0 = minutes(GRID_START), t1 = minutes(GRID_END), H = (t1 - t0) * PX + 16;
     var y = function (m) { return Math.round((m - t0) * PX + 8); };
-    var h = key('grid') +
-      '<div class="rgridbox" tabindex="0" role="region" aria-label="Every stage, ' + esc(dayLabel(S.day)) + '">' +
-      '<div class="rgrid" style="grid-template-columns:40px repeat(' + data.stages.length + ',minmax(104px,1fr))">' +
-      '<div class="rgh"></div>' + data.stages.map(function (s) {
+    var cols = stagesShown(S.stage);
+    var h = key('grid', cols.length > 2) +
+      '<div class="rgridbox" tabindex="0" role="region" aria-label="Stages, ' + esc(dayLabel(S.day)) + '">' +
+      '<div class="rgrid" style="grid-template-columns:40px repeat(' + cols.length + ',minmax(104px,1fr));min-width:' +
+      (40 + cols.length * 104) + 'px">' +
+      '<div class="rgh rpin"></div>' + cols.map(function (s) {
         return '<div class="rgh one">' + esc(s.short) + '</div>';
       }).join('');
-    h += '<div class="rcol rtime" style="height:' + H + 'px">';
+    // The area row. Its label sticks to the left edge while the grid scrolls
+    // sideways, so a phone always shows which area it is looking at.
+    h += '<div class="rga rpin"></div>';
+    data.areas.forEach(function (a) {
+      var n = cols.filter(function (s) { return s.area === a.id; }).length;
+      if (n) h += '<div class="rga" style="grid-column:span ' + n + '"><span>' + esc(a.name) + '</span></div>';
+    });
+    h += '<div class="rcol rtime rpin" style="height:' + H + 'px">';
     for (var t = Math.ceil(t0 / 30) * 30; t <= t1; t += 30) {
       h += '<span style="top:' + y(t) + 'px">' + clock(t) + '</span>';
     }
     h += '</div>';
-    data.stages.forEach(function (s) {
+    cols.forEach(function (s) {
       h += '<div class="rcol" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
         sets.filter(function (x) { return x.day === S.day && x.stage === s.id; }).map(function (x) {
           var on = picks.has(x.id), c = on && clashes(x).length > 0;
@@ -219,14 +257,17 @@
    * overlapping each carry a mark as well as a colour: a filled star, and the
    * word Overlap in the list or a ! in the grid. "Tap" or "Click" is chosen by
    * CSS from the pointer the visitor actually has. */
-  function key(view) {
+  function key(view, wide) {
     var verb = '<span class="rtap">Tap</span><span class="rclick">Click</span>';
     var how = view === 'grid'
-      ? verb + ' a set to pick it.<span class="rside"> Scroll sideways for every stage.</span>'
+      ? verb + ' a set to pick it.' + (wide ? '<span class="rside"> Scroll sideways for every stage.</span>' : '')
       : verb + ' the star to pick a set.';
-    return '<p class="rkey"><span class="rhow">' + how + '</span> ' +
+    // The List and Grid switch sits here rather than in the pinned row, which
+    // on a phone needs its width for the night and the stage menu.
+    return '<div class="rkeyrow"><p class="rkey"><span class="rhow">' + how + '</span> ' +
       '<span class="rk"><i class="rsw on">' + STAR + '</i>Picked</span> ' +
-      '<span class="rk"><i class="rsw clash">!</i>Overlaps another pick</span></p>';
+      '<span class="rk"><i class="rsw clash">!</i>Overlaps another pick</span></p>' +
+      '<div class="rseg" role="group" aria-label="Layout">' + button('view', 'list', 'List') + button('view', 'grid', 'Grid') + '</div></div>';
   }
 
   /* An overlap note sits under the earlier of the two picks. If either act has
@@ -317,6 +358,14 @@
     }
   }
 
+  /* For test/ramble.js, which loads this file without a browser. */
+  window.TSRamble = {
+    load: function (d) { build(d); return sets; },
+    listGroups: listGroups,
+    stagesShown: stagesShown
+  };
+  if (typeof document === 'undefined') return;
+
   /* ---- events, bound once for the life of the document ---- */
 
   function copyPlan() {
@@ -389,7 +438,7 @@
         id: x.day + x.stage + x.start.replace(':', ''),
         day: x.day, stage: x.stage, start: x.start, end: x.end, act: x.act,
         s: minutes(x.start), e: minutes(x.end),
-        stageShort: st.short, stageName: st.name, building: st.building
+        stageShort: st.short, stageName: st.name, building: st.building, area: st.area
       };
     }).sort(function (a, b) {
       return order[a.day] - order[b.day] || a.s - b.s || a.stageShort.localeCompare(b.stageShort);

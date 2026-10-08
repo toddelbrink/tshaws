@@ -8,55 +8,72 @@
   "All times are PM, Eastern.",
   "Tue Barrelhouse, The Price Sisters: IBMA's page prints 5:50 - 7:30, which overlaps The Litch Brothers on the same stage. IBMA confirmed 6:50 - 7:30 on 2026-10-07."
  ],
+ "areas": [
+  {
+   "id": "cc",
+   "name": "Convention Center"
+  },
+  {
+   "id": "ms",
+   "name": "Main Street"
+  }
+ ],
  "stages": [
   {
    "id": "rv",
    "short": "Riverview",
    "name": "Riverview",
    "venue": "Chattanooga Convention Center",
-   "building": "cc"
+   "building": "cc",
+   "area": "cc"
   },
   {
    "id": "mk",
    "short": "McKenzie",
    "name": "McKenzie",
    "venue": "Chattanooga Convention Center",
-   "building": "cc"
+   "building": "cc",
+   "area": "cc"
   },
   {
    "id": "bb",
    "short": "Barrelhouse",
    "name": "Barrelhouse Ballroom",
    "venue": "",
-   "building": "bb"
+   "building": "bb",
+   "area": "ms"
   },
   {
    "id": "hf",
    "short": "Hi-Fi Clyde's",
    "name": "Hi-Fi Clyde's",
    "venue": "",
-   "building": "hf"
+   "building": "hf",
+   "area": "ms"
   },
   {
    "id": "sb",
    "short": "Songbirds",
    "name": "Songbirds",
    "venue": "",
-   "building": "sb"
+   "building": "sb",
+   "area": "ms"
   },
   {
    "id": "st",
    "short": "Stratus",
    "name": "Stratus Rooftop at Caption",
    "venue": "",
-   "building": "st"
+   "building": "st",
+   "area": "ms"
   },
   {
    "id": "ft",
    "short": "Feed Table",
    "name": "Feed Table & Tavern Event Space",
    "venue": "",
-   "building": "ft"
+   "building": "ft",
+   "area": "ms"
   }
  ],
  "days": [

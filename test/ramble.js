@@ -39,11 +39,24 @@ function problems(d) {
     return ['stages, days and sets must all be lists'];
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(d.last_checked || '')) out.push('last_checked is not a YYYY-MM-DD date');
-  const stages = new Set(), days = new Set(), ids = new Set();
+  const stages = new Set(), days = new Set(), ids = new Set(), areas = new Set();
+  // The two areas. The grid merges each area's stage columns under one label,
+  // so an area's stages must sit next to each other in stage order.
+  if (!Array.isArray(d.areas) || !d.areas.length) out.push('no areas');
+  for (const a of d.areas || []) {
+    if (areas.has(a.id)) out.push('duplicate area ' + a.id);
+    areas.add(a.id);
+    if (!a.name) out.push('area ' + a.id + ' has no name');
+  }
+  const order = d.stages.map((s) => s.area);
+  const runs = order.filter((a, i) => a !== order[i - 1]);
+  if (new Set(runs).size !== runs.length) out.push('an area\'s stages are not next to each other: ' + order.join(' '));
+  for (const a of areas) if (!order.includes(a)) out.push('area ' + a + ' has no stages');
   for (const s of d.stages) {
     if (stages.has(s.id)) out.push('duplicate stage ' + s.id);
     stages.add(s.id);
     if (!s.short || !s.name || !s.building) out.push('stage ' + s.id + ' is missing short, name or building');
+    if (!areas.has(s.area)) out.push('stage ' + s.id + ' has an unknown area');
   }
   for (const x of d.days) {
     if (days.has(x.id)) out.push('duplicate day ' + x.id);
@@ -105,6 +118,8 @@ if (data) {
   });
   broken('a missing set', (d) => { d.sets.pop(); });
   broken('a bad last_checked', (d) => { d.last_checked = 'Oct 7'; });
+  broken('a stage with an unknown area', (d) => { d.stages[0].area = 'zz'; });
+  broken('an area split across the stage order', (d) => { d.stages[6].area = 'cc'; });
 }
 
 // The page's "On the podcast" links. Each act must be in the data under that
@@ -167,6 +182,44 @@ check('the sitemap lists /ramble/',
   fs.readFileSync(path.join(ROOT, 'sitemap.xml'), 'utf8').includes('tshawsprogressivebluegrass.com/ramble/</loc>'));
 check('the link preview points at /ramble/',
   PAGE.includes('<meta property="og:url" content="https://www.tshawsprogressivebluegrass.com/ramble/">'));
+
+// The two areas, as Trevor named them, and the grouping the list and the grid
+// are drawn from. Runs the page's own code, loaded without a browser.
+console.log('\nThe two areas');
+global.window = {};
+require(path.join(ROOT, 'assets/js/ramble.js'));
+const R = global.window.TSRamble;
+check('the page exposes its grouping for testing', !!R);
+if (R && data) {
+  R.load(data);
+  check('the areas are Convention Center and Main Street, in that order',
+    data.areas.map((a) => a.name).join('|') === 'Convention Center|Main Street');
+  const cc = data.stages.filter((s) => s.area === 'cc').map((s) => s.short).join('|');
+  check('Convention Center is Riverview and McKenzie', cc === 'Riverview|McKenzie', cc);
+  check('Main Street is the other five', data.stages.filter((s) => s.area === 'ms').length === 5);
+  const seen = [];
+  for (const day of data.days) {
+    const groups = R.listGroups(day.id, 'all');
+    check(day.label + ': both areas, in order', groups.map((g) => g.area).join() === 'cc,ms');
+    for (const g of groups) {
+      let prev = -1, ordered = true;
+      for (const slot of g.slots) for (const x of slot.rows) {
+        seen.push(x.id);
+        if (x.area !== g.area) ordered = false;
+        if (x.s < prev) ordered = false;
+        prev = x.s;
+      }
+      check(day.label + ', ' + g.name + ': only its own stages, in time order', ordered);
+    }
+  }
+  check('every set is listed exactly once across both nights',
+    seen.length === data.sets.length && new Set(seen).size === seen.length, seen.length + ' listed');
+  check('the Main Street choice shows only Main Street',
+    R.listGroups('tue', 'area:ms').map((g) => g.area).join() === 'ms');
+  check('one stage shows under its own area', R.listGroups('wed', 'rv').map((g) => g.name).join() === 'Convention Center');
+  check('the grid takes the same choice', R.stagesShown('area:cc').map((s) => s.id).join() === 'rv,mk' &&
+    R.stagesShown('all').length === 7);
+}
 
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
