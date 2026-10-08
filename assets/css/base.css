@@ -13,6 +13,9 @@
   --paper-2:#EBE4D6;
   --paper-3:#E2D9C7;
   --rule:#D6CBB8;
+  /* Main Street on the Ramble grid: the paper with a sage cast, so the two
+     areas read apart at a glance. */
+  --ms-1:#EEF0E4;--ms-2:#E1E6D2;--ms-3:#D3DBC0;--ms-4:#C2CCAB;
 
   /* Ink */
   --ink:#1A1714;
@@ -1092,6 +1095,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rseg button:focus-visible{outline-offset:-5px}
 .rsel{flex:1 1 0;min-width:0;max-width:260px;display:block}
 .rsel select{width:100%;min-height:44px;border:0;border-radius:999px;background-color:var(--paper-2);
+  box-shadow:inset 0 0 0 1.5px var(--ink);
   color:var(--ink);font-family:var(--sans);font-size:14px;padding:0 30px 0 14px;
   -webkit-appearance:none;appearance:none;text-overflow:ellipsis;cursor:pointer;
   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
@@ -1212,6 +1216,11 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rblk span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rblk small{display:block;font-size:11px;font-weight:400;color:var(--ink-muted);font-variant-numeric:tabular-nums;margin-top:1px}
 .rblk:hover{background:var(--rule)}
+.rgh.a-ms,.rga.a-ms{background:var(--ms-2)}
+.rcol.a-ms{background-color:var(--ms-1)}
+.a-ms .rblk{background:var(--ms-3)}
+.a-ms .rblk:hover{background:var(--ms-4)}
+.asplit{border-left:3px solid var(--ink)}
 .rblk.on{background:var(--stage);color:var(--stage-text);box-shadow:inset 3px 0 0 var(--brass)}
 .rblk.on small{color:var(--brass)}
 .rblk.clash{background:var(--warn);color:#fff;box-shadow:none}

@@ -345,6 +345,12 @@
 
   /* Stages across, time down. On a phone it scrolls sideways inside its own
    * box, never the page. Tapping a block toggles the pick. */
+  /* Main Street is shaded and a heavy rule divides the two areas, so a casual
+   * reader cannot miss that the grid is two places (Trevor, 2026-10-08). */
+  function areaCls(cols, i) {
+    var s = cols[i];
+    return ' a-' + s.area + (i > 0 && cols[i - 1].area !== s.area ? ' asplit' : '');
+  }
   function grid() {
     var t0 = minutes(GRID_START), t1 = minutes(GRID_END), H = (t1 - t0) * PX + 16;
     var y = function (m) { return Math.round((m - t0) * PX + 8); };
@@ -353,23 +359,24 @@
       '<div class="rgridbox" tabindex="0" role="region" aria-label="Stages, ' + esc(dayLabel(S.day)) + '">' +
       '<div class="rgrid" style="grid-template-columns:40px repeat(' + cols.length + ',minmax(104px,1fr));min-width:' +
       (40 + cols.length * 104) + 'px">' +
-      '<div class="rgh rpin"></div>' + cols.map(function (s) {
-        return '<div class="rgh one">' + esc(s.short) + '</div>';
+      '<div class="rgh rpin"></div>' + cols.map(function (s, i) {
+        return '<div class="rgh one' + areaCls(cols, i) + '">' + esc(s.short) + '</div>';
       }).join('');
     // The area row. Its label sticks to the left edge while the grid scrolls
     // sideways, so a phone always shows which area it is looking at.
     h += '<div class="rga rpin"></div>';
     data.areas.forEach(function (a) {
       var n = cols.filter(function (s) { return s.area === a.id; }).length;
-      if (n) h += '<div class="rga" style="grid-column:span ' + n + '"><span>' + esc(a.name) + '</span></div>';
+      var first = cols.findIndex(function (s) { return s.area === a.id; });
+      if (n) h += '<div class="rga' + areaCls(cols, first) + '" style="grid-column:span ' + n + '"><span>' + esc(a.name) + '</span></div>';
     });
     h += '<div class="rcol rtime rpin" style="height:' + H + 'px">';
     for (var t = Math.ceil(t0 / 30) * 30; t <= t1; t += 30) {
       h += '<span style="top:' + y(t) + 'px">' + clock(t) + '</span>';
     }
     h += '</div>';
-    cols.forEach(function (s) {
-      h += '<div class="rcol" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
+    cols.forEach(function (s, i) {
+      h += '<div class="rcol' + areaCls(cols, i) + '" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
         sets.filter(function (x) { return x.day === S.day && x.stage === s.id; }).map(function (x) {
           var on = picks.has(x.id), c = on && clashes(x).length > 0;
           return '<button type="button" class="rblk' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +

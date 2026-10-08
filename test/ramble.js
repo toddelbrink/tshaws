@@ -321,7 +321,7 @@ if (R) {
   check('the address is IBMA\'s ticket page', R.passUrl === 'https://ibma.ticketspice.com/-ibma-world-of-bluegrass-2026');
   check('it is written once in ramble.js', JS.split('ticketspice.com').length === 2);
   const page = fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8');
-  check('the heading link takes its address from the script', /<a class="rpass" id="rpass"[^>]*hidden>Get passes<\/a>/.test(page) && !page.includes('ticketspice'));
+  check('the heading link takes its address from the script', /<a class="rpass" id="rpass"[^>]*hidden>Get your passes here<\/a>/.test(page) && !page.includes('ticketspice'));
   check('the Info item hides once the Ramble is over', /if \(!over\(\)\) \{\s*h \+= '<section aria-labelledby="ri-pass">/.test(JS));
   check('the heading link hides once the Ramble is over', /pass\.hidden = Date\.now\(\) >= RAMBLE_OVER/.test(JS));
 }
