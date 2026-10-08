@@ -1249,18 +1249,20 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   border-radius:var(--radius);padding:8px 12px;margin:4px 0 6px}
 .rover[hidden]{display:none}
 
-/* Latest Podcast Episode on phones: the artwork with the episode line and
-   title beside it, then the description and controls full width below. The
-   inner column dissolves into the grid so its children can sit beside the
-   art or under it. Stacked, the art left a blank strip to its right. */
+/* Latest Podcast Episode on phones: the artwork at the left with the episode
+   line and title wrapping around it, then the description and controls full
+   width below. A float rather than a grid column, so a long title fills the
+   space beside the art and carries on full width underneath, instead of
+   stacking six or seven lines in a 210px column. Titles run from 24 to 120
+   characters, and the site adapts to them rather than limiting them. */
 @media(max-width:600px){
-  .feature{grid-template-columns:96px 1fr;column-gap:14px;row-gap:0;align-items:start}
-  .feature > div:last-child{display:contents}
-  .feature > div:last-child > *{grid-column:1 / -1}
-  .feature > .art{width:96px;grid-column:1;grid-row:1 / span 2}
-  .feature > div:last-child > .meta{grid-column:2;grid-row:1;line-height:1.4}
-  .feature > div:last-child > h2{grid-column:2;grid-row:2;font-size:21px;margin:4px 0 0}
-  .feature .desc{margin:14px 0 14px}
+  .feature{display:block}
+  .feature::after{content:"";display:block;clear:both}
+  .feature > .art{float:left;width:96px;margin:0 14px 6px 0}
+  .feature .meta{line-height:1.4}
+  .feature h2{font-size:21px;margin:4px 0 0}
+  .feature .desc,.feature .row,.feature .rowbar{clear:both}
+  .feature .desc{margin:0;padding-top:14px;margin-bottom:14px}
 }
 
 /* The list's area headings, two per night. */
