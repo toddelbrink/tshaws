@@ -771,7 +771,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    it reads as the show's voice. The script stays the name's alone. */
 .rbanwrap + .introline{padding-top:20px}
 .introline{font-size:21px;font-style:italic;line-height:1.45;color:var(--ink-2);padding-top:24px}
-@media(max-width:560px){.introline{font-size:19px}}
+/* One line on phones down to 360px: it needs 16.4px or less there, so it
+   scales with the screen, 15.1px at 360 and 16.4px at 390. Below 360 it is
+   allowed to wrap. */
+@media(max-width:560px){.introline{font-size:max(14px,4.2vw)}}
 .introline + .section.toplatest{padding-top:18px}
 
 /* ---- the Latest pair: episode, and the newest video for seven days ----
@@ -1067,9 +1070,15 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px;background-repeat:no-repeat}
 .rsel select.active{background-color:var(--accent);color:#fff}
 .rsel[hidden],.rseg[hidden]{display:none}
-.rtabs{display:flex;gap:4px;margin-left:auto;flex:none}
-.rtabs button{border-radius:999px;color:var(--ink-2)}
+/* Schedule and My Ramble. On a computer they are one joined pill, the same
+   treatment as the night switch, so both read as buttons. Phones override
+   this below with the bar along the bottom edge. */
+.rtabs{display:flex;margin-left:auto;flex:none;border-radius:999px;
+  box-shadow:inset 0 0 0 1.5px var(--ink);overflow:hidden}
+.rtabs button{color:var(--ink)}
+.rtabs button + button{box-shadow:inset 1.5px 0 0 var(--ink)}
 .rtabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.rtabs button:focus-visible{outline-offset:-5px}
 .rcount{display:inline-block;min-width:20px;margin-left:7px;padding:0 6px;border-radius:999px;
   background:var(--brass);color:var(--stage);font-size:11px;letter-spacing:0;line-height:20px;text-align:center}
 
@@ -1077,9 +1086,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    indicator, and above the podcast player when it is open. */
 @media(max-width:699px){
   .rtabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;gap:8px;
-    background:var(--paper);border-top:1px solid var(--rule);
+    background:var(--paper);border-top:1px solid var(--rule);border-radius:0;box-shadow:none;overflow:visible;
     padding:6px var(--gut) calc(6px + env(safe-area-inset-bottom,0px))}
-  .rtabs button{flex:1}
+  .rtabs button{flex:1;border-radius:999px;color:var(--ink-2)}
+  .rtabs button + button{box-shadow:none}
   /* The player is its 74px bar plus the seek strip above it (24px less 12px
      of negative margin) and a 1px top border: 87px, measured at 375px. */
   .has-player .rtabs{bottom:calc(var(--bar-h) + 13px + env(safe-area-inset-bottom,0px));padding-bottom:6px}
@@ -1087,16 +1097,14 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   .rseg button{padding:0 11px}
 }
 
-.rseg.ico button{width:44px;padding:0;display:grid;place-items:center}
-.rseg.ico svg{width:16px;height:16px;fill:currentColor}
 .rsel.off{visibility:hidden}
 .rshort{display:none}
-/* Below 360px the night switch drops the date so the stage menu keeps room
-   to show a stage name. */
+/* Phones: the night switch drops the date so the stage menu keeps room for a
+   stage name beside the List and Grid switch. Clean from 360px; at 320 the
+   menu shortens to an ellipsis rather than wrap the row. */
+@media(max-width:519px){.rlong{display:none}.rshort{display:inline}}
 @media(max-width:359px){
-  .rlong{display:none}.rshort{display:inline}
-  .rseg button{padding:0 10px}
-  .rseg.ico button{width:40px}
+  .rseg button{padding:0 9px}
   .rsel select{font-size:13px;padding:0 22px 0 10px;background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%}
   .rrow{gap:6px}
   #ramble h1.rhead{letter-spacing:.12em}
@@ -1149,8 +1157,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rtoast{font-family:var(--sans);font-size:13px;color:var(--ink-muted)}
 
 /* Grid view */
-.rhint{font-family:var(--sans);font-size:13px;color:var(--ink-muted);margin:12px 0 0}
-@media(min-width:900px){.rhint{display:none}}
 .rgridbox{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);margin:8px 0 12px;
   -webkit-overflow-scrolling:touch}
 .rgrid{display:grid;min-width:780px}
@@ -1173,6 +1179,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rblk.on small{color:var(--brass)}
 .rblk.clash{background:var(--warn);color:#fff;box-shadow:none}
 .rblk.clash small{color:#fff}
+.rblk.on,.rblk.clash{padding-right:17px}
+.rblk i{position:absolute;top:4px;right:5px;font-style:normal;font-weight:700;font-size:12px;line-height:1}
+.rblk i svg{width:11px;height:11px;fill:var(--brass);display:block}
 .rblk:focus-visible{outline-offset:1px}
 
 /* Sharing */
@@ -1193,8 +1202,8 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rcredit p{flex:1 1 240px}
 
 /* The Ramble banner on the homepage. One line, one link, dark like the stage.
-   Small phones tighten the tracking, and below 340px the dates go, so it
-   never wraps. */
+   Small phones tighten the type, and below 360px the dates go, so it never
+   wraps. */
 .rbanwrap{padding-top:18px}
 .rbanner{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 12px 8px 9px;
   background:var(--stage);color:var(--stage-text);border-radius:var(--radius);text-decoration:none;
@@ -1202,9 +1211,45 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rbanner:hover{color:#fff;background:#2B241D}
 .rbanner img{width:30px;height:30px;border-radius:50%;flex:none}
 .rbanner span{flex:1 1 auto}
+.rbanner .rb-past,#rbanner.past .rb-now{display:none}
+#rbanner.past .rb-past{display:block}
 .rbanner em{font-style:normal;color:var(--brass)}
 .rbanner svg{width:16px;height:16px;fill:var(--brass);flex:none;transition:transform .2s}
 .rbanner:hover svg{transform:translateX(3px)}
 @media(prefers-reduced-motion:reduce){.rbanner svg{transition:none}}
-@media(max-width:399px){.rbanner{gap:10px;letter-spacing:.05em}}
-@media(max-width:339px){.rbanner em{display:none}}
+@media(max-width:399px){.rbanner{gap:10px;letter-spacing:.05em;font-size:13px}}
+@media(max-width:359px){.rbanner em{display:none}}
+
+/* The how-to and colour key above the sets. Tap or Click follows the pointer
+   the visitor actually has, not the screen width. */
+.rkey{font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink-muted);margin:12px 0 4px;
+  display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+.rkey .rhow{flex:1 0 100%}
+.rclick{display:none}
+@media(hover:hover) and (pointer:fine){.rtap{display:none}.rclick{display:inline}}
+@media(min-width:860px){.rside{display:none}}
+.rk{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.rsw{width:22px;height:18px;border-radius:var(--radius);display:inline-grid;place-items:center;
+  font-style:normal;font-weight:700;font-size:12px;flex:none}
+.rsw svg{width:11px;height:11px}
+.rsw.on{background:var(--paper-2);box-shadow:inset 3px 0 0 var(--brass)}
+.rsw.on svg{fill:var(--brass)}
+.rsw.clash{background:var(--warn-bg);box-shadow:inset 3px 0 0 var(--warn);color:var(--warn)}
+/* The ended note, shown by date from Oct 22. */
+.rover{font-family:var(--sans);font-size:14px;line-height:1.45;color:var(--ink-2);background:var(--paper-2);
+  border-radius:var(--radius);padding:8px 12px;margin:4px 0 6px}
+.rover[hidden]{display:none}
+
+/* Latest Podcast Episode on phones: the artwork with the episode line and
+   title beside it, then the description and controls full width below. The
+   inner column dissolves into the grid so its children can sit beside the
+   art or under it. Stacked, the art left a blank strip to its right. */
+@media(max-width:600px){
+  .feature{grid-template-columns:96px 1fr;column-gap:14px;row-gap:0;align-items:start}
+  .feature > div:last-child{display:contents}
+  .feature > div:last-child > *{grid-column:1 / -1}
+  .feature > .art{width:96px;grid-column:1;grid-row:1 / span 2}
+  .feature > div:last-child > .meta{grid-column:2;grid-row:1;line-height:1.4}
+  .feature > div:last-child > h2{grid-column:2;grid-row:2;font-size:21px;margin:4px 0 0}
+  .feature .desc{margin:14px 0 14px}
+}

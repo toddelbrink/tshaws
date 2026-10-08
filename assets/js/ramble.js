@@ -27,9 +27,12 @@
 
   var DATA_URL = '/assets/data/ramble-2026.json';
   var STORE = 'tshaws-ramble-2026';
-  // The homepage banner comes down at midnight Eastern as Oct 22 begins.
-  // index.html carries the same instant for a page load.
-  var BANNER_UNTIL = Date.UTC(2026, 9, 22, 4);
+  // Midnight Eastern as Oct 22 begins: the Ramble is over. The page says so
+  // and the homepage banner turns past tense. A month later, midnight Eastern
+  // on Nov 21 (05:00 UTC, standard time by then), the banner goes. index.html
+  // carries the same two instants for a page load.
+  var RAMBLE_OVER = Date.UTC(2026, 9, 22, 4);
+  var BANNER_UNTIL = Date.UTC(2026, 10, 21, 5);
   var GRID_START = '5:40', GRID_END = '11:00', PX = 1.8; // pixels per minute
 
   /* Acts with a guest on the podcast. Act name exactly as in the data file,
@@ -44,7 +47,7 @@
   var byId = {};
   var picks = null;    // Set of ids on screen: the visitor's own, or a shared plan
   var own = null;      // the visitor's saved picks while a shared plan is showing
-  var S = { tab: 'browse', day: null, view: 'list', stage: 'all', open: null, toast: '', link: '' };
+  var S = { tab: 'browse', day: null, view: null, stage: 'all', open: null, toast: '', link: '' };
 
   /* ---- helpers ---- */
 
@@ -109,8 +112,6 @@
 
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.8 6.1 6.7.7-5 4.5 1.4 6.6L12 17.1l-5.9 3.4 1.4-6.6-5-4.5 6.7-.7z"/></svg>';
   var CROSS = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.4 2L8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>';
-  var LIST = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 3h12v2H2zM2 7h12v2H2zM2 11h12v2H2z"/></svg>';
-  var GRID = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M1.5 1.5h5.5v5.5H1.5zM9 1.5h5.5v5.5H9zM1.5 9h5.5v5.5H1.5zM9 9h5.5v5.5H9z"/></svg>';
 
   function button(key, value, label, extra) {
     var on = String(S[key]) === String(value);
@@ -120,14 +121,13 @@
 
   function controls(root) {
     var browse = S.tab === 'browse';
-    // "Tue 20" on most phones, "Tue" where the row would otherwise crush the
-    // stage menu. CSS picks one.
+    // "Tue 20" on wide screens, "Tue" on phones, where the row would otherwise
+    // crush the stage menu. CSS picks one.
     root.querySelector('#rday').innerHTML = data.days.map(function (d) {
       return button('day', d.id, '<span class="rlong">' + esc(d.label) + '</span><span class="rshort" aria-hidden="true">' +
         esc(d.label.split(' ')[0]) + '</span>');
     }).join('');
-    root.querySelector('#rview').innerHTML = button('view', 'list', LIST, ' aria-label="List view"') +
-      button('view', 'grid', GRID, ' aria-label="Grid view"');
+    root.querySelector('#rview').innerHTML = button('view', 'list', 'List') + button('view', 'grid', 'Grid');
     root.querySelector('#rtabs').innerHTML = button('tab', 'browse', 'Schedule') +
       button('tab', 'mine', 'My Ramble<span class="rcount">' + picks.size + '</span>');
     var sel = root.querySelector('#rstage');
@@ -166,13 +166,13 @@
     var rows = sets.filter(function (x) {
       return x.day === S.day && (S.stage === 'all' || x.stage === S.stage);
     });
-    if (!rows.length) return '<p class="status">No sets on this stage that night.</p>';
+    if (!rows.length) return key('list') + '<p class="status">No sets on this stage that night.</p>';
     var groups = [], last = null;
     rows.forEach(function (x) {
       if (!last || last.t !== x.start) { last = { t: x.start, rows: [] }; groups.push(last); }
       last.rows.push(x);
     });
-    return '<div class="rlist">' + groups.map(function (g) {
+    return key('list') + '<div class="rlist">' + groups.map(function (g) {
       return '<div class="rslot"><div class="rt">' + g.t + '</div><div class="rrows">' + g.rows.map(function (x) {
         var on = picks.has(x.id), c = on && clashes(x).length > 0, open = S.open === x.id;
         return '<div class="rset' + (on ? ' on' : '') + (c ? ' clash' : '') + '">' +
@@ -191,7 +191,7 @@
   function grid() {
     var t0 = minutes(GRID_START), t1 = minutes(GRID_END), H = (t1 - t0) * PX + 16;
     var y = function (m) { return Math.round((m - t0) * PX + 8); };
-    var h = '<p class="rhint">Tap a set to pick it. Scroll sideways for every stage.</p>' +
+    var h = key('grid') +
       '<div class="rgridbox" tabindex="0" role="region" aria-label="Every stage, ' + esc(dayLabel(S.day)) + '">' +
       '<div class="rgrid" style="grid-template-columns:40px repeat(' + data.stages.length + ',minmax(104px,1fr))">' +
       '<div class="rgh"></div>' + data.stages.map(function (s) {
@@ -208,10 +208,25 @@
           var on = picks.has(x.id), c = on && clashes(x).length > 0;
           return '<button type="button" class="rblk' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +
             '" aria-pressed="' + on + '" aria-label="' + starLabel(x, on) + '" style="top:' + y(x.s) + 'px;height:' +
-            (Math.round((x.e - x.s) * PX) - 3) + 'px"><span>' + esc(x.act) + '</span><small>' + x.start + ' to ' + x.end + '</small></button>';
+            (Math.round((x.e - x.s) * PX) - 3) + 'px">' + (c ? '<i aria-hidden="true">!</i>' : on ? '<i aria-hidden="true">' + STAR + '</i>' : '') +
+            '<span>' + esc(x.act) + '</span><small>' + x.start + ' to ' + x.end + '</small></button>';
         }).join('') + '</div>';
     });
     return h + '</div></div>';
+  }
+
+  /* The how-to and the colour key, one line above the sets. Picked and
+   * overlapping each carry a mark as well as a colour: a filled star, and the
+   * word Overlap in the list or a ! in the grid. "Tap" or "Click" is chosen by
+   * CSS from the pointer the visitor actually has. */
+  function key(view) {
+    var verb = '<span class="rtap">Tap</span><span class="rclick">Click</span>';
+    var how = view === 'grid'
+      ? verb + ' a set to pick it.<span class="rside"> Scroll sideways for every stage.</span>'
+      : verb + ' the star to pick a set.';
+    return '<p class="rkey"><span class="rhow">' + how + '</span> ' +
+      '<span class="rk"><i class="rsw on">' + STAR + '</i>Picked</span> ' +
+      '<span class="rk"><i class="rsw clash">!</i>Overlaps another pick</span></p>';
   }
 
   /* An overlap note sits under the earlier of the two picks. If either act has
@@ -395,6 +410,11 @@
       picks = load();
     }
     if (!S.day) S.day = data.days[0].id;
+    // The grid on a computer, the list on a phone, where seven stages in a row
+    // cut act names short. The visitor's own switch wins after that.
+    if (!S.view) S.view = window.matchMedia('(min-width: 700px)').matches ? 'grid' : 'list';
+    var over = document.getElementById('rover');
+    if (over) over.hidden = Date.now() < RAMBLE_OVER;
     var checked = document.getElementById('rchecked');
     if (checked && /^\d{4}-\d{2}-\d{2}$/.test(data.last_checked || '')) {
       checked.textContent = new Date(data.last_checked + 'T12:00:00Z').toLocaleDateString('en-US',
@@ -404,8 +424,10 @@
   }
 
   function banner() {
-    var b = document.getElementById('rbanner');
-    if (b && Date.now() >= BANNER_UNTIL) b.remove();
+    var b = document.getElementById('rbanner'), now = Date.now();
+    if (!b) return;
+    if (now >= BANNER_UNTIL) b.remove();
+    else if (now >= RAMBLE_OVER) b.classList.add('past');
   }
 
   async function init() {

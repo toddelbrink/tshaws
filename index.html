@@ -54,18 +54,25 @@
   -->
   <h1 class="sr-only">T Shaw's Progressive Bluegrass</h1>
 
-  <!-- The Ramble banner. Removes itself from 2026-10-22, midnight Eastern
-       (04:00 UTC), with no deploy: the line below handles a page load, and
-       ramble.js handles arriving here by a link inside the site. The two dates
-       must match, and test/ramble.js checks that they do. -->
+  <!-- The Ramble banner, with no deploy needed at either change. From
+       2026-10-22, midnight Eastern (04:00 UTC), it reads in the past tense.
+       From 2026-11-21, midnight Eastern (05:00 UTC, after the clocks change),
+       it is gone. The lines below handle a page load, and ramble.js handles
+       arriving here by a link inside the site. test/ramble.js checks that both
+       places carry the same two dates. -->
   <div class="wrap rbanwrap" id="rbanner">
     <a class="rbanner" href="/ramble/">
       <img src="/assets/brand/ibma-icon-60.jpg" width="30" height="30" alt="">
-      <span class="one">Plan your Ramble<em> · Oct 20-21</em></span>
+      <span class="one rb-now">Plan your IBMA Ramble<em> · Oct 20-21</em></span>
+      <span class="one rb-past">The 2026 IBMA Ramble schedule</span>
       <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.6 2L4.2 3.4 8.8 8l-4.6 4.6L5.6 14l6-6z"/></svg>
     </a>
   </div>
-  <script>if (Date.now() >= Date.UTC(2026, 9, 22, 4)) document.getElementById('rbanner').remove();</script>
+  <script>(function () {
+    var until = Date.UTC(2026, 10, 21, 5), over = Date.UTC(2026, 9, 22, 4);
+    var b = document.getElementById('rbanner'), now = Date.now();
+    if (now >= until) b.remove(); else if (now >= over) b.classList.add('past');
+  })();</script>
 
   <p class="wrap introline">Documenting and sharing all things bluegrass.</p>
 

@@ -140,17 +140,20 @@ const missing = pages.filter((p) => {
 }).map((p) => path.relative(ROOT, p));
 check(pages.length + ' pages checked, none missing it', missing.length === 0, missing.join(', '));
 
-// The homepage banner removes itself at one instant, written in two places:
+// The banner changes twice by date, with no deploy: past tense when the
+// Ramble ends, gone a month later. Each instant is written in two places,
 // index.html for a page load and ramble.js for arriving inside the site.
 console.log('\nThe homepage banner');
 const HOME = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const inline = (HOME.match(/Date\.now\(\) >= Date\.UTC\(([\d, ]+)\)\) document\.getElementById\('rbanner'\)/) || [])[1];
-const inJs = (JS.match(/var BANNER_UNTIL = Date\.UTC\(([\d, ]+)\);/) || [])[1];
-check('index.html removes it on a date', !!inline);
-check('ramble.js removes it on a date', !!inJs);
-check('the two dates match', inline === inJs, inline + ' / ' + inJs);
-const until = inline ? Date.UTC.apply(null, inline.split(',').map(Number)) : 0;
-check('that date is Oct 22, midnight Eastern', until === Date.parse('2026-10-22T00:00:00-04:00'));
+const utc = (src, re) => { const m = src.match(re); return m ? Date.UTC.apply(null, m[1].split(',').map(Number)) : NaN; };
+const homeOver = utc(HOME, /over = Date\.UTC\(([\d, ]+)\)/), jsOver = utc(JS, /var RAMBLE_OVER = Date\.UTC\(([\d, ]+)\);/);
+const homeUntil = utc(HOME, /until = Date\.UTC\(([\d, ]+)\)/), jsUntil = utc(JS, /var BANNER_UNTIL = Date\.UTC\(([\d, ]+)\);/);
+check('the end of the Ramble is the same instant in both places', homeOver === jsOver && !isNaN(homeOver));
+check('the banner takedown is the same instant in both places', homeUntil === jsUntil && !isNaN(homeUntil));
+check('the Ramble ends Oct 22, midnight Eastern', homeOver === Date.parse('2026-10-22T00:00:00-04:00'));
+check('the banner goes Nov 21, midnight Eastern, standard time', homeUntil === Date.parse('2026-11-21T00:00:00-05:00'));
+check('the banner has a past-tense line', /class="one rb-past"/.test(HOME));
+check('the page has its ended note', fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8').includes('id="rover" hidden'));
 check('it links to /ramble/', /id="rbanner"[\s\S]*?href="\/ramble\/"/.test(HOME));
 
 console.log('\nThe page around the schedule');
