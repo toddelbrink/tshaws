@@ -38,6 +38,32 @@
   /* Acts with a guest on the podcast. Act name exactly as in the data file,
    * then the guest and their page. Add one only when the page exists:
    * test/ramble.js checks both sides. */
+  /* The Info view. Every fact here was checked against the source named beside
+   * it on 2026-10-07; change one only against its source. Stage names on the
+   * schedule stay exactly as IBMA prints them. The venue's own name is used
+   * here only. Food lines say what the venue's own site says it serves, never
+   * that food is served during a set. */
+  var MAP_URL = 'https://www.google.com/maps/d/viewer?mid=1QFk69ZaQhCwQrVnkdLL7Tk0U1PdFyyA';
+  var CARTA_URL = 'https://www.gocarta.org/using-carta/services/downtown-shuttle/';
+  var VENUES = [
+    { stages: ['rv', 'mk'], name: 'Chattanooga Convention Center', // chattanoogaconventioncenter.org
+      address: 'One Carter Plaza, Chattanooga, TN 37402', site: 'https://www.chattanoogaconventioncenter.org/' },
+    { stages: ['bb'], name: 'Barrelhouse Ballroom', // barrelhouseballroom.com
+      address: '1501 Long St, Chattanooga, TN 37408', note: 'At the corner of Long and Main.',
+      food: 'Serves a Five Wits Brewing menu.', site: 'https://www.barrelhouseballroom.com/' },
+    { stages: ['hf'], name: 'Hi-Fi Clyde’s Chattanooga', // hificlydeschattanooga.com
+      address: '122 W Main St, Chattanooga, TN 37408',
+      food: 'Has a kitchen.', site: 'https://www.hificlydeschattanooga.com/' },
+    { stages: ['sb'], name: 'Songbirds', // venue.songbirds.org: the music room, not the foundation's office
+      address: '206 W Main St, Chattanooga, TN 37408', site: 'https://venue.songbirds.org/' },
+    { stages: ['st'], name: 'Stratus Rooftop', // stratusrooftop.com
+      address: '105 W Main St, Chattanooga, TN 37402', note: 'On top of Caption by Hyatt Chattanooga Downtown.',
+      food: 'Serves shareable plates.', site: 'https://www.stratusrooftop.com/' },
+    { stages: ['ft'], name: 'FEED Co. Table & Tavern', // feedtableandtavern.com
+      address: '201 W Main St, Chattanooga, TN 37408',
+      food: 'Serves lunch and dinner.', site: 'https://www.feedtableandtavern.com/' }
+  ];
+
   var PODCAST = {
     'Wood Box Heroes': { guest: 'Thomas Cassell', href: '/guests/thomas-cassell/' }
   };
@@ -145,7 +171,8 @@
         esc(d.label.split(' ')[0]) + '</span>');
     }).join('');
     root.querySelector('#rtabs').innerHTML = button('tab', 'browse', 'Schedule') +
-      button('tab', 'mine', 'My Ramble<span class="rcount">' + picks.size + '</span>');
+      button('tab', 'mine', 'My Ramble<span class="rcount">' + picks.size + '</span>') +
+      button('tab', 'info', 'Info');
     var sel = root.querySelector('#rstage');
     // The two areas first, since most people settle on one per night, then
     // each stage by the short name every row shows, so a choice fits the menu
@@ -287,6 +314,57 @@
       '<div class="rseg" role="group" aria-label="Layout">' + button('view', 'list', 'List') + button('view', 'grid', 'Grid') + '</div></div>';
   }
 
+  function over() { return Date.now() >= RAMBLE_OVER; }
+  function bothAreas(list) {
+    return data.areas.every(function (a) { return list.some(function (x) { return x.area === a.id; }); });
+  }
+
+  /* Info: how it works, the two areas, getting between them, and each venue.
+   * Text and links only. The map is a link out, never embedded, so the page
+   * pulls nothing from Google. */
+  function info() {
+    var verb = '<span class="rtap">Tap</span><span class="rclick">Click</span>';
+    var stageList = function (areaId) {
+      return data.stages.filter(function (s) { return s.area === areaId; }).map(function (s) { return esc(s.name); });
+    };
+    var and = function (l) { return l.length < 3 ? l.join(' and ') : l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1]; };
+    var ms = data.areas[1], cc = data.areas[0];
+    var h = '<div class="rinfo-page">';
+    h += '<section aria-labelledby="ri-how"><h2 class="rarea" id="ri-how">How it works</h2><div class="rprose">' +
+      '<p>' + verb + ' the star beside a set in the Schedule to pick it. ' + verb + ' an act’s name to see when it plays again.</p>' +
+      '<p>A picked set takes a brass edge and a filled star. Red, with the word Overlap or a !, means it clashes with another pick. ' +
+      'My Ramble lists your picks in time order and offers a fix when an act plays twice.</p>' +
+      '<p>Your picks stay in this browser only. Use Save or send in My Ramble to keep your plan or open it on another device. A screenshot works too.</p>' +
+      (over() ? '' : '<p>For last-minute changes, check IBMA’s own app, out the week of Oct 12.</p>') +
+      '</div></section>';
+    h += '<section aria-labelledby="ri-areas"><h2 class="rarea" id="ri-areas">The two areas</h2><div class="rprose">' +
+      '<p>The seven stages sit in two areas, and most people pick one a night.</p>' +
+      '<p><strong>' + esc(cc.name) + ':</strong> ' + and(stageList(cc.id)) + '.</p>' +
+      '<p><strong>' + esc(ms.name) + ':</strong> ' + and(stageList(ms.id)) + '.</p></div></section>';
+    h += '<section aria-labelledby="ri-move"><h2 class="rarea" id="ri-move">Getting between them</h2><div class="rprose">' +
+      '<p>' + esc(cc.name) + ' to ' + esc(ms.name) + ' is a little over half a mile, about a 12 to 15 minute walk.</p>' +
+      '<p>Or ride CARTA’s free electric <a href="' + CARTA_URL + '" rel="noopener">Downtown Shuttle</a>, about every 15 minutes. ' +
+      'Board at the 11th &amp; Marriott stop, beside the Convention Center. Ride to the Choo Choo stop for Main Street. ' +
+      'On Tuesdays and Wednesdays it runs until 10 p.m., and Convention Center sets run until 11.</p>' +
+      '<p class="rmapbtn"><a class="btn" href="' + MAP_URL + '" rel="noopener">Open the map</a> ' +
+      '<span>Every venue, and the walking route between the two areas.</span></p></div></section>';
+    h += '<section aria-labelledby="ri-venues"><h2 class="rarea" id="ri-venues">The venues</h2><div class="rvenues">' +
+      VENUES.map(function (v) {
+        var stages = v.stages.map(function (id) {
+          for (var i = 0; i < data.stages.length; i++) if (data.stages[i].id === id) return esc(data.stages[i].name);
+          return '';
+        });
+        var dir = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(v.name + ', ' + v.address);
+        return '<div class="rvenue"><h3>' + esc(v.name) + '</h3>' +
+          '<p class="rvstage">' + (stages.length > 1 ? 'Stages: ' : 'Stage: ') + and(stages) + '</p>' +
+          '<p>' + esc(v.address) + (v.note ? '. ' + esc(v.note) : '') + '</p>' +
+          (v.food ? '<p>' + esc(v.food) + '</p>' : '') +
+          '<p class="rvlinks"><a href="' + esc(dir) + '" rel="noopener">Directions</a>' +
+          '<a href="' + esc(v.site) + '" rel="noopener">Website</a></p></div>';
+      }).join('') + '</div></section>';
+    return h + '</div>';
+  }
+
   /* An overlap note sits under the earlier of the two picks. If either act has
    * another set that is not picked and fits the rest of the plan, the note
    * names it and offers to move the pick there. */
@@ -318,6 +396,11 @@
       var L = P.filter(function (x) { return x.day === d.id; });
       if (!L.length) return;
       h += '<h2 class="rdayh">' + esc(dayLong(d)) + '</h2>';
+      if (!over() && bothAreas(L)) {
+        h += '<div class="rnote tight rshuttle">This night’s picks are in both areas, a 12 to 15 minute walk apart. ' +
+          'CARTA’s free Downtown Shuttle runs between them until 10 p.m. ' +
+          '<button type="button" class="rtextbtn" data-k="tab" data-v="info" data-goto="ri-move">Getting there</button></div>';
+      }
       L.forEach(function (x, i) {
         h += '<div class="rpick"><div class="rt">' + x.start + '</div>' +
           '<div class="rinfo"><div class="ract one">' + esc(x.act) + '</div>' +
@@ -422,7 +505,8 @@
     var key = root.contains(document.activeElement) ? focusKey(document.activeElement) : null;
     var box = root.querySelector('.rgridbox'), sx = box ? box.scrollLeft : 0;
     controls(root);
-    root.querySelector('#rout').innerHTML = S.tab === 'mine' ? mine() : S.view === 'grid' ? grid() : list();
+    root.querySelector('#rout').innerHTML = S.tab === 'mine' ? mine() : S.tab === 'info' ? info() :
+      S.view === 'grid' ? grid() : list();
     box = root.querySelector('.rgridbox');
     if (box) box.scrollLeft = sx;
     if (S.panel && S.tab === 'mine') drawQR();
@@ -437,6 +521,8 @@
     load: function (d) { build(d); return sets; },
     listGroups: listGroups,
     stagesShown: stagesShown,
+    venues: VENUES,
+    mapUrl: MAP_URL,
     planIds: planIds,
     planLink: planLink,
     planText: planText,
@@ -480,7 +566,9 @@
     S.toast = '';
     if (d.k) {
       S[d.k] = d.v;
-      if (d.k === 'tab') { S.panel = false; window.scrollTo(0, 0); }
+      // Instant, not the site's smooth scroll, so a jump to a section that
+      // follows is not overtaken by this one still running.
+      if (d.k === 'tab') { S.panel = false; window.scrollTo({ top: 0, behavior: 'instant' }); }
     } else if (d.pick) {
       if (picks.has(d.pick)) picks.delete(d.pick); else picks.add(d.pick);
       changed();
@@ -505,6 +593,10 @@
       return;
     }
     render();
+    if (d.goto) {
+      var to = document.getElementById(d.goto);
+      if (to) to.scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
   });
 
   document.addEventListener('change', function (e) {

@@ -265,6 +265,38 @@ if (fs.existsSync(QR)) {
 check('the page loads it by itself, only on demand', JS.includes("'/assets/js/vendor/qrcode.js'") &&
   !pages.some((p) => fs.readFileSync(p, 'utf8').includes('vendor/qrcode.js')));
 
+// The Info view. Addresses as checked against each venue's own site on
+// 2026-10-07. The map is linked, never embedded, and only by its viewer
+// address.
+console.log('\nThe Info view');
+if (R && data) {
+  const V = R.venues;
+  const covered = V.flatMap((v) => v.stages);
+  check('every stage has exactly one venue',
+    data.stages.every((s) => covered.filter((x) => x === s.id).length === 1) && covered.length === data.stages.length,
+    covered.join());
+  const want = {
+    rv: 'One Carter Plaza, Chattanooga, TN 37402',
+    bb: '1501 Long St, Chattanooga, TN 37408',
+    hf: '122 W Main St, Chattanooga, TN 37408',
+    sb: '206 W Main St, Chattanooga, TN 37408',
+    st: '105 W Main St, Chattanooga, TN 37402',
+    ft: '201 W Main St, Chattanooga, TN 37408'
+  };
+  for (const [stage, address] of Object.entries(want)) {
+    const v = V.find((x) => x.stages.includes(stage));
+    check(stage + ' prints ' + address, !!v && v.address === address, v && v.address);
+  }
+  check('every venue links its own site over https', V.every((v) => /^https:\/\/[^/]+\/$/.test(v.site)));
+  check('no food line promises food during a set', V.every((v) => !v.food || !/\b(set|show|during)\b/i.test(v.food)));
+  check('Songbirds has no food line', !V.find((v) => v.stages.includes('sb')).food);
+  check('the map is the viewer address', R.mapUrl === 'https://www.google.com/maps/d/viewer?mid=1QFk69ZaQhCwQrVnkdLL7Tk0U1PdFyyA');
+  check('the map is never embedded or linked for editing', !/maps\/d\/(edit|embed)/.test(JS) && !/<iframe/i.test(JS));
+  check('the shuttle line says until 10 p.m.', /until 10 p\.m\./.test(JS) && !/until 11 p\.m\./.test(JS));
+  check('the app line and the shuttle line hide once the Ramble is over',
+    /over\(\) \? '' : '<p>For last-minute changes/.test(JS) && /if \(!over\(\) && bothAreas\(L\)\)/.test(JS));
+}
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');

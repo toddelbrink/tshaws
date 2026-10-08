@@ -1296,3 +1296,35 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rsendtext p{font-family:var(--sans);font-size:14px;line-height:1.45;color:var(--ink-2)}
 .rsendtext .rlink{margin-top:12px}
 .rsendtext .ractions{margin-top:12px}
+
+/* Info: text and links only. */
+.rinfo-page section{margin-top:6px}
+/* Clear of the pinned control row when a link jumps to a heading. */
+.rinfo-page .rarea{scroll-margin-top:76px}
+.rinfo-page .rarea{margin-top:26px}
+.rinfo-page section:first-child .rarea{margin-top:14px}
+.rprose{max-width:62ch}
+.rprose p{font-size:16px;line-height:1.55;color:var(--ink-2);margin-top:10px}
+.rprose strong{color:var(--ink)}
+.rmapbtn{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.rmapbtn span{font-family:var(--sans);font-size:13px;color:var(--ink-muted)}
+.rvenues{display:grid;gap:0 28px}
+@media(min-width:700px){.rvenues{grid-template-columns:1fr 1fr}}
+.rvenue{border-bottom:1px solid var(--rule);padding:14px 0}
+.rvenue h3{font-size:17px;letter-spacing:.04em;margin-bottom:4px}
+.rvenue p{font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--ink-2)}
+.rvenue .rvstage{color:var(--ink-muted);font-size:13px}
+.rvlinks{display:flex;gap:18px;margin-top:2px}
+.rvlinks a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--display);font-size:13px;
+  font-weight:500;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+/* A button that reads as a link, inside a note. */
+.rtextbtn{font:inherit;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;
+  text-decoration:underline;text-underline-offset:2px}
+.rshuttle{margin-top:8px}
+/* Three tabs on the phone bar. Info is short, so it takes less room than the
+   other two and My Ramble keeps its count on one line. */
+@media(max-width:699px){
+  .rtabs{gap:6px}
+  .rtabs button{padding:0 8px}
+  .rtabs button[data-v="info"]{flex:0 0 72px}
+}
