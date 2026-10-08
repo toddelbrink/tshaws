@@ -107,6 +107,40 @@ dirs.forEach((slug) => {
   eps[slug] = rows;
 });
 
+/* More photos from the guest: a row below the prose, off unless listed here.
+ * Only photos the guest sent, named <slug>-guest-N so they can never be
+ * mistaken for footage stills (<slug>-N), two at most. Each needs its 1x, 2x
+ * and full-size file, opens the full-size file without the soft navigation,
+ * and every file is served with no metadata: no EXIF, XMP, ICC or comment. */
+console.log('\nMore photos from the guest');
+const EXTRAS = { 'jesse-cobb': 1 }; // trial, 2026-10-08
+function bareJpeg(file) {
+  const d = fs.readFileSync(file);
+  let i = 2;
+  while (i + 4 < d.length && d[i] === 0xFF && d[i + 1] !== 0xDA) {
+    const t = d[i + 1];
+    if ((t >= 0xE1 && t <= 0xEF) || t === 0xFE) return false; // APP1-15, COM
+    i += 2 + d.readUInt16BE(i + 2);
+  }
+  return d[0] === 0xFF && d[1] === 0xD8;
+}
+dirs.forEach((slug) => {
+  const html = fs.readFileSync(path.join(ROOT, 'guests', slug, 'index.html'), 'utf8');
+  const row = html.match(/<section class="section gmore"[\s\S]*?<\/section>/);
+  const want = EXTRAS[slug] || 0;
+  if (!want) { if (row) check(slug + ': carries more photos only when listed', false); return; }
+  if (!check(slug + ': has its more-photos row', !!row)) return;
+  const items = [...row[0].matchAll(/<a href="([^"]+)" data-hard-nav>\s*<img src="([^"]+)"\s+srcset="[^"]*?([^\s"]+@2x\.jpg) 2x"[^>]*alt="([^"]+)"/g)];
+  check(slug + ': ' + want + ' photo' + (want > 1 ? 's' : '') + ', two at most', items.length === want && want <= 2);
+  items.forEach((m, n) => {
+    const base = '/assets/photos/guests/' + slug + '-guest-';
+    const files = [m[1], m[2], m[3]];
+    check(slug + ' photo ' + (n + 1) + ': guest-photo names', files.every((f) => f.startsWith(base)));
+    check(slug + ' photo ' + (n + 1) + ': files exist with no metadata',
+      files.every((f) => fs.existsSync(path.join(ROOT, f)) && bareJpeg(path.join(ROOT, f))));
+  });
+});
+
 /* The same question for every page on the site, not only the guest pages.
  * Twenty pages now link each other in their copy, and a renamed directory
  * would 404 every link pointing at it. This runs on every Vercel build (see
