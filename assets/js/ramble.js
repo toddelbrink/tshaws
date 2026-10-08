@@ -47,7 +47,8 @@
   var byId = {};
   var picks = null;    // Set of ids on screen: the visitor's own, or a shared plan
   var own = null;      // the visitor's saved picks while a shared plan is showing
-  var S = { tab: 'browse', day: null, view: null, stage: 'all', open: null, toast: '', link: '' };
+  var S = { tab: 'browse', day: null, view: null, stage: 'all', open: null, toast: '', panel: false };
+  var QR_URL = '/assets/js/vendor/qrcode.js';
 
   /* ---- helpers ---- */
 
@@ -89,15 +90,31 @@
   function save() {
     try { localStorage.setItem(STORE, JSON.stringify(Array.from(picks))); } catch (e) { /* see top */ }
   }
+  /* The plan link and everything that carries it. One format since launch,
+   * so links people have already shared keep opening. */
+  function planIds(link) {
+    var m = String(link || '').match(/#plan=([a-z0-9.]*)$/);
+    if (!m) return [];
+    return m[1].split('.').filter(function (i, n, all) { return byId[i] && all.indexOf(i) === n; });
+  }
+  function planLink(ids, origin) {
+    return (origin || 'https://www.tshawsprogressivebluegrass.com') + '/ramble/#plan=' + ids.join('.');
+  }
+  function planText(ids) {
+    return 'My Ramble plan\n' + ids.map(function (i) {
+      var x = byId[i];
+      return dayLabel(x.day) + ' ' + x.start + ' ' + x.act + ', ' + x.stageName;
+    }).join('\n');
+  }
+  function planMail(ids, origin) {
+    return 'mailto:?subject=' + encodeURIComponent('My Ramble plan') +
+      '&body=' + encodeURIComponent(planText(ids) + '\n\nOpen it here:\n' + planLink(ids, origin));
+  }
   function fromHash() {
-    var m = location.hash.match(/^#plan=([a-z0-9.]*)$/);
-    if (!m) return null;
-    var ids = m[1].split('.').filter(function (i) { return byId[i]; });
+    var ids = planIds(location.hash);
     return ids.length ? new Set(ids) : null;
   }
-  function shareUrl() {
-    return location.origin + '/ramble/#plan=' + picked().map(function (x) { return x.id; }).join('.');
-  }
+  function myIds() { return picked().map(function (x) { return x.id; }); }
   function dropHash() {
     if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
   }
@@ -293,6 +310,7 @@
       h += '<div class="rshared"><p><strong>This is a plan someone shared with you.</strong> Change anything and it becomes yours, replacing your own picks on this device.</p>' +
         (own.size ? '<button type="button" class="btn" data-mine="1">Show my own picks</button>' : '') + '</div>';
     }
+    if (P.length) h += sendBar();
     if (!P.length) {
       return h + '<div class="rempty"><p><strong>Nothing picked yet.</strong> Tap the star on any set in the Schedule. Tap an act’s name to see when it plays again.</p></div>';
     }
@@ -323,12 +341,65 @@
         h += '</div>';
       });
     });
-    h += '<div class="ractions"><button type="button" class="btn solid" data-share="1">Copy my plan</button>' +
-      '<button type="button" class="btn" data-clear="1">Clear all</button></div>' +
-      '<p class="rtoast" role="status">' + esc(S.toast) + '</p>' +
-      (S.link ? '<label class="rlink"><span class="sr-only">Your plan link</span><input type="text" readonly value="' + esc(S.link) + '"></label>' : '') +
-      '<p class="rkeep">Picks are saved on this device only, and some phones clear them after a week away. Text yourself the link to keep your plan safe.</p>';
+    h += '<div class="ractions"><button type="button" class="btn" data-clear="1">Clear all</button></div>';
     return h;
+  }
+
+  /* Save or send, at the top of My Ramble. On a phone the button opens the
+   * phone's own share panel, which already holds Messages and Mail. On a
+   * computer, or where sharing is not offered, it opens the panel below: a QR
+   * code to open the plan on a phone, the link to copy, and an email to
+   * yourself. Phones get a quieter way to that panel too, for a friend to scan
+   * across a table. */
+  function sendBar() {
+    var ids = myIds(), url = planLink(ids, location.origin);
+    var h = '<div class="rsendbar"><div class="ractions">' +
+      '<button type="button" class="btn solid" data-send="1">Save or send my plan</button>' +
+      '<button type="button" class="rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
+      (S.panel ? 'Hide QR code' : 'Show QR code') + '</button></div>' +
+      '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.</p></div>';
+    if (S.panel) {
+      h += '<section class="rsend" id="rsend" aria-label="Save or send your plan">' +
+        '<div class="rqr" id="rqr" role="img" aria-label="QR code for your plan link"></div>' +
+        '<div class="rsendtext"><h3>Open it on your phone</h3>' +
+        '<p>Point your phone’s camera at the code, or use the link.</p>' +
+        '<label class="rlink"><span class="sr-only">Your plan link</span><input type="text" readonly value="' + esc(url) + '"></label>' +
+        '<div class="ractions"><button type="button" class="btn" data-copy="1">Copy link</button>' +
+        '<a class="btn" href="' + esc(planMail(ids, location.origin)) + '">Email it to myself</a></div>' +
+        '<p class="rtoast" role="status">' + esc(S.toast) + '</p></div></section>';
+    }
+    return h;
+  }
+
+  var qrLoading = null;
+  function loadQR() {
+    if (window.qrcode) return Promise.resolve(window.qrcode);
+    if (!qrLoading) {
+      qrLoading = new Promise(function (ok, fail) {
+        var s = document.createElement('script');
+        s.src = QR_URL;
+        s.onload = function () { window.qrcode ? ok(window.qrcode) : fail(new Error('no qrcode')); };
+        s.onerror = function () { qrLoading = null; fail(new Error('load')); };
+        document.head.appendChild(s);
+      });
+    }
+    return qrLoading;
+  }
+  // Drawn in the page from the link alone. Nothing is sent anywhere.
+  function drawQR() {
+    var box = document.getElementById('rqr');
+    if (!box) return;
+    var url = planLink(myIds(), location.origin);
+    loadQR().then(function (qrcode) {
+      var q = qrcode(0, 'M');
+      q.addData(url);
+      q.make();
+      var el = document.getElementById('rqr');
+      if (el) el.innerHTML = q.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+    }, function () {
+      var el = document.getElementById('rqr');
+      if (el) el.outerHTML = '';
+    });
   }
 
   /* Redrawing replaces the buttons, which would drop keyboard focus on the
@@ -339,7 +410,9 @@
     if (d.pick) return '[data-pick="' + d.pick + '"].' + el.classList[0];
     if (d.open) return '[data-open="' + d.open + '"]';
     if (d.k) return '[data-k="' + d.k + '"][data-v="' + d.v + '"]';
-    if (d.share) return '[data-share]';
+    if (d.send) return '[data-send]';
+    if (d.panel) return '[data-panel]';
+    if (d.copy) return '[data-copy]';
     return null;
   }
 
@@ -352,6 +425,7 @@
     root.querySelector('#rout').innerHTML = S.tab === 'mine' ? mine() : S.view === 'grid' ? grid() : list();
     box = root.querySelector('.rgridbox');
     if (box) box.scrollLeft = sx;
+    if (S.panel && S.tab === 'mine') drawQR();
     if (key) {
       var el = root.querySelector(key);
       if (el) el.focus({ preventScroll: true });
@@ -362,26 +436,40 @@
   window.TSRamble = {
     load: function (d) { build(d); return sets; },
     listGroups: listGroups,
-    stagesShown: stagesShown
+    stagesShown: stagesShown,
+    planIds: planIds,
+    planLink: planLink,
+    planText: planText,
+    planMail: planMail
   };
   if (typeof document === 'undefined') return;
 
   /* ---- events, bound once for the life of the document ---- */
 
-  function copyPlan() {
-    var url = shareUrl();
-    var text = 'My Ramble plan\n' + picked().map(function (x) {
-      return dayLabel(x.day) + ' ' + x.start + ' ' + x.act + ', ' + x.stageName;
-    }).join('\n') + '\n\n' + url;
+  function send() {
+    var ids = myIds();
+    var phone = window.matchMedia('(pointer: coarse)').matches;
+    if (phone && navigator.share) {
+      navigator.share({ title: 'My Ramble plan', text: planText(ids), url: planLink(ids, location.origin) })
+        .catch(function (e) {
+          if (e && e.name === 'AbortError') return; // they closed the panel
+          S.panel = true; render();
+        });
+      return;
+    }
+    S.panel = true;
+    render();
+  }
+
+  function copyLink() {
+    var url = planLink(myIds(), location.origin);
     var done = function (ok) {
-      S.toast = ok ? 'Copied. Paste it into a text to yourself or a friend.' : 'Copy did not work here. Copy the link below instead.';
-      S.link = ok ? '' : url;
+      S.toast = ok ? 'Link copied.' : 'Copy did not work here. Select the link above and copy it.';
       render();
-      var input = document.querySelector('#ramble .rlink input');
-      if (input) input.select();
+      if (!ok) { var input = document.querySelector('#ramble .rlink input'); if (input) input.select(); }
     };
     try {
-      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+      navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
     } catch (e) { done(false); }
   }
 
@@ -389,10 +477,10 @@
     var b = e.target.closest && e.target.closest('#ramble button');
     if (!b || !data) return;
     var d = b.dataset;
-    S.toast = ''; S.link = '';
+    S.toast = '';
     if (d.k) {
       S[d.k] = d.v;
-      if (d.k === 'tab') window.scrollTo(0, 0);
+      if (d.k === 'tab') { S.panel = false; window.scrollTo(0, 0); }
     } else if (d.pick) {
       if (picks.has(d.pick)) picks.delete(d.pick); else picks.add(d.pick);
       changed();
@@ -402,11 +490,16 @@
       picks.delete(d.swap); picks.add(d.to); changed();
     } else if (d.clear) {
       if (!window.confirm('Clear every pick from your Ramble?')) return;
-      picks.clear(); changed();
+      picks.clear(); S.panel = false; changed();
     } else if (d.mine) {
       picks = own; own = null; dropHash();
-    } else if (d.share) {
-      copyPlan();
+    } else if (d.send) {
+      send();
+      return;
+    } else if (d.panel) {
+      S.panel = d.panel === 'open';
+    } else if (d.copy) {
+      copyLink();
       return;
     } else {
       return;

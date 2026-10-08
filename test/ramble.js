@@ -221,6 +221,50 @@ if (R && data) {
     R.stagesShown('all').length === 7);
 }
 
+// Plan links. The send panel, the phone's share panel and the email all carry
+// the same link, and it has to come back as the same plan. The format has not
+// changed since launch, so links already shared keep working.
+console.log('\nPlan links round-trip');
+if (R && data) {
+  const all = R.load(data).map((x) => x.id);
+  const some = [all[0], all[17], all[42], all[60]];
+  const back = (link) => R.planIds(link).join();
+  check('every set survives a link', back(R.planLink(all)) === all.join());
+  check('a few picks survive a link', back(R.planLink(some)) === some.join());
+  check('the link points at the live page', R.planLink(some).startsWith('https://www.tshawsprogressivebluegrass.com/ramble/#plan='));
+  check('a link made on another host still reads', back(R.planLink(some, 'http://localhost:8787')) === some.join());
+  check('a link shared at launch still opens', back('https://www.tshawsprogressivebluegrass.com/ramble/#plan=tuebb600.tuest640.tuehf820') === 'tuebb600,tuest640,tuehf820');
+  check('unknown and repeated ids are dropped', back('/ramble/#plan=tuebb600.nope99.tuebb600') === 'tuebb600');
+  check('a link with no plan is empty', back('/ramble/') === '' && back('/ramble/#plan=') === '');
+  const mail = R.planMail(some);
+  const body = decodeURIComponent(mail.split('&body=')[1] || '');
+  check('the email is addressed to no one, so it goes to yourself', mail.startsWith('mailto:?subject='));
+  check('the email carries the same link', back(body.trim().split('\n').pop()) === some.join());
+  check('the email lists each pick', some.every((i) => body.includes(R.planText([i]).split('\n')[1])));
+  const sets = R.load(data);
+  check('the plan text names each stage as IBMA prints it',
+    sets.every((x) => R.planText([x.id]).endsWith(', ' + data.stages.find((s) => s.id === x.stage).name)));
+}
+
+// The QR code is drawn in the page by a library kept in this repo and loaded
+// only when the send panel opens. It must not be on any page's script list,
+// and it must not reach out to another host.
+console.log('\nThe QR code library');
+const QR = path.join(ROOT, 'assets/js/vendor/qrcode.js');
+check('it is in the repo', fs.existsSync(QR));
+if (fs.existsSync(QR)) {
+  const src = fs.readFileSync(QR, 'utf8');
+  check('it carries its MIT license notice', /Copyright \(c\) 2009 Kazuhiko Arase/.test(src) && /MIT license/.test(src));
+  check('it makes no network calls', !/\bfetch\(|XMLHttpRequest|\bimport\(/.test(src));
+  const qrcode = require(QR);
+  const q = qrcode(0, 'M');
+  q.addData(R ? R.planLink(R.load(data).map((x) => x.id)) : 'x');
+  q.make();
+  check('it can encode a plan with every set picked', q.getModuleCount() > 0 && q.getModuleCount() <= 177);
+}
+check('the page loads it by itself, only on demand', JS.includes("'/assets/js/vendor/qrcode.js'") &&
+  !pages.some((p) => fs.readFileSync(p, 'utf8').includes('vendor/qrcode.js')));
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');

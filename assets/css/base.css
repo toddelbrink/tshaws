@@ -1274,3 +1274,25 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rkeyrow .rkey{margin:0;flex:1 1 auto;min-width:0}
 .rkeyrow .rseg{flex:none}
 .rkeyrow .rseg button{min-width:58px}
+
+/* Save or send, at the top of My Ramble. */
+.rsendbar{margin-top:18px;padding-bottom:4px}
+.rsendbar .ractions{margin-top:0}
+.rsendbar .rkeep{margin-top:10px}
+/* The quieter way to the QR code. On a computer the main button already
+   opens it, so it only shows where a finger is the pointer, or to close it. */
+.rqrlink{display:none;font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);background:none;border:0;min-height:44px;padding:0 4px;cursor:pointer}
+.rqrlink:hover{color:var(--accent-deep)}
+@media(pointer:coarse){.rqrlink{display:inline-flex;align-items:center}}
+.rqrlink[aria-expanded="true"]{display:inline-flex;align-items:center}
+.rsend{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start;background:var(--paper-2);
+  border-radius:var(--radius);padding:16px;margin-top:14px}
+/* Black on white, the way a phone camera reads a code best. */
+.rqr{width:180px;height:180px;flex:none;background:#fff;border-radius:var(--radius)}
+.rqr svg{display:block;width:100%;height:100%}
+.rsendtext{flex:1 1 240px;min-width:0}
+.rsendtext h3{font-size:18px;margin-bottom:6px}
+.rsendtext p{font-family:var(--sans);font-size:14px;line-height:1.45;color:var(--ink-2)}
+.rsendtext .rlink{margin-top:12px}
+.rsendtext .ractions{margin-top:12px}
