@@ -107,13 +107,12 @@ dirs.forEach((slug) => {
   eps[slug] = rows;
 });
 
-/* More photos from the guest: a row below the prose, off unless listed here.
- * Only photos the guest sent, named <slug>-guest-N so they can never be
- * mistaken for footage stills (<slug>-N), two at most. Each needs its 1x, 2x
- * and full-size file, opens the full-size file without the soft navigation,
- * and every file is served with no metadata: no EXIF, XMP, ICC or comment. */
-console.log('\nMore photos from the guest');
-const EXTRAS = { 'jesse-cobb': 1 }; // trial, 2026-10-08
+/* A guest's own photos in the text, in place of footage stills (Todd,
+ * 2026-10-08). Named <slug>-guest-N so they can never be mistaken for a
+ * still (<slug>-N). Each sits in a figure.gphoto, has alt text, opens its
+ * full-size file without the soft navigation, and every size is served with
+ * no metadata: no EXIF, XMP, ICC or comment segments. */
+console.log('\nGuest photos in the text');
 function bareJpeg(file) {
   const d = fs.readFileSync(file);
   let i = 2;
@@ -124,22 +123,27 @@ function bareJpeg(file) {
   }
   return d[0] === 0xFF && d[1] === 0xD8;
 }
+let guestPhotos = 0;
 dirs.forEach((slug) => {
   const html = fs.readFileSync(path.join(ROOT, 'guests', slug, 'index.html'), 'utf8');
-  const row = html.match(/<section class="section gmore"[\s\S]*?<\/section>/);
-  const want = EXTRAS[slug] || 0;
-  if (!want) { if (row) check(slug + ': carries more photos only when listed', false); return; }
-  if (!check(slug + ': has its more-photos row', !!row)) return;
-  const items = [...row[0].matchAll(/<a href="([^"]+)" data-hard-nav>\s*<img src="([^"]+)"\s+srcset="[^"]*?([^\s"]+@2x\.jpg) 2x"[^>]*alt="([^"]+)"/g)];
-  check(slug + ': ' + want + ' photo' + (want > 1 ? 's' : '') + ', two at most', items.length === want && want <= 2);
-  items.forEach((m, n) => {
-    const base = '/assets/photos/guests/' + slug + '-guest-';
-    const files = [m[1], m[2], m[3]];
-    check(slug + ' photo ' + (n + 1) + ': guest-photo names', files.every((f) => f.startsWith(base)));
-    check(slug + ' photo ' + (n + 1) + ': files exist with no metadata',
-      files.every((f) => fs.existsSync(path.join(ROOT, f)) && bareJpeg(path.join(ROOT, f))));
+  const figs = [...html.matchAll(/<figure class="gframe gphoto[^"]*">([\s\S]*?)<\/figure>/g)];
+  const loose = (html.match(new RegExp('/assets/photos/guests/' + slug + '-guest-', 'g')) || []).length;
+  const inFigs = figs.reduce((n, f) => n + (f[1].match(/-guest-/g) || []).length, 0);
+  if (!loose) return;
+  check(slug + ': guest photos sit only in gphoto figures', loose === inFigs);
+  figs.forEach((f, n) => {
+    guestPhotos++;
+    const files = [...f[1].matchAll(/\/assets\/photos\/guests\/[^"\s,]+\.jpg/g)].map((m) => m[0]);
+    const name = slug + ' guest photo ' + (n + 1);
+    check(name + ': opens full size without soft navigation', /<a href="[^"]+-guest-\d+-full\.jpg" data-hard-nav>/.test(f[1]));
+    check(name + ': has alt text', /alt="[^"]+"/.test(f[1]));
+    check(name + ': every file is named for the guest', files.length >= 3 &&
+      files.every((x) => x.startsWith('/assets/photos/guests/' + slug + '-guest-')));
+    check(name + ': every file exists with no metadata',
+      files.every((x) => fs.existsSync(path.join(ROOT, x)) && bareJpeg(path.join(ROOT, x))));
   });
 });
+check('found guest photos to check (' + guestPhotos + ')', guestPhotos > 0);
 
 /* The same question for every page on the site, not only the guest pages.
  * Twenty pages now link each other in their copy, and a renamed directory

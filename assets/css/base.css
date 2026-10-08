@@ -902,13 +902,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    it in the 62ch column. Headings clear the floats so a section title can
    never end up jammed beside one. Below 640px the column cannot spare the
    width, so they stop floating and run full bleed. */
-/* More photos the guest sent, below the prose. Fixed height, natural width,
-   so a landscape and a portrait sit side by side. Each is a plain link to the
-   full-size file: no viewer, nothing to trap the scroll. */
-.gmore-row{display:flex;flex-wrap:wrap;gap:12px}
-.gmore-row a{display:block;line-height:0}
-.gmore-row img{height:170px;width:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper-2)}
-.gmore-row a:hover img{border-color:var(--accent)}
 .gframe{margin:6px 0 20px;width:240px}
 .gframe.l{float:left;margin-right:26px}
 .gframe.r{float:right;margin-left:26px}
@@ -919,9 +912,17 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .gframe figcaption a{color:var(--accent);text-decoration:none;font-weight:600}
 .gframe figcaption a:hover{text-decoration:underline}
 .gframe figcaption .when{display:block;margin-top:2px}
+/* A guest's own photo in the text, in place of a footage still: natural
+   shape, no caption unless the guest named a photographer, and a plain link
+   to the full-size file. A portrait runs narrower so it does not tower. */
+.gframe.gphoto a{display:block;line-height:0}
+.gframe.gphoto img{aspect-ratio:auto;height:auto}
+.gframe.gphoto a:hover img{border-color:var(--accent)}
+.gframe.gphoto.tall{width:180px}
 .prose h2{clear:both}
 @media(max-width:640px){
   .gframe,.gframe.l,.gframe.r{float:none;width:auto;max-width:420px;margin:24px 0}
+  .gframe.gphoto.tall{width:auto;max-width:240px}
 }
 /* One sentence saying whose footage this is, so the frames are not mistaken
    for press photography. */
