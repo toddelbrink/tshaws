@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm test && rm -rf test tools",
   "outputDirectory": ".",
+  "functions": {
+    "api/plan-email.js": {
+      "includeFiles": "{assets/js/ramble.js,assets/data/ramble-2026.json}"
+    }
+  },
   "crons": [
     {
       "path": "/api/warm",

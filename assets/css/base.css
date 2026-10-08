@@ -1318,6 +1318,21 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rsendbar{margin-top:18px;padding-bottom:4px}
 .rsendbar .ractions{margin-top:0}
 .rsendbar .rkeep{margin-top:10px}
+.rmail{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:16px;max-width:520px}
+.rmailbox{flex:1 1 220px;display:block}
+.rmaillabel{display:block;font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+.rmailbox input{width:100%;min-height:44px;font-family:var(--sans);font-size:16px;padding:10px 12px;
+  border:1px solid var(--rule);border-radius:var(--radius);background:#FBF8F1;color:var(--ink)}
+.rmailbox input:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 2px var(--brass)}
+.rmail .btn{flex:none}
+.rmail .btn[disabled]{opacity:.6;cursor:default}
+.rtrap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.rmailmsg{font-family:var(--sans);font-size:14px;line-height:1.5;margin-top:10px;color:var(--warn)}
+.rmailmsg.ok{color:var(--ink-2)}
+.rmailmsg:empty{display:none}
+.rmailmsg a{color:var(--accent)}
+.rfine{font-family:var(--sans);font-size:12px;color:var(--ink-muted);margin-top:8px}
 /* The quieter way to the QR code. On a computer the main button already
    opens it, so it only shows where a finger is the pointer, or to close it. */
 .rqrlink{display:none;font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;

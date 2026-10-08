@@ -92,7 +92,8 @@
   var byId = {};
   var picks = null;    // Set of ids on screen: the visitor's own, or a shared plan
   var own = null;      // the visitor's saved picks while a shared plan is showing
-  var S = { tab: 'browse', day: null, view: null, stage: 'all', open: null, toast: '', panel: false };
+  var S = { tab: 'browse', day: null, view: null, stage: 'all', open: null, toast: '', panel: false,
+    mail: '', mailMsg: '', mailOk: false, mailBusy: false };
   var QR_URL = '/assets/js/vendor/qrcode.js';
 
   /* ---- helpers ---- */
@@ -171,49 +172,77 @@
     return 'Change areas: free shuttle from ' + (a.area === 'cc' ? '11th & Marriott' : 'the Choo Choo') +
       ', or a 12 to 15 minute walk.';
   }
-  function planText(ids, origin, now) {
+  /* The plan as structured rows, which the plain text below and the HTML
+   * email (lib/plan-email.js) both render, so the two can never disagree. */
+  function planRows(ids, origin, now) {
     var ended = (now === undefined ? Date.now() : now) >= RAMBLE_OVER;
     var P = ids.map(function (i) { return byId[i]; }).filter(Boolean).sort(function (a, b) {
       return sets.indexOf(a) - sets.indexOf(b);
     });
-    var out = ['My IBMA Ramble plan', 'Chattanooga. All times are PM Eastern.'];
+    var days = [];
     data.days.forEach(function (d) {
       var L = P.filter(function (x) { return x.day === d.id; });
       if (!L.length) return;
-      out.push('', new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
-        { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase());
-      var until = 0;
+      var items = [], until = 0;
       L.forEach(function (x, i) {
         var a = L[i - 1];
         if (a && x.s - until >= BREAK) {
-          var food = a.area === 'ms' || x.area === 'ms' ? ' Food on Main Street: ' + EATS.join(', ') + '.' : '';
-          out.push('', 'Break, ' + hrs(x.s - until) + '.' + food);
+          items.push({ type: 'break', length: hrs(x.s - until),
+            food: a.area === 'ms' || x.area === 'ms' ? EATS.slice() : [] });
         }
         until = Math.max(until, x.e);
-        out.push('', clock(x.s) + ' to ' + clock(x.e) + '  ' + x.act, x.stageName + ', ' + areaName(x.area));
-        if (!a) return;
-        var notes = [moveNote(a, x, ended)];
-        if (overlap(a, x)) notes.push('Overlaps the set above.');
-        else if (x.s - a.e <= 10 && x.building !== a.building) {
-          notes.push(x.s - a.e ? x.s - a.e + ' min to get here.' : 'No time to get here.');
+        var notes = [];
+        if (a) {
+          var m = moveNote(a, x, ended);
+          if (m) notes.push({ text: m, warn: false });
+          if (overlap(a, x)) notes.push({ text: 'Overlaps the set above.', warn: true });
+          else if (x.s - a.e <= 10 && x.building !== a.building) {
+            notes.push({ text: x.s - a.e ? x.s - a.e + ' min to get here.' : 'No time to get here.', warn: true });
+          }
+          L.slice(0, i - 1).forEach(function (y) {
+            if (overlap(y, x)) notes.push({ text: 'Overlaps ' + y.act + '.', warn: true });
+          });
         }
-        L.slice(0, i - 1).forEach(function (y) { if (overlap(y, x)) notes.push('Overlaps ' + y.act + '.'); });
-        notes = notes.filter(Boolean).join(' ');
-        if (notes) out.push(notes);
+        items.push({ type: 'set', id: x.id, time: clock(x.s) + ' to ' + clock(x.e), act: x.act,
+          stage: x.stageName, area: areaName(x.area), areaId: x.area, notes: notes });
       });
+      days.push({ label: new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
+        { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase(), items: items });
     });
     var cc = data.areas[0], names = data.stages.filter(function (s) { return s.area === cc.id; })
       .map(function (s) { return s.name; });
-    out.push('', 'GETTING AROUND', 'Two areas, a little over half a mile apart. ' + cc.name + ': ' +
-      names.join(' and ') + '. ' + data.areas[1].name + ': the other ' +
-      ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'][data.stages.length - names.length] + ' stages.');
-    if (!ended) {
-      out.push('Free CARTA electric shuttle, about every 15 minutes until 10 p.m. Board at 11th & Marriott ' +
-        'beside the Convention Center, or at the Chattanooga Choo Choo for Main Street.');
-    }
-    out.push('', 'Map: ' + MAP_URL);
-    if (!ended) out.push('Ramble passes: ' + PASS_URL);
-    out.push('Open or change this plan: ' + planLink(ids, origin), '', "From T Shaw's Progressive Bluegrass");
+    return {
+      ended: ended,
+      days: days,
+      areas: 'Two areas, a little over half a mile apart. ' + cc.name + ': ' + names.join(' and ') + '. ' +
+        data.areas[1].name + ': the other ' +
+        ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'][data.stages.length - names.length] + ' stages.',
+      shuttle: ended ? null : 'Free CARTA electric shuttle, about every 15 minutes until 10 p.m. Board at 11th & Marriott ' +
+        'beside the Convention Center, or at the Chattanooga Choo Choo for Main Street.',
+      map: MAP_URL,
+      passes: ended ? null : PASS_URL,
+      plan: planLink(ids, origin)
+    };
+  }
+  function planText(ids, origin, now) {
+    var R = planRows(ids, origin, now);
+    var out = ['My IBMA Ramble plan', 'Chattanooga. All times are PM Eastern.'];
+    R.days.forEach(function (d) {
+      out.push('', d.label);
+      d.items.forEach(function (it) {
+        if (it.type === 'break') {
+          out.push('', 'Break, ' + it.length + '.' + (it.food.length ? ' Food on Main Street: ' + it.food.join(', ') + '.' : ''));
+          return;
+        }
+        out.push('', it.time + '  ' + it.act, it.stage + ', ' + it.area);
+        if (it.notes.length) out.push(it.notes.map(function (n) { return n.text; }).join(' '));
+      });
+    });
+    out.push('', 'GETTING AROUND', R.areas);
+    if (R.shuttle) out.push(R.shuttle);
+    out.push('', 'Map: ' + R.map);
+    if (R.passes) out.push('Ramble passes: ' + R.passes);
+    out.push('Open or change this plan: ' + R.plan, '', "From T Shaw's Progressive Bluegrass");
     return out.join('\n');
   }
   function planMail(ids, origin, now) {
@@ -528,8 +557,8 @@
   /* Save or send, at the top of My Ramble. On a phone the button opens the
    * phone's own share panel, which already holds Messages and Mail. On a
    * computer, or where sharing is not offered, it opens the panel below: a QR
-   * code to open the plan on a phone, the link to copy, and an email to
-   * yourself. Phones get a quieter way to that panel too, for a friend to scan
+   * code to open the plan on a phone and the link to copy. Under the buttons,
+   * on every device, the site will email the plan. Phones get a quieter way to that panel too, for a friend to scan
    * across a table. */
   function sendBar() {
     var ids = myIds(), url = planLink(ids, location.origin);
@@ -537,15 +566,25 @@
       '<button type="button" class="btn solid" data-send="1">Save or send my plan</button>' +
       '<button type="button" class="rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
       (S.panel ? 'Hide QR code' : 'Show QR code') + '</button></div>' +
-      '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.</p></div>';
+      '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.</p>' +
+      // The site emails the plan itself, as a formatted email (api/plan-email.js).
+      // The typed address lives in S.mail so a redraw never wipes it.
+      '<form class="rmail" data-mailform novalidate>' +
+      '<label class="rmailbox"><span class="rmaillabel">Email it to me</span>' +
+      '<input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required value="' + esc(S.mail) + '"></label>' +
+      '<input type="text" name="website" class="rtrap" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<button type="submit" class="btn"' + (S.mailBusy ? ' disabled' : '') + '>' + (S.mailBusy ? 'Sending…' : 'Send') + '</button>' +
+      '</form>' +
+      '<p class="rmailmsg' + (S.mailOk ? ' ok' : '') + '" role="status">' + esc(S.mailMsg) +
+      (S.mailMsg && !S.mailOk && !S.mailBusy ? ' <a href="' + esc(planMail(ids, location.origin)) + '">Open it in your mail app instead</a>.' : '') + '</p>' +
+      '<p class="rfine">Your address is used to send this one email. It is not saved.</p></div>';
     if (S.panel) {
       h += '<section class="rsend" id="rsend" aria-label="Save or send your plan">' +
         '<div class="rqr" id="rqr" role="img" aria-label="QR code for your plan link"></div>' +
         '<div class="rsendtext"><h3>Open it on your phone</h3>' +
         '<p>Point your phone’s camera at the code, or use the link.</p>' +
         '<label class="rlink"><span class="sr-only">Your plan link</span><input type="text" readonly value="' + esc(url) + '"></label>' +
-        '<div class="ractions"><button type="button" class="btn" data-copy="1">Copy link</button>' +
-        '<a class="btn" href="' + esc(planMail(ids, location.origin)) + '">Email it to myself</a></div>' +
+        '<div class="ractions"><button type="button" class="btn" data-copy="1">Copy link</button></div>' +
         '<p class="rtoast" role="status">' + esc(S.toast) + '</p></div></section>';
     }
     return h;
@@ -622,6 +661,7 @@
     mapUrl: MAP_URL,
     planIds: planIds,
     planLink: planLink,
+    planRows: planRows,
     planText: planText,
     planMail: planMail,
     passUrl: PASS_URL,
@@ -697,6 +737,33 @@
       var to = document.getElementById(d.goto);
       if (to) to.scrollIntoView({ block: 'start', behavior: 'instant' });
     }
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target.name === 'email' && e.target.closest('#ramble')) S.mail = e.target.value;
+  });
+  document.addEventListener('submit', function (e) {
+    var f = e.target.closest && e.target.closest('#ramble form[data-mailform]');
+    if (!f || !data) return;
+    e.preventDefault();
+    if (S.mailBusy) return;
+    S.mail = f.email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.mail)) {
+      S.mailMsg = 'That email address does not look right.'; S.mailOk = false; render(); return;
+    }
+    S.mailBusy = true; S.mailMsg = ''; render();
+    fetch('/api/plan-email', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: S.mail, plan: myIds().join('.'), website: f.website.value })
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; });
+    }).then(function (x) {
+      S.mailOk = x.ok;
+      S.mailMsg = x.ok ? 'Sent to ' + S.mail + '. Check your inbox, and your spam folder if it is not there in a minute.'
+        : (x.j.error || 'The email did not go.');
+    }, function () {
+      S.mailOk = false; S.mailMsg = 'The email did not go. Check your connection.';
+    }).then(function () { S.mailBusy = false; render(); });
   });
 
   document.addEventListener('change', function (e) {
