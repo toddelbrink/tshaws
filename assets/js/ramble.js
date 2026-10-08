@@ -45,6 +45,10 @@
    * that food is served during a set. */
   var MAP_URL = 'https://www.google.com/maps/d/viewer?mid=1QFk69ZaQhCwQrVnkdLL7Tk0U1PdFyyA';
   var CARTA_URL = 'https://www.gocarta.org/using-carta/services/downtown-shuttle/';
+  // IBMA's own ticket page, checked 2026-10-08: Ramble passes for both nights
+  // or one. Prices are IBMA's and change, so none is printed anywhere. Every
+  // passes link reads this one address and hides once the Ramble is over.
+  var PASS_URL = 'https://ibma.ticketspice.com/-ibma-world-of-bluegrass-2026';
   var VENUES = [
     { stages: ['rv', 'mk'], name: 'Chattanooga Convention Center', // chattanoogaconventioncenter.org
       address: 'One Carter Plaza, Chattanooga, TN 37402', site: 'https://www.chattanoogaconventioncenter.org/' },
@@ -63,6 +67,21 @@
       address: '201 W Main St, Chattanooga, TN 37408',
       food: 'Serves lunch and dinner.', site: 'https://www.feedtableandtavern.com/' }
   ];
+  // How the plan message names each venue with a food line, in this order.
+  var EATS = ['Barrelhouse Ballroom', "Hi-Fi Clyde's", 'FEED', 'Stratus'];
+
+  /* Walking minutes between Main Street stages, door to door, rounded up.
+   * Measured 2026-10-08 from each venue's building in OpenStreetMap, which
+   * agrees with the pins on IBMA's map: straight line times 1.4 for the street
+   * grid, at 70 metres a minute for a crowd. The whole area is one block, so
+   * no pair is over 115 metres. Stratus is a rooftop, and the trip up or down
+   * is not timed here; the message says so instead. */
+  var WALK = { // keys are the two stage ids in alphabetical order
+    'bb ft': 3, 'bb hf': 1, 'bb sb': 2, 'bb st': 2, 'ft hf': 2,
+    'ft sb': 1, 'ft st': 2, 'hf sb': 1, 'hf st': 2, 'sb st': 2
+  };
+  var SHUTTLE_ENDS = 22 * 60; // 10 p.m.
+  var BREAK = 45;             // minutes free before the message calls it a break
 
   var PODCAST = {
     'Wood Box Heroes': { guest: 'Thomas Cassell', href: '/guests/thomas-cassell/' }
@@ -126,15 +145,80 @@
   function planLink(ids, origin) {
     return (origin || 'https://www.tshawsprogressivebluegrass.com') + '/ramble/#plan=' + ids.join('.');
   }
-  function planText(ids) {
-    return 'My Ramble plan\n' + ids.map(function (i) {
-      var x = byId[i];
-      return dayLabel(x.day) + ' ' + x.start + ' ' + x.act + ', ' + x.stageName;
-    }).join('\n');
+  /* The plan as plain text, for Mail, Messages and the share panel alike:
+   * short lines and blank lines, no markdown. Each set gets its times, its
+   * stage and area, then one line on getting there from the pick before it,
+   * using the same rules My Ramble uses for overlaps and tight walks. The
+   * link to open the plan is the one line that must survive. */
+  function hrs(n) {
+    var h = Math.floor(n / 60), m = n % 60;
+    return (h ? h + ' hr' : '') + (h && m ? ' ' : '') + (m ? m + ' min' : '');
   }
-  function planMail(ids, origin) {
-    return 'mailto:?subject=' + encodeURIComponent('My Ramble plan') +
-      '&body=' + encodeURIComponent(planText(ids) + '\n\nOpen it here:\n' + planLink(ids, origin));
+  function areaName(id) {
+    for (var i = 0; i < data.areas.length; i++) if (data.areas[i].id === id) return data.areas[i].name;
+    return '';
+  }
+  function moveNote(a, b, ended) {
+    if (a.stage === b.stage) return '';
+    if (a.building === b.building) return 'Same building.';
+    if (a.area === b.area) {
+      var n = WALK[[a.stage, b.stage].sort().join(' ')];
+      var roof = a.stage === 'st' || b.stage === 'st' ? ' Stratus is on the roof.' : '';
+      return (n ? 'About a ' + n + ' minute walk.' : 'Short walk.') + roof;
+    }
+    if (ended) return 'Change areas: a 12 to 15 minute walk.';
+    if (b.s > SHUTTLE_ENDS) return 'Change areas: a 12 to 15 minute walk. The shuttle stops at 10.';
+    return 'Change areas: free shuttle from ' + (a.area === 'cc' ? '11th & Marriott' : 'the Choo Choo') +
+      ', or a 12 to 15 minute walk.';
+  }
+  function planText(ids, origin, now) {
+    var ended = (now === undefined ? Date.now() : now) >= RAMBLE_OVER;
+    var P = ids.map(function (i) { return byId[i]; }).filter(Boolean).sort(function (a, b) {
+      return sets.indexOf(a) - sets.indexOf(b);
+    });
+    var out = ['My IBMA Ramble plan', 'Chattanooga. All times are PM Eastern.'];
+    data.days.forEach(function (d) {
+      var L = P.filter(function (x) { return x.day === d.id; });
+      if (!L.length) return;
+      out.push('', new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
+        { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase());
+      var until = 0;
+      L.forEach(function (x, i) {
+        var a = L[i - 1];
+        if (a && x.s - until >= BREAK) {
+          var food = a.area === 'ms' || x.area === 'ms' ? ' Food on Main Street: ' + EATS.join(', ') + '.' : '';
+          out.push('', 'Break, ' + hrs(x.s - until) + '.' + food);
+        }
+        until = Math.max(until, x.e);
+        out.push('', clock(x.s) + ' to ' + clock(x.e) + '  ' + x.act, x.stageName + ', ' + areaName(x.area));
+        if (!a) return;
+        var notes = [moveNote(a, x, ended)];
+        if (overlap(a, x)) notes.push('Overlaps the set above.');
+        else if (x.s - a.e <= 10 && x.building !== a.building) {
+          notes.push(x.s - a.e ? x.s - a.e + ' min to get here.' : 'No time to get here.');
+        }
+        L.slice(0, i - 1).forEach(function (y) { if (overlap(y, x)) notes.push('Overlaps ' + y.act + '.'); });
+        notes = notes.filter(Boolean).join(' ');
+        if (notes) out.push(notes);
+      });
+    });
+    var cc = data.areas[0], names = data.stages.filter(function (s) { return s.area === cc.id; })
+      .map(function (s) { return s.name; });
+    out.push('', 'GETTING AROUND', 'Two areas, a little over half a mile apart. ' + cc.name + ': ' +
+      names.join(' and ') + '. ' + data.areas[1].name + ': the other ' +
+      ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'][data.stages.length - names.length] + ' stages.');
+    if (!ended) {
+      out.push('Free CARTA electric shuttle, about every 15 minutes until 10 p.m. Board at 11th & Marriott ' +
+        'beside the Convention Center, or at the Chattanooga Choo Choo for Main Street.');
+    }
+    out.push('', 'Map: ' + MAP_URL);
+    if (!ended) out.push('Ramble passes: ' + PASS_URL);
+    out.push('Open or change this plan: ' + planLink(ids, origin), '', "From T Shaw's Progressive Bluegrass");
+    return out.join('\n');
+  }
+  function planMail(ids, origin, now) {
+    return 'mailto:?subject=' + encodeURIComponent('My IBMA Ramble plan') +
+      '&body=' + encodeURIComponent(planText(ids, origin, now));
   }
   function fromHash() {
     var ids = planIds(location.hash);
@@ -337,6 +421,12 @@
       '<p>Your picks stay in this browser only. Use Save or send in My Ramble to keep your plan or open it on another device. A screenshot works too.</p>' +
       (over() ? '' : '<p>For last-minute changes, check IBMA’s own app, out the week of Oct 12.</p>') +
       '</div></section>';
+    if (!over()) {
+      h += '<section aria-labelledby="ri-pass"><h2 class="rarea" id="ri-pass">Passes</h2><div class="rprose">' +
+        '<p>Ramble passes are sold by IBMA, for both nights or one.</p>' +
+        '<p class="rmapbtn"><a class="btn" href="' + PASS_URL + '" target="_blank" rel="noopener">Get Ramble passes</a></p>' +
+        '</div></section>';
+    }
     h += '<section aria-labelledby="ri-areas"><h2 class="rarea" id="ri-areas">The two areas</h2><div class="rprose">' +
       '<p>The seven stages sit in two areas, and most people pick one a night.</p>' +
       '<p><strong>' + esc(cc.name) + ':</strong> ' + and(stageList(cc.id)) + '.</p>' +
@@ -526,7 +616,9 @@
     planIds: planIds,
     planLink: planLink,
     planText: planText,
-    planMail: planMail
+    planMail: planMail,
+    passUrl: PASS_URL,
+    rambleOver: RAMBLE_OVER
   };
   if (typeof document === 'undefined') return;
 
@@ -536,7 +628,8 @@
     var ids = myIds();
     var phone = window.matchMedia('(pointer: coarse)').matches;
     if (phone && navigator.share) {
-      navigator.share({ title: 'My Ramble plan', text: planText(ids), url: planLink(ids, location.origin) })
+      // Text only: the plan link is inside it, and a separate url would print twice.
+      navigator.share({ title: 'My IBMA Ramble plan', text: planText(ids, location.origin) })
         .catch(function (e) {
           if (e && e.name === 'AbortError') return; // they closed the panel
           S.panel = true; render();
@@ -649,6 +742,8 @@
     if (!S.view) S.view = window.matchMedia('(min-width: 700px)').matches ? 'grid' : 'list';
     var over = document.getElementById('rover');
     if (over) over.hidden = Date.now() < RAMBLE_OVER;
+    var pass = document.getElementById('rpass');
+    if (pass) { pass.href = PASS_URL; pass.hidden = Date.now() >= RAMBLE_OVER; }
     var checked = document.getElementById('rchecked');
     if (checked && /^\d{4}-\d{2}-\d{2}$/.test(data.last_checked || '')) {
       checked.textContent = new Date(data.last_checked + 'T12:00:00Z').toLocaleDateString('en-US',

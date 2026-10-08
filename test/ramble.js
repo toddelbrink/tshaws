@@ -236,6 +236,7 @@ if (R && data) {
 // Plan links. The send panel, the phone's share panel and the email all carry
 // the same link, and it has to come back as the same plan. The format has not
 // changed since launch, so links already shared keep working.
+const linkLine = (t) => (t.split('\n').find((l) => l.startsWith('Open or change this plan: ')) || '').slice(26);
 console.log('\nPlan links round-trip');
 if (R && data) {
   const all = R.load(data).map((x) => x.id);
@@ -251,11 +252,78 @@ if (R && data) {
   const mail = R.planMail(some);
   const body = decodeURIComponent(mail.split('&body=')[1] || '');
   check('the email is addressed to no one, so it goes to yourself', mail.startsWith('mailto:?subject='));
-  check('the email carries the same link', back(body.trim().split('\n').pop()) === some.join());
-  check('the email lists each pick', some.every((i) => body.includes(R.planText([i]).split('\n')[1])));
+  check('the email carries the same link', back(linkLine(body)) === some.join());
   const sets = R.load(data);
-  check('the plan text names each stage as IBMA prints it',
-    sets.every((x) => R.planText([x.id]).endsWith(', ' + data.stages.find((s) => s.id === x.stage).name)));
+  const area = (x) => data.areas.find((a) => a.id === x.area).name;
+  check('the email lists each pick, its stage as IBMA prints it and its area',
+    some.every((i) => { const x = sets.find((y) => y.id === i); return body.includes(x.act) && body.includes(x.stageName + ', ' + area(x)); }));
+}
+
+// The plan message. Plain text that goes to Mail, Messages and the share
+// panel. These are the rules Cowork set on 2026-10-08.
+console.log('\nThe plan message');
+if (R && data) {
+  const sets = R.load(data);
+  const by = (id) => sets.find((x) => x.id === id);
+  const text = (ids, now) => R.planText(ids, undefined, now === undefined ? R.rambleOver - 1 : now);
+  const ms = sets.filter((x) => x.area === 'ms'), cc = sets.filter((x) => x.area === 'cc');
+  const apart = (a, b) => a.day === b.day && a.e <= b.s;
+  check('no markdown, no prices', sets.every((x) => !/[*#$_`]/.test(text([x.id]).replace(/#plan=\S*/, ''))));
+  check('every set prints start and end as "6:00 to 6:40"', sets.every((x) => text([x.id]).includes(x.start + ' to ' + x.end + '  ' + x.act)));
+  let walks = true, roofs = true;
+  ms.forEach((a) => ms.forEach((b) => {
+    if (!apart(a, b) || a.stage === b.stage) return;
+    const t = text([a.id, b.id]);
+    if (!/About a \d minute walk\./.test(t)) walks = false;
+    if ((a.stage === 'st' || b.stage === 'st') !== t.includes('Stratus is on the roof.')) roofs = false;
+  }));
+  check('every Main Street pair has a measured walk', walks);
+  check('the roof is mentioned only for Stratus', roofs);
+  const rv = cc.find((x) => x.stage === 'rv'), mk = cc.find((x) => x.stage === 'mk' && apart(rv, x));
+  check('Riverview to McKenzie is the same building', text([rv.id, mk.id]).includes('Same building.'));
+  let late = true, early = true;
+  sets.forEach((a) => sets.forEach((b) => {
+    if (!apart(a, b) || a.area === b.area) return;
+    const t = text([a.id, b.id]);
+    if (b.s > 22 * 60) { if (t.includes('free shuttle from') || !t.includes('The shuttle stops at 10.')) late = false; }
+    else if (!t.includes('free shuttle from ' + (a.area === 'cc' ? '11th & Marriott' : 'the Choo Choo'))) early = false;
+  }));
+  check('the shuttle is never offered for a set that starts after 10', late);
+  check('before 10 the shuttle leaves from the right stop', early);
+  const ov = sets.find((a) => sets.some((b) => b !== a && b.day === a.day && a.s < b.s && b.s < a.e));
+  const ov2 = sets.find((b) => b !== ov && b.day === ov.day && ov.s < b.s && b.s < ov.e);
+  check('an overlap is called out', text([ov.id, ov2.id]).includes('Overlaps the set above.'));
+  const ccBreak = cc.filter((a) => cc.some((b) => b.day === a.day && b.s - a.e >= 45))[0];
+  const ccNext = cc.find((b) => b.day === ccBreak.day && b.s - ccBreak.e >= 45);
+  check('a break at the Convention Center names no food', /Break, /.test(text([ccBreak.id, ccNext.id])) && !/Food/.test(text([ccBreak.id, ccNext.id])));
+  const msBreak = ms.filter((a) => ms.some((b) => b.day === a.day && b.s - a.e >= 45))[0];
+  const msNext = ms.find((b) => b.day === msBreak.day && b.s - msBreak.e >= 45);
+  const food = text([msBreak.id, msNext.id]);
+  check('a Main Street break names only venues with a food line, never Songbirds',
+    /Food on Main Street: /.test(food) && !/Food on Main Street:[^\n]*Songbirds/.test(food));
+  check('a gap under 45 minutes is no break', !/Break/.test(text([by('tuebb600').id, by('tuesb630').id])));
+  check('passes, the map and the plan link print once, at the end',
+    /\nMap: https:\/\/www\.google\.com\/maps\/d\/viewer\?mid=\S+\nRamble passes: \S+\nOpen or change this plan: \S+\n\nFrom T Shaw's Progressive Bluegrass$/.test(text(['tuebb600'])));
+  const after = text(['tuebb600', 'tuerv820'], R.rambleOver);
+  check('after the Ramble, no shuttle and no passes, and the plan link stays',
+    !/shuttle|Shuttle|passes|ticketspice/.test(after) && /Open or change this plan: /.test(after));
+  // Trevor's first sample, 23 sets. The plan link is the line that must survive.
+  const big = R.planIds('#plan=tuebb600.tuesb630.tuerv700.tuehf720.tuesb730.tuerv820.tuest840.tuebb850.tuerv940.tuemk1030.wedmk550.wedst610.wedhf620.wedmk630.wedbb640.wedrv700.wedst810.wedhf820.wedrv820.wedmk830.wedrv900.wedrv940.wedmk1030');
+  const bigMail = R.planMail(big);
+  check('a 23-set plan keeps every set and its link in the email', big.length === 23 &&
+    R.planIds(linkLine(decodeURIComponent(bigMail.split('&body=')[1]))).join() === big.join(), bigMail.length + ' characters');
+  check('a 23-set email stays under 6,000 characters', bigMail.length < 6000, String(bigMail.length));
+}
+
+// Passes. IBMA's ticket page, one address in one constant, never a price.
+console.log('\nPasses');
+if (R) {
+  check('the address is IBMA\'s ticket page', R.passUrl === 'https://ibma.ticketspice.com/-ibma-world-of-bluegrass-2026');
+  check('it is written once in ramble.js', JS.split('ticketspice.com').length === 2);
+  const page = fs.readFileSync(path.join(ROOT, 'ramble/index.html'), 'utf8');
+  check('the heading link takes its address from the script', /<a class="rpass" id="rpass"[^>]*hidden>Get passes<\/a>/.test(page) && !page.includes('ticketspice'));
+  check('the Info item hides once the Ramble is over', /if \(!over\(\)\) \{\s*h \+= '<section aria-labelledby="ri-pass">/.test(JS));
+  check('the heading link hides once the Ramble is over', /pass\.hidden = Date\.now\(\) >= RAMBLE_OVER/.test(JS));
 }
 
 // The QR code is drawn in the page by a library kept in this repo and loaded

@@ -1060,6 +1060,17 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #page > .wrap#ramble{padding-top:14px}
 #ramble h1.rhead{margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+/* Passes ride on the heading line and scroll away with it. Where the line is
+   too narrow for both, the link drops under the heading rather than cut it
+   short, still above the pinned controls. The negative margin gives a full tap
+   target without making the line taller. */
+.rheadrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:6px}
+.rheadrow h1.rhead{margin-bottom:0;min-width:0}
+.rpass{flex:none;display:inline-flex;align-items:center;min-height:44px;margin-block:-14px;
+  font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.rpass:hover{color:var(--ink)}
+.rpass[hidden]{display:none}
 
 /* The control row stays put while the list scrolls. */
 .rbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
