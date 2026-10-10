@@ -39,7 +39,9 @@
       found.forEach(function (g) {
         var row = entry(g.name);
         addAffs(row, g.affs);
-        if (row.eps.indexOf(e.episode) < 0) row.eps.push(e.episode);
+        // A bonus episode may carry no number. The guest still counts, but
+        // there is nothing to print or link in the Episodes column.
+        if (e.episode != null && row.eps.indexOf(e.episode) < 0) row.eps.push(e.episode);
       });
     });
 

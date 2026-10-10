@@ -71,7 +71,7 @@
   }
 
   function metaLine(ep) {
-    return [ep.episode ? 'Episode ' + ep.episode : '', 'Season ' + ep.season,
+    return [ep.episode ? 'Episode ' + ep.episode : '', window.TSEpLabel(ep),
             nice(ep.published), ep.durationLabel].filter(Boolean).join('  ·  ');
   }
 

@@ -46,6 +46,7 @@ function renderWith(feed) {
   require(path.join(ROOT, 'assets/js/guests.js'));
 
   return new Promise((resolve) => setTimeout(() => {
+    lastHtml = captured;
     resolve([...captured.matchAll(
       /<tr><td>(.*?)<\/td><td class="aff">(.*?)<\/td><td><div class="eps">(.*?)<\/div>/g)]
       .map((m) => ({
@@ -61,6 +62,7 @@ function renderWith(feed) {
 }
 
 let failures = 0;
+let lastHtml = '';
 function check(label, ok, detail) {
   if (!ok) failures++;
   console.log(`${ok ? 'pass' : 'FAIL'}  ${label}${detail ? '  -> ' + detail : ''}`);
@@ -101,11 +103,33 @@ async function synthetic() {
       episode: e.episode, season: 9, slug: 's' + e.episode, guid: 'g' + e.episode,
       title: 'Fixture ' + e.episode,
       descriptionHtml: `<p>${e.line}</p><hr><p>ZenCast footer</p>`
-    }))
+    })).concat([
+      // Bonus episodes: no season, numbered in the running count or not at all.
+      { episode: 98, season: null, slug: 'b98', guid: 'b98', title: 'Bonus 98',
+        descriptionHtml: '<p>Guest: Bonnie Bonus (Extra Band)</p>' },
+      { episode: null, season: null, slug: 'bx', guid: 'bx', title: 'Bonus unnumbered',
+        descriptionHtml: '<p>Guest: Bonnie Bonus (Extra Band)</p>' }
+    ])
   };
   const rows = await renderWith(feed);
   console.log('\n--- synthetic cases ---');
   assertNoHost(rows);
+
+  const bonnie = row(rows, 'Bonnie Bonus');
+  check('a bonus episode with no season lists its guest under its number',
+    !!bonnie && bonnie.eps.join() === '98', bonnie && bonnie.eps.join());
+  check('an unnumbered bonus episode never prints "null" in the table',
+    !/null|undefined/.test(lastHtml));
+
+  require(path.join(ROOT, 'assets/js/epvideo.js'));
+  const label = global.window.TSEpLabel;
+  const sep = '  \u00b7  ';
+  check('season label: a normal episode reads "Season 4"',
+    label({ season: 4, episode: 41, episodeType: 'full' }) === 'Season 4');
+  check('season label: no season reads "Bonus"',
+    label({ season: null, episode: 42, episodeType: 'full' }) === 'Bonus');
+  check('season label: bonus by type keeps its season',
+    label({ season: 5, episode: 43, episodeType: 'bonus' }) === 'Bonus' + sep + 'Season 5');
 
   const cory = row(rows, 'Cory Walker');
   check('semicolons separate people, commas separate affiliations',

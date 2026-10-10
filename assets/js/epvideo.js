@@ -130,4 +130,14 @@
     _build: build,
     _playable: playable
   };
+
+  // The season part of an episode's meta line, shared by the homepage, the
+  // episode list and search. Trevor leaves the season blank on a bonus episode
+  // and keeps its number in the running count, so "Episode 42 · Bonus". ZenCast
+  // may also mark it bonus by type, which keeps its season if it has one.
+  window.TSEpLabel = function (ep) {
+    var season = ep && ep.season ? 'Season ' + ep.season : '';
+    if (ep && (!ep.season || ep.episodeType === 'bonus')) return season ? 'Bonus  \u00b7  ' + season : 'Bonus';
+    return season;
+  };
 })();

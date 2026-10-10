@@ -115,7 +115,7 @@
           g.affs.forEach(function (a) {
             if (roster[k].affs.indexOf(a) < 0) roster[k].affs.push(a);
           });
-          if (roster[k].eps.indexOf(e.episode) < 0) roster[k].eps.push(e.episode);
+          if (e.episode != null && roster[k].eps.indexOf(e.episode) < 0) roster[k].eps.push(e.episode);
         });
       });
       Object.keys(roster).forEach(function (k) {
@@ -140,7 +140,7 @@
   }
 
   function epRow(e) {
-    var meta = [e.episode ? 'Episode ' + e.episode : '', 'Season ' + e.season,
+    var meta = [e.episode ? 'Episode ' + e.episode : '', window.TSEpLabel(e),
                 nice(e.published), e.durationLabel].filter(Boolean).join('  ·  ');
     return '<li><a href="/episodes/#ep-' + esc(e.slug || e.guid) + '">' +
       '<b>' + esc(e.title) + '</b><span>' + esc(meta) + '</span></a></li>';

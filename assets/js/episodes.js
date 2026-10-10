@@ -112,7 +112,7 @@
 
     list.innerHTML = shown.map(function (ep) {
       var n = ep.episode ? 'Episode ' + ep.episode : '';
-      var meta = [n, 'Season ' + ep.season, fmtDate(ep.published), ep.durationLabel]
+      var meta = [n, window.TSEpLabel(ep), fmtDate(ep.published), ep.durationLabel]
         .filter(Boolean).join('  ·  ');
       return '<article class="ep" id="ep-' + esc(ep.slug || ep.guid) + '" data-guid="' + esc(ep.guid) + '">' +
         (ep.image ? '<img class="ep-art" src="' + esc(artSize(ep.image)) + '" alt="" loading="lazy" width="64" height="64">'
