@@ -352,6 +352,78 @@
     return 'mailto:?subject=' + encodeURIComponent('My IBMA Ramble plan') +
       '&body=' + encodeURIComponent(planText(ids, origin, now, list));
   }
+  /* The whole plan as one calendar file, for Apple Calendar, Google Calendar
+   * and Outlook alike. Times are pinned to Chattanooga with a full time zone
+   * block, so a phone set anywhere else still lands a 6:00 set at 6:00
+   * Eastern. Each set keeps one identifier built from its set id, so adding
+   * the plan again updates it where the calendar app supports that. An own
+   * event's identifier comes from what was typed, so an edited one is new. */
+  var SITE = 'https://www.tshawsprogressivebluegrass.com';
+  function icsText(v) {
+    return String(v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  }
+  // Lines longer than 75 bytes fold onto the next line after one space, as
+  // the format requires. Counted in bytes, so an accent never splits.
+  function icsFold(line) {
+    var out = [], cur = '', n = 0;
+    Array.from(line).forEach(function (ch) {
+      var b = unescape(encodeURIComponent(ch)).length;
+      if (n + b > (out.length ? 74 : 75)) { out.push(cur); cur = ''; n = 0; }
+      cur += ch; n += b;
+    });
+    out.push(cur);
+    return out.join('\r\n ');
+  }
+  function icsWhen(day, m) {
+    var d = null;
+    for (var i = 0; i < data.days.length; i++) if (data.days[i].id === day) d = data.days[i];
+    var t = Date.UTC(+d.date.slice(0, 4), +d.date.slice(5, 7) - 1, +d.date.slice(8, 10)) + Math.floor(m / 1440) * 864e5;
+    var x = new Date(t), mm = m % 1440;
+    var p2 = function (n) { return String(n).padStart(2, '0'); };
+    return x.getUTCFullYear() + p2(x.getUTCMonth() + 1) + p2(x.getUTCDate()) + 'T' + p2(Math.floor(mm / 60)) + p2(mm % 60) + '00';
+  }
+  function hashOf(str) {
+    var h = 5381;
+    for (var i = 0; i < str.length; i++) h = ((h * 33) ^ str.charCodeAt(i)) >>> 0;
+    return h.toString(36);
+  }
+  function venueOf(stage) {
+    for (var i = 0; i < VENUES.length; i++) if (VENUES[i].stages.indexOf(stage) >= 0) return VENUES[i];
+    return null;
+  }
+  function planIcs(ids, list, now) {
+    list = cleanYours(list || []);
+    var P = ids.map(function (i) { return byId[i]; }).filter(Boolean).concat(yourItems(list)).sort(byTime);
+    var stamp = new Date(now === undefined ? Date.now() : now).toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', "PRODID:-//T Shaw's Progressive Bluegrass//IBMA Ramble 2026//EN",
+      'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:IBMA Ramble',
+      'BEGIN:VTIMEZONE', 'TZID:America/New_York',
+      'BEGIN:DAYLIGHT', 'TZOFFSETFROM:-0500', 'TZOFFSETTO:-0400', 'TZNAME:EDT', 'DTSTART:19700308T020000',
+      'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU', 'END:DAYLIGHT',
+      'BEGIN:STANDARD', 'TZOFFSETFROM:-0400', 'TZOFFSETTO:-0500', 'TZNAME:EST', 'DTSTART:19701101T020000',
+      'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU', 'END:STANDARD', 'END:VTIMEZONE'];
+    P.forEach(function (x) {
+      var v = x.yours ? null : venueOf(x.stage);
+      var uid = x.yours ? 'own-' + hashOf([x.day, x.s, x.e, x.act, x.place].join('|')) : x.id;
+      L.push('BEGIN:VEVENT', 'UID:ramble2026-' + uid + '@tshawsprogressivebluegrass.com', 'DTSTAMP:' + stamp,
+        'DTSTART;TZID=America/New_York:' + icsWhen(x.day, x.s), 'DTEND;TZID=America/New_York:' + icsWhen(x.day, x.e),
+        'SUMMARY:' + icsText(x.act));
+      if (v) {
+        // A venue with two stages names the stage. Elsewhere the stage is the venue.
+        L.push('LOCATION:' + icsText((v.stages.length > 1 ? x.stageName + ' stage, ' : '') + v.name + ', ' + v.address),
+          'DESCRIPTION:' + icsText('IBMA Bluegrass Ramble, ' + x.stageName + '. Set times can change: check ' +
+            SITE + '/ramble/ on the day.'),
+          'URL:' + SITE + '/ramble/');
+      } else {
+        if (x.place) L.push('LOCATION:' + icsText(x.place));
+        L.push('DESCRIPTION:' + icsText('Your own plan, during the IBMA Bluegrass Ramble.'));
+      }
+      L.push('END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.map(icsFold).join('\r\n') + '\r\n';
+  }
+
   function fromHash() {
     var ids = planIds(location.hash), list = yoursFrom(location.hash);
     return ids.length || list.length ? { ids: new Set(ids), yours: list } : null;
@@ -737,11 +809,16 @@
     var ids = myIds(), url = planLink(ids, location.origin, yours);
     // Two equal halves on a phone. On a computer the main button already opens
     // the QR panel, so the second half only shows there to close it.
+    // Save or send and Add to calendar as two equal halves. The QR code is the
+    // quieter link under them, on phones only: on a computer Save or send
+    // already opens it. The calendar goes once the Ramble is over.
     var h = '<div class="rsendbar"><div class="ractions rpair">' +
       '<button type="button" class="btn solid" data-send="1">Save or send</button>' +
-      '<button type="button" class="btn rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
-      (S.panel ? 'Hide QR code' : 'QR code') + '</button></div>' +
-      '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.</p>' +
+      (over() ? '' : '<button type="button" class="btn" data-ics="1">Add to calendar</button>') + '</div>' +
+      '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.' +
+      (over() ? '' : ' Calendar entries do not change if IBMA moves a set, so check here on the day.') + '</p>' +
+      '<button type="button" class="rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
+      (S.panel ? 'Hide QR code' : 'Show QR code') + '</button>' +
       // The site emails the plan itself, as a formatted email (api/plan-email.js).
       // The typed address lives in S.mail so a redraw never wipes it.
       '<form class="rmail" data-mailform novalidate>' +
@@ -807,6 +884,7 @@
     if (d.send) return '[data-send]';
     if (d.panel) return '[data-panel]';
     if (d.copy) return '[data-copy]';
+    if (d.ics) return '[data-ics]';
     if (d.yadd) return '[data-yadd]';
     return null;
   }
@@ -843,6 +921,7 @@
     yoursFrom: yoursFrom,
     yoursFromCode: yoursFromCode,
     yoursCode: yoursCode,
+    planIcs: planIcs,
     cleanYours: cleanYours,
     // Draws My Ramble or a night's grid for a given plan, as the page would.
     view: function (ids, list, tab, day) {
@@ -871,6 +950,17 @@
     }
     S.panel = true;
     render();
+  }
+
+  // One file for the whole plan. The phone decides what opens it: on an
+  // iPhone, Calendar offers Add All; elsewhere it downloads and opens in the
+  // calendar app.
+  function saveIcs() {
+    var blob = new Blob([planIcs(myIds(), yours)], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'ibma-ramble-plan.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
   }
 
   function copyLink() {
@@ -926,6 +1016,9 @@
       S.panel = d.panel === 'open';
     } else if (d.copy) {
       copyLink();
+      return;
+    } else if (d.ics) {
+      saveIcs();
       return;
     } else {
       return;

@@ -445,6 +445,37 @@ if (R && data) {
   check('the message link carries own events', R.yoursFrom(linkLine(t)).length === 3);
 }
 
+// The calendar file. One file for the whole plan, pinned to Chattanooga time
+// so a phone in any other zone lands each set at the time on the stage door.
+console.log('\nThe calendar file');
+if (R && data) {
+  R.load(data);
+  const jam = { d: 'wed', s: 23 * 60 + 30, e: 60, t: 'Late jam, with "friends"; yes\\no', p: 'Hotel lobby' };
+  const ics = R.planIcs(['tuebb600', 'wedrv940'], [jam], Date.UTC(2026, 9, 9));
+  const lines = ics.split('\r\n');
+  const unfolded = ics.replace(/\r\n /g, '');
+  check('every line ends in CRLF and nothing else', !/[^\r]\n/.test(ics) && ics.endsWith('\r\n'));
+  check('no line is over 75 bytes', lines.every((l) => Buffer.byteLength(l) <= 75), lines.find((l) => Buffer.byteLength(l) > 75));
+  check('one event per pick and own event', (ics.match(/BEGIN:VEVENT/g) || []).length === 3);
+  check('Eastern time is defined in the file', /BEGIN:VTIMEZONE\r\nTZID:America\/New_York/.test(ics) &&
+    /TZOFFSETTO:-0400/.test(ics) && /TZOFFSETTO:-0500/.test(ics));
+  check('every time carries the zone, none is floating or UTC',
+    (unfolded.split('END:VTIMEZONE')[1].match(/^DT(START|END)[;:].*$/gm) || []).every((l) => l.startsWith('DTSTART;TZID=America/New_York:') || l.startsWith('DTEND;TZID=America/New_York:')));
+  check('a 6:00 set starts at 18:00 Eastern on Oct 20', unfolded.includes('DTSTART;TZID=America/New_York:20261020T180000'));
+  check('an own event past midnight ends the next morning', unfolded.includes('DTEND;TZID=America/New_York:20261022T010000'));
+  check('a set keeps one identifier built from its set id', unfolded.includes('UID:ramble2026-tuebb600@tshawsprogressivebluegrass.com'));
+  const again = R.planIcs(['tuebb600', 'wedrv940'], [jam], Date.UTC(2026, 9, 12));
+  const uids = (t) => (t.replace(/\r\n /g, '').match(/^UID:.*$/gm) || []);
+  check('adding the plan again gives the same identifiers', uids(ics).join() === uids(again).join() && new Set(uids(ics)).size === 3);
+  check('typed commas, semicolons and backslashes are escaped', unfolded.includes('SUMMARY:Late jam\\, with "friends"\\; yes\\\\no'));
+  check('a Convention Center set names its stage and the address',
+    unfolded.includes('LOCATION:Riverview stage\\, Chattanooga Convention Center\\, One Carter Plaza'));
+  check('a Main Street set names its venue once', unfolded.includes('LOCATION:Barrelhouse Ballroom\\, 1501 Long St') &&
+    !/Barrelhouse Ballroom\\, Barrelhouse/.test(unfolded));
+  check('a stranger\'s line break cannot start a new field',
+    !/\r\nX-EVIL/.test(R.planIcs([], [{ d: 'tue', s: 1080, e: 1140, t: 'a\r\nX-EVIL:1', p: '' }])));
+}
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');
