@@ -628,7 +628,7 @@
     // on a phone needs its width for the night and the stage menu.
     return '<div class="rkeyrow"><p class="rkey"><span class="rhow">' + how + '</span> ' +
       '<span class="rk"><i class="rsw on">' + STAR + '</i>Picked</span> ' +
-      '<span class="rk"><i class="rsw clash">!</i>Overlaps another pick</span></p>' +
+      '<span class="rk"><i class="rsw clash">!</i>Overlaps</span></p>' +
       '<div class="rseg" role="group" aria-label="Layout">' + button('view', 'list', 'List') + button('view', 'grid', 'Grid') + '</div></div>';
   }
 
@@ -746,7 +746,7 @@
           var f = fixFor(x, y);
           h += '<div class="rnote bad"><strong>Overlaps ' + esc(y.act) + '.</strong>' + (f
             ? '<span>' + esc(f.from.act) + ' also plays ' + dayLabel(f.to.day) + ' ' + f.to.start + ', ' + esc(f.to.stageShort) + '.</span>' +
-              '<button type="button" data-swap="' + f.from.id + '" data-to="' + f.to.id + '">Move</button>'
+              '<button type="button" data-swap="' + f.from.id + '" data-to="' + f.to.id + '">Switch to ' + dayLabel(f.to.day) + ' ' + f.to.start + '</button>'
             : '<span>Neither act has another set that fits your plan.</span>') + '</div>';
         });
         var n = L[i + 1];

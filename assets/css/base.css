@@ -169,16 +169,19 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    Signature  .sig         the homepage featured video only.
    Pills are the modern half; walnut, brass and the waveform are the bluegrass
    half. Every control is at least 44px tall and keeps the site's focus ring.
-   Tightened on 2026-10-09 (Todd): 44px, the touch minimum, not 48; 13px type,
-   less tracking and padding, a 1px rule. Same tap size, less visual weight. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
+   Tightened on 2026-10-09 (Todd), twice: the pill is drawn 38px tall with
+   12.5px type and a 1px rule, and an invisible strip 3px above and below
+   (the ::after rule further down) keeps every tap area at 44px. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;position:relative;
+  font-family:var(--display);font-size:12.5px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;text-decoration:none;
-  min-height:44px;padding:0 18px;cursor:pointer;
+  min-height:38px;padding:0 16px;cursor:pointer;
   border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .btn:hover{background:var(--ink);color:var(--paper)}
-.btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 16px 0 20px}
+.btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 15px 0 18px}
+/* The tap area: 38px drawn, 44px to a finger. */
+.btn::after,.more::after,.play::after{content:'';position:absolute;inset:-3px 0}
 .btn.solid:hover{background:var(--stage);color:var(--paper)}
 .btn[disabled]{opacity:.5;cursor:default}
 .arr{width:14px;height:14px;fill:currentColor;flex:none;transition:transform .2s}
@@ -312,11 +315,16 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    phones: each had a minimum width, and the second was spaced with a margin
    that it carried onto the new line as an indent. */
 .lw{display:inline-flex;align-items:stretch;margin-top:12px;max-width:100%;
-  border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);overflow:hidden}
+  border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink)}
+/* Each half rounds its own outer end, rather than the pill clipping them,
+   so the tap strip above and below each half is not cut off. */
+.lw > .play:first-child{border-radius:999px 0 0 999px}
+.lw > .play:last-child{border-radius:0 999px 999px 0}
+.lw > .play:only-child{border-radius:999px}
 .feature .row .lw{margin-top:0}
 .play{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
-  text-transform:uppercase;white-space:nowrap;padding:0 15px;min-height:44px;cursor:pointer;
+  font-family:var(--display);font-size:12.5px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap;padding:0 14px;min-height:38px;cursor:pointer;position:relative;
   border:0;background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .lw > .play + .play{box-shadow:inset 1px 0 0 var(--ink)}
 .play:hover{background:var(--ink);color:var(--paper)}
@@ -452,9 +460,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .mlink:hover .arr{transform:translateX(3px)}
 .back .arr{transform:scaleX(-1)}
 .back:hover .arr{transform:scaleX(-1) translateX(3px)}
-.more{display:flex;align-items:center;justify-content:center;margin:30px auto 0;
-  min-height:44px;padding:0 22px;cursor:pointer;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
+.more{display:flex;align-items:center;justify-content:center;margin:30px auto 0;position:relative;
+  min-height:38px;padding:0 20px;cursor:pointer;
+  font-family:var(--display);font-size:12.5px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .more:hover{background:var(--ink);color:var(--paper)}
@@ -1184,7 +1192,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rnote.bad{background:var(--warn-bg);color:var(--warn)}
 .rnote.tight{background:var(--paper-2);color:var(--ink-2)}
 .rnote button{font-family:var(--display);font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
-  border:0;border-radius:999px;background:var(--ink);color:var(--paper);min-height:36px;padding:0 16px;cursor:pointer}
+  border:0;border-radius:999px;background:var(--ink);color:var(--paper);min-height:36px;padding:0 16px;cursor:pointer;
+  position:relative}
+.rnote button::after{content:'';position:absolute;inset:-4px 0}
 .rempty{border:1px dashed var(--rule);border-radius:var(--radius);padding:18px 16px;color:var(--ink-2);margin-top:18px;font-size:16px}
 .ractions{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:22px;align-items:center}
 .rtoast{font-family:var(--sans);font-size:13px;color:var(--ink-muted)}
