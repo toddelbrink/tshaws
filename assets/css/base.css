@@ -178,14 +178,15 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   min-height:38px;padding:0 16px;cursor:pointer;
   border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
-.btn:hover{background:var(--ink);color:var(--paper)}
+@media(hover:hover){.btn:hover{background:var(--ink);color:var(--paper)}}
 .btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 15px 0 18px}
-/* The tap area: 38px drawn, 44px to a finger. */
+/* The tap area: 38px drawn, 44px to a finger. Pill hovers sit behind
+   (hover:hover), or a tapped pill on a phone stays filled until the next tap. */
 .btn::after,.more::after,.play::after{content:'';position:absolute;inset:-3px 0}
-.btn.solid:hover{background:var(--stage);color:var(--paper)}
+@media(hover:hover){.btn.solid:hover{background:var(--stage);color:var(--paper)}}
 .btn[disabled]{opacity:.5;cursor:default}
 .arr{width:14px;height:14px;fill:currentColor;flex:none;transition:transform .2s}
-.btn.solid:hover .arr{transform:translateX(4px)}
+@media(hover:hover){.btn.solid:hover .arr{transform:translateX(4px)}}
 .btn svg{width:15px;height:15px;fill:currentColor}
 @media(prefers-reduced-motion:reduce){.btn{transition:none}}
 
@@ -327,7 +328,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
   text-transform:uppercase;white-space:nowrap;padding:0 14px;min-height:38px;cursor:pointer;position:relative;
   border:0;background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .lw > .play + .play{box-shadow:inset 1px 0 0 var(--ink)}
-.play:hover{background:var(--ink);color:var(--paper)}
+@media(hover:hover){.play:hover{background:var(--ink);color:var(--paper)}}
 .play[aria-pressed="true"]{background:var(--accent);color:#fff}
 .play svg{width:14px;height:14px;fill:currentColor;flex:none}
 /* The pill clips its halves, so pull the focus ring inside it. */
@@ -465,7 +466,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   font-family:var(--display);font-size:12.5px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
-.more:hover{background:var(--ink);color:var(--paper)}
+@media(hover:hover){.more:hover{background:var(--ink);color:var(--paper)}}
 .more[disabled]{opacity:.4;cursor:default}
 .more[disabled]:hover{background:transparent;color:var(--ink)}
 
@@ -1224,7 +1225,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 /* Start and end side by side where both fit "06:00 PM", stacked below that. */
 .rfrow{display:flex;flex-wrap:wrap;gap:0 10px}
 .rfrow .rfield{flex:1 1 130px}
-.rfrow input{padding-inline:8px}
+/* iOS Safari gives a time field its own minimum width and ignores width:100%,
+   so the pair overflowed the form. Dropping the native look lets it shrink. */
+.rfrow input{padding-inline:8px;min-width:0;-webkit-appearance:none;appearance:none}
 .ryform .ractions{margin-top:16px}
 .ryform .rtextbtn{min-height:44px;display:inline-flex;align-items:center}
 .ryform .rmailmsg{margin-top:12px}

@@ -707,6 +707,14 @@
     return null;
   }
 
+  /* With no fix to offer, name only the acts. Your own events are not acts. */
+  function noFix(a, b) {
+    var acts = [a, b].filter(function (x) { return !x.yours; });
+    if (!acts.length) return '';
+    return '<span>' + (acts.length === 2 ? 'Neither act has another set that fits your plan.'
+      : esc(acts[0].act) + ' has no other set that fits your plan.') + '</span>';
+  }
+
   function mine() {
     var P = picked();
     var h = '';
@@ -747,7 +755,7 @@
           h += '<div class="rnote bad"><strong>Overlaps ' + esc(y.act) + '.</strong>' + (f
             ? '<span>' + esc(f.from.act) + ' also plays ' + dayLabel(f.to.day) + ' ' + f.to.start + ', ' + esc(f.to.stageShort) + '.</span>' +
               '<button type="button" data-swap="' + f.from.id + '" data-to="' + f.to.id + '">Switch to ' + dayLabel(f.to.day) + ' ' + f.to.start + '</button>'
-            : '<span>Neither act has another set that fits your plan.</span>') + '</div>';
+            : noFix(x, y)) + '</div>';
         });
         var n = L[i + 1];
         if (n && !x.yours && !n.yours && !overlap(x, n) && n.s - x.e <= 10 && n.building !== x.building) {
