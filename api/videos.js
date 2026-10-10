@@ -44,7 +44,7 @@ const SHOW_MAX_PAGES = 6;     // 300 videos in one concert. Largest today is 50.
 // library falls back to an in-memory cache, and failed reads or writes are
 // logged, not thrown, so the worst case is the old behavior.
 const { getCache, waitUntil, addCacheTag, dangerouslyDeleteByTag } = require('@vercel/functions');
-const { isAdmin, sameOrigin, readSettings, chosenFeature, nextChange, readPrivateJSON, writePrivateJSON } = require('../lib/admin');
+const { isAdmin, sameOrigin, readSettings, chosenFeature, nextChange, readPrivateJSON, writePrivateJSON, easternDay, skipsFor } = require('../lib/admin');
 // Bump the version whenever the index's shape changes. The stored copy
 // outlives deploys, so an old shape would otherwise be served for hours.
 const INDEX_KEY = 'video-index:v1';
@@ -73,13 +73,10 @@ async function claimRebuild(store) {
 // day turns at 2 a.m. rather than midnight, so a late-night visitor still sees
 // the evening's pick. Counting from two hours earlier does exactly that, and
 // stays right across daylight-saving changes.
-const DAY_TURNS_AT_H = 2;
-function easternDay(now) {
-  const shifted = new Date(now.getTime() - DAY_TURNS_AT_H * 3600 * 1000);
-  const key = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(shifted);
-  const [y, m, d] = key.split('-').map(Number);
-  return { key, number: Math.floor(Date.UTC(y, m - 1, d) / 86400000) };
-}
+// easternDay lives in lib/admin.js, shared with the admin's Skip.
+// A skipped day jumps this far through the shuffle, about half the archive,
+// so it never takes tomorrow's video, or any day's for years.
+const SKIP_STRIDE = 1571;
 
 // A fixed shuffle: every video sorted by a hash of its id. New uploads slot in
 // at random places, so the order barely moves as the archive grows.
@@ -414,18 +411,19 @@ module.exports = async (req, res) => {
 
       // The random pick for whatever day `date` falls in. Skips anything
       // YouTube will not embed, rather than feature a dead frame.
-      async function dailyVideo(date) {
+      async function dailyVideo(date, settings) {
         const { index } = await loadIndex();
         const day = easternDay(date);
         const order = shuffled(index.videos);
+        const skips = skipsFor(settings, day.key);
         for (let k = 0; k < 5; k++) {
-          const pick = order[(day.number + k) % order.length];
+          const pick = order[(day.number + skips * SKIP_STRIDE + k) % order.length];
           const d = await yt('/videos', { part: 'snippet,contentDetails,status', id: pick.i });
           const v = d.items && d.items[0];
           if (v && v.status && v.status.embeddable !== false && v.status.privacyStatus !== 'private') {
             const sec = parseIsoDuration(v.contentDetails && v.contentDetails.duration);
             return {
-              day: day.key,
+              day: day.key, skips,
               video: {
                 id: v.id, title: v.snippet.title, published: v.snippet.publishedAt,
                 thumbnail: pickThumb(v.snippet.thumbnails),
@@ -451,7 +449,7 @@ module.exports = async (req, res) => {
 
       if (chosen && chosen.source === 'restored') {
         // The random video of the day Feature now displaced, for its full day.
-        const d = await dailyVideo(new Date(chosen.restoreFrom));
+        const d = await dailyVideo(new Date(chosen.restoreFrom), settings);
         res.setHeader('cache-control', edge || 's-maxage=300');
         res.status(200).json({ mode: 'featured', source: 'restored', day: d.day, video: d.video, caption: null, until: chosen.until });
         return;
@@ -462,9 +460,9 @@ module.exports = async (req, res) => {
         return;
       }
       // Nothing chosen: today's random video.
-      const d = await dailyVideo(new Date(now));
+      const d = await dailyVideo(new Date(now), settings);
       res.setHeader('cache-control', edge || 's-maxage=300, stale-while-revalidate=300');
-      res.status(200).json({ mode: 'featured', source: 'daily', day: d.day, video: d.video, caption: null });
+      res.status(200).json({ mode: 'featured', source: 'daily', day: d.day, skipped: d.skips, video: d.video, caption: null });
       return;
     }
 

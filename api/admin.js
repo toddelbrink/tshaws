@@ -13,7 +13,7 @@
 
 const {
   passwordMatches, sessionCookie, clearedCookie, isAdmin, sameOrigin,
-  readSettings, writeSettings, videoIdFrom, hasPassword
+  readSettings, writeSettings, videoIdFrom, hasPassword, easternDay, skipsFor
 } = require('../lib/admin');
 const { getCache, dangerouslyDeleteByTag } = require('@vercel/functions');
 const AnthropicSDK = require('@anthropic-ai/sdk');
@@ -185,13 +185,29 @@ module.exports = async (req, res) => {
     return send(res, r.status, r.body);
   }
 
+  // Skip: today's random video gives way to another, for today only. Pressed
+  // again, it moves on again. At 2 a.m. the shuffle carries on as planned,
+  // and the skipped video keeps its place years down the list.
+  if (action === 'skip') {
+    const settings = await readSettings();
+    const day = easternDay(new Date()).key;
+    const n = skipsFor(settings, day) + 1;
+    if (n > 20) return send(res, 400, { error: 'That is a lot of skips for one day. Try Feature now instead.' });
+    const saved = await writeSettings({ ...settings, skip: { day, n } });
+    try { await dangerouslyDeleteByTag('featured'); } catch (e) { console.error('featured purge failed:', e.message); }
+    return send(res, 200, { ok: true, settings: saved });
+  }
+
   if (action === 'save') {
     for (const slot of [body.pick, body.override, body.now]) {
       if (slot && String(slot.caption || '').trim().length > CAPTION_MAX) {
         return send(res, 400, { error: `Captions can be up to ${CAPTION_MAX} characters.` });
       }
     }
-    const next = { random: body.random !== false, pick: null, override: null, now: null };
+    const next = { random: body.random !== false, pick: null, override: null, now: null, skip: null };
+    // A skip pressed today survives a save, since the form does not carry it.
+    const before = await readSettings();
+    if (skipsFor(before, easternDay(new Date()).key)) next.skip = before.skip;
 
     if (body.pick && body.pick.link) {
       const r = await lookupVideo(body.pick.link);

@@ -84,6 +84,11 @@
       <p class="label" id="daily-h">Video of the day</p>
       <label class="adm-check"><input type="checkbox" id="random" checked>
         Pick a random video from the channel every day</label>
+      <div id="skipbox">
+        <button class="btn" type="button" id="skip">Show a different video today</button>
+        <p class="adm-help">Not today&rsquo;s video? This swaps in another random one, for today only. At 2 a.m. the daily video carries on as usual, and the one you skipped keeps its turn years from now.</p>
+        <p class="adm-msg" id="skipmsg" role="status"></p>
+      </div>
       <div id="pinbox" hidden>
         <p class="adm-help">With the random video off, the homepage shows this one until you switch random back on.</p>
         <p class="adm-help adm-then" id="pinnote" hidden></p>

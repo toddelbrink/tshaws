@@ -124,6 +124,7 @@
   function fillForm() {
     $('random').checked = settings.random !== false;
     $('pinbox').hidden = $('random').checked;
+    $('skipbox').hidden = !$('random').checked;
     chosen.pick = settings.pick ? settings.pick.video : null;
     $('picklink').value = chosen.pick ? 'https://youtu.be/' + chosen.pick.id : '';
     $('pickcap').value = settings.pick && settings.pick.caption || '';
@@ -164,6 +165,7 @@
               : f.source === 'restored' ? 'Today\u2019s random video, given its day back until ' + when(f.until)
               : f.source === 'override' ? 'Scheduled, until ' + when(f.until)
               : f.source === 'pinned' ? 'Your pick, until you switch random back on'
+              : f.skipped ? 'Random video of the day, after ' + f.skipped + (f.skipped === 1 ? ' skip' : ' skips')
               : 'Random video of the day';
       box.innerHTML = videoCard(f.video, why) + (f.caption ? '<p class="note">' + esc(f.caption) + '</p>' : '') +
         (f.source === 'override' ? '<p class="adm-help adm-then">When this ends: ' +
@@ -216,6 +218,24 @@
     settings = r.data.settings; fillForm();
     say('savemsg', 'Saved. The homepage shows it on the next visit.');
     showNow();
+  }
+
+  // Today's random video gives way to another, today only. Takes effect at
+  // once: the server clears the homepage's cached copy.
+  async function skip() {
+    var b = $('skip');
+    b.disabled = true;
+    say('skipmsg', 'Picking another...');
+    try {
+      var r = await api({ action: 'skip' });
+      if (r.status === 401) return;
+      if (!r.ok) throw new Error(r.data.error || 'HTTP ' + r.status);
+      settings = r.data.settings;
+      say('skipmsg', 'Done. The homepage shows a different random video now, for today.');
+      showNow();
+    } catch (e) {
+      say('skipmsg', e.message && !/^HTTP/.test(e.message) ? e.message : 'That did not work. Try again in a minute.', true);
+    } finally { b.disabled = false; }
   }
 
   async function refresh() {
@@ -286,7 +306,8 @@
       $('pw').value = '';
       boot();
     });
-    $('random').addEventListener('change', function () { $('pinbox').hidden = this.checked; counts(); });
+    $('random').addEventListener('change', function () { $('pinbox').hidden = this.checked; $('skipbox').hidden = !this.checked; counts(); });
+    $('skip').addEventListener('click', skip);
     $('pickcap').addEventListener('input', counts);
     $('ovcap').addEventListener('input', counts);
     $('ovlink').addEventListener('input', counts);
