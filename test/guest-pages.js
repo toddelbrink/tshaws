@@ -172,6 +172,21 @@ onDisk.forEach((slug) => {
   check(slug + ': 208px square, no metadata', w === 208 && h === 208 && bareJpeg(f));
 });
 
+/* Every guest photo served, whatever its kind: lead photos, footage stills,
+ * the guest's own extras and thumbnails. Stills cut with ffmpeg carried its
+ * version tag in a comment until 2026-10-10, which the checks above missed. */
+console.log('\nNo metadata in any guest photo');
+const served = [];
+(function walk(dir) {
+  fs.readdirSync(dir, { withFileTypes: true }).forEach((d) => {
+    const p = path.join(dir, d.name);
+    if (d.isDirectory()) walk(p); else if (/\.jpe?g$/i.test(d.name)) served.push(p);
+  });
+})(path.join(ROOT, 'assets/photos/guests'));
+const tagged = served.filter((f) => !bareJpeg(f)).map((f) => path.relative(ROOT, f));
+check(served.length + ' files, none carrying metadata', served.length > 0 && tagged.length === 0);
+if (tagged.length) console.log('    ' + tagged.join('\n    '));
+
 /* The same question for every page on the site, not only the guest pages.
  * Twenty pages now link each other in their copy, and a renamed directory
  * would 404 every link pointing at it. This runs on every Vercel build (see
