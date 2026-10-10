@@ -168,15 +168,17 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    Minor link .mlink .back accent text, the arrow slides on hover.
    Signature  .sig         the homepage featured video only.
    Pills are the modern half; walnut, brass and the waveform are the bluegrass
-   half. Every control is at least 44px tall and keeps the site's focus ring. */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  font-family:var(--display);font-size:14px;font-weight:500;letter-spacing:.12em;
+   half. Every control is at least 44px tall and keeps the site's focus ring.
+   Tightened on 2026-10-09 (Todd): 44px, the touch minimum, not 48; 13px type,
+   less tracking and padding, a 1px rule. Same tap size, less visual weight. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;text-decoration:none;
-  min-height:48px;padding:0 24px;cursor:pointer;
-  border:0;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);
+  min-height:44px;padding:0 18px;cursor:pointer;
+  border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .btn:hover{background:var(--ink);color:var(--paper)}
-.btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 22px 0 26px}
+.btn.solid{background:var(--ink);color:var(--paper);box-shadow:none;padding:0 16px 0 20px}
 .btn.solid:hover{background:var(--stage);color:var(--paper)}
 .btn[disabled]{opacity:.5;cursor:default}
 .arr{width:14px;height:14px;fill:currentColor;flex:none;transition:transform .2s}
@@ -310,13 +312,13 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    phones: each had a minimum width, and the second was spaced with a margin
    that it carried onto the new line as an indent. */
 .lw{display:inline-flex;align-items:stretch;margin-top:12px;max-width:100%;
-  border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);overflow:hidden}
+  border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);overflow:hidden}
 .feature .row .lw{margin-top:0}
 .play{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;white-space:nowrap;padding:0 18px;min-height:46px;cursor:pointer;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap;padding:0 15px;min-height:44px;cursor:pointer;
   border:0;background:transparent;color:var(--ink);transition:background .18s,color .18s}
-.lw > .play + .play{box-shadow:inset 1.5px 0 0 var(--ink)}
+.lw > .play + .play{box-shadow:inset 1px 0 0 var(--ink)}
 .play:hover{background:var(--ink);color:var(--paper)}
 .play[aria-pressed="true"]{background:var(--accent);color:#fff}
 .play svg{width:14px;height:14px;fill:currentColor;flex:none}
@@ -451,9 +453,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .back .arr{transform:scaleX(-1)}
 .back:hover .arr{transform:scaleX(-1) translateX(3px)}
 .more{display:flex;align-items:center;justify-content:center;margin:30px auto 0;
-  min-height:48px;padding:0 28px;cursor:pointer;
-  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;border:0;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);
+  min-height:44px;padding:0 22px;cursor:pointer;
+  font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);
   background:transparent;color:var(--ink);transition:background .18s,color .18s}
 .more:hover{background:var(--ink);color:var(--paper)}
 .more[disabled]{opacity:.4;cursor:default}
@@ -1087,7 +1089,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);
   margin:0 calc(var(--gut) * -1);padding:0 var(--gut)}
 .rrow{display:flex;align-items:center;gap:8px;padding-block:8px}
-.rseg{display:inline-flex;flex:none;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--ink);overflow:hidden}
+.rseg{display:inline-flex;flex:none;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ink);overflow:hidden}
 .rseg button,.rtabs button{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;white-space:nowrap;border:0;background:transparent;color:var(--ink);
   min-height:44px;padding:0 13px;cursor:pointer}
@@ -1095,7 +1097,7 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rseg button:focus-visible{outline-offset:-5px}
 .rsel{flex:1 1 0;min-width:0;max-width:260px;display:block}
 .rsel select{width:100%;min-height:44px;border:0;border-radius:999px;background-color:var(--paper-2);
-  box-shadow:inset 0 0 0 1.5px var(--ink);
+  box-shadow:inset 0 0 0 1px var(--ink);
   color:var(--ink);font-family:var(--sans);font-size:14px;padding:0 30px 0 14px;
   -webkit-appearance:none;appearance:none;text-overflow:ellipsis;cursor:pointer;
   background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
@@ -1106,9 +1108,9 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
    treatment as the night switch, so both read as buttons. Phones override
    this below with the bar along the bottom edge. */
 .rtabs{display:flex;margin-left:auto;flex:none;border-radius:999px;
-  box-shadow:inset 0 0 0 1.5px var(--ink);overflow:hidden}
+  box-shadow:inset 0 0 0 1px var(--ink);overflow:hidden}
 .rtabs button{color:var(--ink)}
-.rtabs button + button{box-shadow:inset 1.5px 0 0 var(--ink)}
+.rtabs button + button{box-shadow:inset 1px 0 0 var(--ink)}
 .rtabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .rtabs button:focus-visible{outline-offset:-5px}
 .rcount{display:inline-block;min-width:20px;margin-left:7px;padding:0 6px;border-radius:999px;
