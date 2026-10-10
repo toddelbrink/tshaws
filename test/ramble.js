@@ -377,6 +377,74 @@ if (R && data) {
     /over\(\) \? '' : '<p>For last-minute changes/.test(JS) && /if \(!over\(\) && bothAreas\(L\)\)/.test(JS));
 }
 
+// Your own events. Typed by a visitor, carried in the link after the plan
+// ids, and drawn on the page of whoever opens that link, so they are tested
+// as text from a stranger: caps, no addresses, never markup.
+console.log('\nYour own events');
+if (R && data) {
+  const sets = R.load(data);
+  const set = sets.find((x) => x.id === 'tuebb600');
+  const dinner = { d: 'tue', s: 18 * 60, e: 19 * 60, t: 'Dinner, with Sam; & Jo', p: 'FEED' };
+  const lunch = { d: 'wed', s: 12 * 60, e: 13 * 60, t: 'Lunch', p: '' };
+  const jam = { d: 'wed', s: 23 * 60 + 30, e: 60, t: 'Late jam', p: 'Hotel lobby' };
+  const ids = ['tuebb600', 'wedmk550'];
+  const link = R.planLink(ids, undefined, [dinner, lunch, jam]);
+  check('own events survive a link, commas and ampersands included',
+    JSON.stringify(R.yoursFrom(link)) === JSON.stringify([dinner, lunch, jam]), link);
+  check('the plan ids in that link are unchanged', R.planIds(link).join() === ids.join());
+  check('a plan with no own events makes the same link as before', R.planLink(ids) === R.planLink(ids, undefined, []) &&
+    !R.planLink(ids).includes('&own='));
+  check('a launch-era link has no own events', R.yoursFrom('/ramble/#plan=tuebb600.tuest640').length === 0);
+  check('a link with only own events still reads', R.yoursFrom('/ramble/#plan=&own=' + R.yoursCode([lunch])).length === 1);
+
+  const many = Array.from({ length: 9 }, (_, i) => ({ d: 'tue', s: 600 + i, e: 700 + i, t: 'Thing ' + i, p: '' }));
+  check('at most six own events', R.cleanYours(many).length === 6 && R.yoursFrom(R.planLink([], undefined, many)).length === 6);
+  check('a name over 40 characters is refused', R.cleanYours([{ ...lunch, t: 'x'.repeat(41) }]).length === 0 &&
+    R.cleanYours([{ ...lunch, t: 'x'.repeat(40) }]).length === 1);
+  check('a place over 30 characters is refused', R.cleanYours([{ ...lunch, p: 'x'.repeat(31) }]).length === 0);
+  const linky = ['see scam.com', 'http://x', 'mail me@here', 'www dot', 'go www.x', 'ftp://a', 'bit.ly/x'];
+  const bad = linky.filter((t) => R.cleanYours([{ ...lunch, t }]).length || R.cleanYours([{ ...lunch, p: t }]).length);
+  check('web and email addresses are refused in a name or a place', bad.join() === 'www dot', bad.join());
+  check('ordinary names with dots are kept', R.cleanYours([{ ...lunch, t: 'St. Elmo jam' }, { ...lunch, t: 'J.D. Crowe tribute' }]).length === 2);
+  check('line breaks and control characters become spaces',
+    R.cleanYours([{ ...lunch, t: 'a\nb\u0000c d' }])[0].t === 'a b c d');
+  check('an end that is a typo, not past midnight, is refused',
+    R.cleanYours([{ ...lunch, s: 19 * 60, e: 18 * 60 }]).length === 0 && R.cleanYours([jam]).length === 1);
+  check('a night that is not the Ramble is refused', R.cleanYours([{ ...lunch, d: 'thu' }]).length === 0);
+  check('a broken link part is ignored, not fatal', R.yoursFromCode('tue,1800,1900,%E0%A4%A,x;nope;wed,1200,1300,Lunch,').length === 1);
+
+  const evil = '<script>alert(1)</script><img src=x onerror=alert(2)>';
+  const shared = R.yoursFrom('/ramble/#plan=tuebb600&own=tue,1800,1900,' + encodeURIComponent(evil.slice(0, 40)) + ',' +
+    encodeURIComponent('"><b>x'));
+  check('markup in a shared link is kept as text', shared.length === 1 && shared[0].t === evil.slice(0, 40));
+  global.location = { origin: 'https://www.tshawsprogressivebluegrass.com', hash: '' };
+  const mineHtml = R.view(['tuebb600'], shared, 'mine');
+  const gridHtml = R.view(['tuebb600'], shared, 'browse', 'tue');
+  check('My Ramble draws it as plain characters', !/<script|<img|<b>x/i.test(mineHtml) && mineHtml.includes('&lt;script&gt;'));
+  check('the grid draws it as plain characters', !/<script|<img|<b>x/i.test(gridHtml) && gridHtml.includes('&lt;script&gt;'));
+
+  const clashMine = R.view(['tuebb600'], [dinner], 'mine');
+  check('the test event really overlaps the set', set.s < dinner.e && dinner.s < set.e, set.start + '-' + set.end);
+  check('an own event that overlaps a pick is flagged in My Ramble',
+    (clashMine.match(/class="rnote bad"/g) || []).length === 1 && /Overlaps (Dinner|.*Barrel)/.test(clashMine));
+  const rowsOf = (list) => R.planRows(['tuebb600'], undefined, R.rambleOver - 1, list).days[0].items.filter((i) => i.type === 'set');
+  check('the plan message flags it too', rowsOf([dinner]).some((i) => i.notes.some((n) => n.warn && /Overlaps/.test(n.text))));
+  const clashGrid = R.view(['tuebb600'], [dinner], 'browse', 'tue');
+  check('both sides show red on the grid', (clashGrid.match(/class="rblk[^"]*clash/g) || []).length === 2);
+  check('the grid has a Yours column only on a night with one',
+    clashGrid.includes('class="rgh ryh">Yours<') && !R.view(['tuebb600'], [dinner], 'browse', 'wed').includes('ryh'));
+  check('an event outside the grid hours is listed above it',
+    /Also yours this night:.*Lunch/.test(R.view([], [lunch], 'browse', 'wed')));
+  const after = rowsOf([{ ...dinner, s: set.e + 5, e: set.e + 60 }]);
+  check('no walk or tight-time note is made up for an own event',
+    after.length === 2 && after[1].yours && after[1].notes.length === 0, JSON.stringify(after[1] && after[1].notes));
+
+  const t = R.planText(ids, undefined, R.rambleOver - 1, [dinner, lunch, jam]);
+  check('the message marks AM and says so at the top', t.includes('unless marked AM') && t.includes('11:30 to 1:00 AM  Late jam'));
+  check('the message lists own events as your own', t.includes('Your own, Hotel lobby') && t.includes('12:00 to 1:00  Lunch'));
+  check('the message link carries own events', R.yoursFrom(linkLine(t)).length === 3);
+}
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');

@@ -89,6 +89,33 @@ const PLAN = 'tuebb600.tuesb630.tuerv820.tuebb850.tuemk910.tuemk1030.wedmk550.we
   const after = build(PLAN.split('.'), Date.UTC(2026, 9, 22, 5));
   check('after the Ramble, no passes and no shuttle', !/passes|shuttle/i.test(after.html.replace(/<[^>]+>/g, ' ')));
 
+  // Own events are the one piece of free text in the email. The server reads
+  // them with the page's own parser, so the caps and the address filter hold
+  // even when the request does not come from the page.
+  console.log('\nYour own events in the email');
+  const code = (list) => list.map((r) => [r.d, r.s, r.e, encodeURIComponent(r.t), encodeURIComponent(r.p)].join(',')).join(';');
+  const evil = '<script>alert(1)</script>';
+  const withOwn = build(['tuebb600'], Date.UTC(2026, 9, 15), code([
+    { d: 'tue', s: '1800', e: '1900', t: evil, p: '<b>FEED</b>' },
+    { d: 'wed', s: '2330', e: '0100', t: 'Late jam', p: '' }]));
+  check('own events are in the email', withOwn.yours.length === 2 && withOwn.html.includes('Late jam') && withOwn.text.includes('Late jam'));
+  check('typed markup is escaped in the HTML', !withOwn.html.includes('<script') && !withOwn.html.includes('<b>FEED') &&
+    withOwn.html.includes('&lt;script&gt;'));
+  check('typed text is never made a link', [...withOwn.html.matchAll(/<a [^>]*>([^<]*)<\/a>/g)].every((x) => !/alert|FEED|jam/.test(x[1])));
+  check('the plain text carries it as written, and AM is marked', withOwn.text.includes(evil) && withOwn.text.includes('11:30 to 1:00 AM'));
+  check('the email\'s plan link carries own events', /#plan=tuebb600&amp;own=tue,1800,1900,/.test(withOwn.html));
+  const linky = build(['tuebb600'], undefined, code([{ d: 'tue', s: '1800', e: '1900', t: 'Win at scam.com', p: '' },
+    { d: 'tue', s: '1900', e: '2000', t: 'ok', p: 'me@evil.co' }]));
+  check('the server refuses web and email addresses', linky.yours.length === 0 && !/scam|evil/.test(linky.html + linky.text));
+  const ten = build(['tuebb600'], undefined, code(Array.from({ length: 10 }, (_, i) => ({ d: 'tue', s: '120' + i, e: '130' + i, t: 'T' + i, p: '' }))));
+  check('the server keeps at most six', ten.yours.length === 6);
+  check('the server refuses a long name', build([], undefined, code([{ d: 'tue', s: '1200', e: '1300', t: 'x'.repeat(41), p: '' }])).yours.length === 0);
+  store.clear(); sent.length = 0;
+  const onlyOwn = await call({ email: 'o@example.com', plan: '', own: code([{ d: 'tue', s: '1800', e: '1900', t: 'Dinner', p: '' }]) });
+  check('a plan of only own events can be emailed', onlyOwn.code === 200 && sent.length === 1 && sent[0].body.text.includes('Dinner'));
+  const junk = await call({ email: 'o@example.com', plan: '', own: 'x'.repeat(9000) });
+  check('junk in place of own events is refused, not sent', junk.code === 400 && sent.length === 1);
+
   console.log('');
   if (failures) { console.log(failures + ' failing'); process.exit(1); }
   console.log('all passing');

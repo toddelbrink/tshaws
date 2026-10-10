@@ -1186,6 +1186,26 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rempty{border:1px dashed var(--rule);border-radius:var(--radius);padding:18px 16px;color:var(--ink-2);margin-top:18px;font-size:16px}
 .ractions{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:22px;align-items:center}
 .rtoast{font-family:var(--sans);font-size:13px;color:var(--ink-muted)}
+/* Your own events in My Ramble, and the form that adds them. */
+.rpick.yours .ract{cursor:pointer;text-decoration:underline;text-decoration-style:dashed;
+  text-decoration-color:var(--ink-muted);text-underline-offset:3px;min-height:32px}
+.rpick .rt small{display:block;font-size:10.5px;letter-spacing:.06em}
+.ractions .rkeep{margin-top:0}
+.ryform{border:1.5px dashed var(--rule);border-radius:var(--radius);padding:16px;margin-top:22px;max-width:520px}
+.ryform h3{font-family:var(--display);font-size:15px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin:0}
+.rfield{display:block;margin-top:14px;min-width:0}
+.rfield span{display:block;font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+.rfield input,.rfield select{width:100%;min-height:44px;font-family:var(--sans);font-size:16px;padding:9px 12px;
+  border:1.5px solid var(--rule);border-radius:var(--radius);background:var(--paper);color:var(--ink);box-sizing:border-box}
+.rfield input:focus,.rfield select:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 2px var(--brass)}
+/* Start and end side by side where both fit "06:00 PM", stacked below that. */
+.rfrow{display:flex;flex-wrap:wrap;gap:0 10px}
+.rfrow .rfield{flex:1 1 130px}
+.rfrow input{padding-inline:8px}
+.ryform .ractions{margin-top:16px}
+.ryform .rtextbtn{min-height:44px;display:inline-flex;align-items:center}
+.ryform .rmailmsg{margin-top:12px}
 
 /* Grid view */
 .rgridbox{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--radius);margin:8px 0 12px;
@@ -1229,6 +1249,15 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rblk i{position:absolute;top:4px;right:5px;font-style:normal;font-weight:700;font-size:12px;line-height:1}
 .rblk i svg{width:11px;height:11px;fill:var(--brass);display:block}
 .rblk:focus-visible{outline-offset:1px}
+/* The visitor's own events: a column of their own, dashed, never an IBMA set. */
+.rgh.ryh,.rga.ryh{background:var(--paper)}
+.rcol.ryc{background-color:var(--paper)}
+.rblk.yours{background:var(--paper);border:1.5px dashed var(--ink-2);padding:3px 5px}
+.rblk.yours:hover{background:var(--paper-2)}
+.rblk.yours.clash{background:var(--warn-bg);border-color:var(--warn);color:var(--warn);padding-right:16px}
+.rblk.yours.clash small{color:var(--warn)}
+.ryout{font-family:var(--sans);font-size:13.5px;line-height:1.5;color:var(--ink-2);margin:8px 0 0}
+.ryout .rtextbtn{min-height:0}
 
 /* Sharing */
 .rshared{background:var(--paper-2);border-radius:var(--radius);padding:14px 16px;margin-top:18px;

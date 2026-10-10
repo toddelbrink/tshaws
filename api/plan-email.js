@@ -1,13 +1,16 @@
 // /api/plan-email — email a visitor their Ramble plan, as HTML with a plain
 // text copy, through Resend. Approved by Todd on 2026-10-08.
 //
-//   POST { email, plan }    plan is the ids joined by dots, as in the plan link
+//   POST { email, plan, own }   plan is the ids joined by dots, as in the plan
+//                               link; own is the link's "&own=" part
 //
 // Nothing is stored. The address is used for this one send and dropped; the
 // only thing kept is a count, under a hash of the address, for the limits
-// below. The email body is built only from the schedule and the picked set
-// ids, so there is no free text anyone could use to send a message of their
-// own. The limits stop the form from being used to flood someone's inbox.
+// below. The body is built from the schedule, the picked set ids and the
+// visitor's own events (since 2026-10-09, Todd's go). Own events are the one
+// piece of free text, so they pass the page's own cleanYours() here too: at
+// most six, short, no web or email addresses, and escaped in the HTML. The
+// limits stop the form from being used to flood someone's inbox.
 //
 // Needs RESEND_API_KEY (Production, Sensitive): Todd's Resend account, key
 // tshaws-ramble, sending access to tshawsprogressivebluegrass.com only.
@@ -54,8 +57,8 @@ module.exports = async (req, res) => {
     return send(res, 400, { error: 'That email address does not look right.' });
   }
   const ids = String(body.plan || '').split('.').filter(Boolean).slice(0, 100);
-  const mail = build(ids);
-  if (!mail.ids.length) return send(res, 400, { error: 'Pick at least one set first.' });
+  const mail = build(ids, undefined, String(body.own || '').slice(0, 4000));
+  if (!mail.ids.length && !mail.yours.length) return send(res, 400, { error: 'Pick at least one set first.' });
 
   const key = process.env.RESEND_API_KEY;
   if (!key) return send(res, 503, { error: 'Email is not set up yet.' });
