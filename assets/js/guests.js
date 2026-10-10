@@ -17,6 +17,19 @@
   var eps = null;
   var GL = window.TSGuestLine;
 
+  /* Square thumbnails, 208px for a 104px slot, cut from each guest's own
+   * lead photo and kept in /assets/photos/guests/thumbs/. A guest listed here
+   * must have that file; test/guest-pages.js checks both ways. Anyone else
+   * shows the artwork of their newest episode, so every row keeps the same
+   * shape. */
+  var THUMBS = ['adam-greuel', 'alex-genova', 'anj-way', 'cory-walker', 'jared-pool', 'jesse-cobb',
+    'john-boulware', 'jon-weisberger', 'josiah-nelson', 'katie-kirchner', 'ken-white', 'lucas-white',
+    'mason-via', 'randy-steele', 'shawn-spencer', 'thomas-cassell'];
+  // ZenCast hands over 3000px artwork as "large"; "medium" is 300px and plenty.
+  function artSize(url) {
+    return String(url || '').replace(/(%2F|\/)large(%2F|\/)/i, '$1medium$2');
+  }
+
   function buildRoster() {
     var byName = {};
 
@@ -67,6 +80,14 @@
       // plain text, exactly as this column read before pages existed.
       var href = GL.pageFor(name);
       var cell = href ? '<a href="' + esc(href) + '">' + esc(name) + '</a>' : esc(name);
+      // The picture repeats the name beside it, so it is silent to a screen
+      // reader and kept out of the tab order.
+      var slug = href ? href.split('/')[2] : '';
+      var newest = byNum[Math.max.apply(null, nums)];
+      var src = THUMBS.indexOf(slug) >= 0 ? '/assets/photos/guests/thumbs/' + slug + '.jpg'
+        : newest && newest.image ? artSize(newest.image) : '';
+      var img = src ? '<img src="' + esc(src) + '" alt="" width="104" height="104" loading="lazy" decoding="async">' : '';
+      var thumb = img && href ? '<a href="' + esc(href) + '" tabindex="-1" aria-hidden="true">' + img + '</a>' : img;
       var links = nums.map(function (n) {
         var e = byNum[n];
         if (!e) return '<span class="meta">' + n + '</span>';
@@ -74,14 +95,14 @@
         return '<a href="/episodes/#ep-' + esc(e.slug || e.guid) + '" title="' +
                esc(e.title) + '">' + n + '</a>';
       }).join('');
-      return '<tr><td>' + cell + '</td>' +
+      return '<tr><td class="gthumb">' + thumb + '</td><td class="gname">' + cell + '</td>' +
              '<td class="aff">' + (aff ? esc(aff) : '<span class="meta">&mdash;</span>') + '</td>' +
              '<td><div class="eps">' + links + '</div></td></tr>';
     }).join('');
 
     root.querySelector('#guestlist').innerHTML =
       '<table class="guests"><caption>Newest first. Episode numbers link straight to ' +
-      'the episode.</caption><thead><tr><th>Guest</th><th>Affiliation</th>' +
+      'the episode.</caption><thead><tr><th><span class="sr-only">Picture</span></th><th>Guest</th><th>Affiliation</th>' +
       '<th>Episodes</th></tr></thead><tbody>' + rows + '</tbody></table>';
   }
 

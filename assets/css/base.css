@@ -640,7 +640,12 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   border-bottom:1px solid var(--rule);padding:0 12px 8px 0}
 .guests td{padding:13px 12px 13px 0;border-bottom:1px solid var(--rule);vertical-align:top;
   font-size:16px}
-.guests td:first-child{font-weight:600;white-space:nowrap}
+.guests .gname{font-weight:600;white-space:nowrap}
+/* The picture: the guest's own photo, or their newest episode's artwork. */
+/* On a computer it matches the episode pills, 44px, so no row grows. */
+.guests .gthumb{width:44px;padding-right:16px;box-sizing:content-box}
+.guests .gthumb a,.guests .gthumb img{display:block}
+.guests .gthumb img{width:44px;height:44px;object-fit:cover;border-radius:var(--radius);background:var(--paper-2)}
 .guests .aff{font-family:var(--sans);font-size:13.5px;color:var(--ink-2)}
 .guests .eps{display:flex;gap:6px;flex-wrap:wrap}
 .guests .eps a{display:inline-flex;align-items:center;justify-content:center;
@@ -650,9 +655,14 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .guests .eps a:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 @media(max-width:620px){
   .guests thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .guests tr{display:block;border-bottom:1px solid var(--rule);padding:14px 0}
-  .guests td{display:block;border:0;padding:0 0 6px}
-  .guests td:first-child{white-space:normal;font-size:17px}
+  /* On a phone the picture sits left, as tall as the name, the band and the
+     episode row together, and they wrap beside it. No extra height. */
+  .guests tr{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:16px;
+    border-bottom:1px solid var(--rule);padding:14px 0}
+  .guests td{display:block;border:0;padding:0 0 6px;grid-column:2}
+  .guests .gthumb{grid-column:1;grid-row:1 / span 3;width:auto;padding:0}
+  .guests .gthumb img{width:104px;height:104px}
+  .guests .gname{white-space:normal;font-size:17px}
 }
 
 

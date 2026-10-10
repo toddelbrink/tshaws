@@ -145,6 +145,33 @@ dirs.forEach((slug) => {
 });
 check('found guest photos to check (' + guestPhotos + ')', guestPhotos > 0);
 
+/* The thumbnails on /guests/ (since 2026-10-10). Every guest page that shows
+ * its own lead photo has a square thumbnail cut from it, listed in THUMBS in
+ * assets/js/guests.js, and nothing is listed that is not on disk. 208px
+ * square, for a 104px slot, with no metadata. */
+console.log('\nThumbnails on the guests page');
+const thumbSrc = fs.readFileSync(path.join(ROOT, 'assets/js/guests.js'), 'utf8');
+const listed = JSON.parse((thumbSrc.match(/var THUMBS = (\[[\s\S]*?\]);/) || [, '[]'])[1].replace(/'/g, '"'));
+const thumbDir = path.join(ROOT, 'assets/photos/guests/thumbs');
+const onDisk = fs.readdirSync(thumbDir).filter((f) => f.endsWith('.jpg')).map((f) => f.slice(0, -4)).sort();
+check('THUMBS matches the files in the thumbs folder (' + listed.length + ')',
+  listed.slice().sort().join() === onDisk.join());
+const withLead = dirs.filter((slug) =>
+  fs.readFileSync(path.join(ROOT, 'guests', slug, 'index.html'), 'utf8').includes('src="/assets/photos/guests/' + slug + '.jpg"'));
+check('every guest page with a lead photo has a thumbnail',
+  withLead.every((slug) => listed.includes(slug)) && listed.every((slug) => withLead.includes(slug)));
+onDisk.forEach((slug) => {
+  const f = path.join(thumbDir, slug + '.jpg');
+  const d = fs.readFileSync(f);
+  let i = 2, w = 0, h = 0;
+  while (i + 9 < d.length) {
+    const t = d[i + 1];
+    if (t >= 0xC0 && t <= 0xC3) { h = d.readUInt16BE(i + 5); w = d.readUInt16BE(i + 7); break; }
+    i += 2 + d.readUInt16BE(i + 2);
+  }
+  check(slug + ': 208px square, no metadata', w === 208 && h === 208 && bareJpeg(f));
+});
+
 /* The same question for every page on the site, not only the guest pages.
  * Twenty pages now link each other in their copy, and a renamed directory
  * would 404 every link pointing at it. This runs on every Vercel build (see

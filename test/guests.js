@@ -48,7 +48,7 @@ function renderWith(feed) {
   return new Promise((resolve) => setTimeout(() => {
     lastHtml = captured;
     resolve([...captured.matchAll(
-      /<tr><td>(.*?)<\/td><td class="aff">(.*?)<\/td><td><div class="eps">(.*?)<\/div>/g)]
+      /<tr><td class="gthumb">(?:.*?)<\/td><td class="gname">(.*?)<\/td><td class="aff">(.*?)<\/td><td><div class="eps">(.*?)<\/div>/g)]
       .map((m) => ({
         // Since 2026-09-19 a guest with a page of their own has their name
         // wrapped in a link to it. The name is what these tests are about, so
