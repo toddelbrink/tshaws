@@ -645,7 +645,7 @@
     if (P.length) h += sendBar();
     if (!P.length) {
       return h + '<div class="rempty"><p><strong>Nothing picked yet.</strong> Tap the star on any set in the Schedule. Tap an act’s name to see when it plays again.</p></div>' +
-        yourBox();
+        yourBox(false);
     }
     data.days.forEach(function (d) {
       var L = P.filter(function (x) { return x.day === d.id; });
@@ -685,21 +685,22 @@
         h += '</div>';
       });
     });
-    h += yourBox();
-    h += '<div class="ractions"><button type="button" class="btn" data-clear="1">Clear all</button></div>';
+    h += yourBox(true);
     return h;
   }
 
   /* Add your own: a button, or the form while it is open. The form's values
    * live in S.form so a redraw never wipes what was typed. */
-  function yourBox() {
+  /* Add your own and Clear all share one row, two equal halves. While the
+   * form is open, or at the cap, Clear all keeps its half on its own row. */
+  function yourBox(clear) {
     var f = S.form;
-    if (!f) {
-      return yours.length >= YOURS_MAX
-        ? '<p class="rkeep">You have six of your own events, the most a plan can hold.</p>'
-        : '<div class="ractions"><button type="button" class="btn" data-yadd="1">Add your own</button>' +
-          '<span class="rkeep">Dinner, a jam, a friend’s set.</span></div>';
+    var clearBtn = clear ? '<button type="button" class="btn" data-clear="1">Clear all</button>' : '';
+    if (!f && yours.length < YOURS_MAX) {
+      return '<div class="ractions rpair"><button type="button" class="btn" data-yadd="1">Add your own</button>' + clearBtn + '</div>';
     }
+    var tail = clear ? '<div class="ractions rpair">' + clearBtn + '</div>' : '';
+    if (!f) return '<p class="rkeep">You have six of your own events, the most a plan can hold.</p>' + tail;
     var night = data.days.map(function (d) {
       return '<option value="' + d.id + '"' + (f.d === d.id ? ' selected' : '') + '>' + esc(dayLong(d)) + '</option>';
     }).join('');
@@ -716,7 +717,7 @@
       '<div class="ractions"><button type="submit" class="btn solid">Save</button>' +
       '<button type="button" class="btn" data-ycancel="1">Cancel</button>' +
       (f.i >= 0 ? '<button type="button" class="rtextbtn" data-ydel="' + f.i + '">Remove it</button>' : '') + '</div>' +
-      '<p class="rfine">Only you, and anyone you send your plan to, will see this.</p></form>';
+      '<p class="rfine">Only you, and anyone you send your plan to, will see this.</p></form>' + tail;
   }
   function toClock(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
   function openForm(i) {
@@ -734,10 +735,12 @@
    * across a table. */
   function sendBar() {
     var ids = myIds(), url = planLink(ids, location.origin, yours);
-    var h = '<div class="rsendbar"><div class="ractions">' +
-      '<button type="button" class="btn solid" data-send="1">Save or send my plan</button>' +
-      '<button type="button" class="rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
-      (S.panel ? 'Hide QR code' : 'Show QR code') + '</button></div>' +
+    // Two equal halves on a phone. On a computer the main button already opens
+    // the QR panel, so the second half only shows there to close it.
+    var h = '<div class="rsendbar"><div class="ractions rpair">' +
+      '<button type="button" class="btn solid" data-send="1">Save or send</button>' +
+      '<button type="button" class="btn rqrlink" data-panel="' + (S.panel ? 'close' : 'open') + '" aria-expanded="' + S.panel + '" aria-controls="rsend">' +
+      (S.panel ? 'Hide QR code' : 'QR code') + '</button></div>' +
       '<p class="rkeep">Your picks are saved in this browser only. Save or send your plan to keep it, or to open it on another device.</p>' +
       // The site emails the plan itself, as a formatted email (api/plan-email.js).
       // The typed address lives in S.mail so a redraw never wipes it.

@@ -1364,11 +1364,12 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rfine{font-family:var(--sans);font-size:12px;color:var(--ink-muted);margin-top:8px}
 /* The quieter way to the QR code. On a computer the main button already
    opens it, so it only shows where a finger is the pointer, or to close it. */
-.rqrlink{display:none;font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--accent);background:none;border:0;min-height:44px;padding:0 4px;cursor:pointer}
-.rqrlink:hover{color:var(--accent-deep)}
-@media(pointer:coarse){.rqrlink{display:inline-flex;align-items:center}}
-.rqrlink[aria-expanded="true"]{display:inline-flex;align-items:center}
+.rqrlink{display:none}
+@media(pointer:coarse){.rqrlink{display:inline-flex}}
+.rqrlink[aria-expanded="true"]{display:inline-flex}
+/* Two buttons as equal halves of one row, so My Ramble reads in level rows. */
+.ractions.rpair{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:440px}
+.rpair .btn{padding-inline:10px;min-width:0}
 .rsend{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-start;background:var(--paper-2);
   border-radius:var(--radius);padding:16px;margin-top:14px}
 /* Black on white, the way a phone camera reads a code best. */
