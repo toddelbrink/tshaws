@@ -58,6 +58,9 @@
   // IBMA's own ticket page, checked 2026-10-08: Ramble passes for both nights
   // or one. Prices are IBMA's and change, so none is printed anywhere. Every
   // passes link reads this one address and hides once the Ramble is over.
+  // Trevor's bonus episode on the Ramble bands, 2026-10-12. Matched by guid,
+  // which ZenCast never changes, not by title, which Trevor might.
+  var RUNDOWN_GUID = '0e0466ee-871f-49e3-8782-ec0f5c62f6c0';
   var PASS_URL = 'https://ibma.ticketspice.com/-ibma-world-of-bluegrass-2026';
   var VENUES = [
     { stages: ['rv', 'mk'], name: 'Chattanooga Convention Center', // chattanoogaconventioncenter.org
@@ -1148,6 +1151,44 @@
         { month: 'short', day: 'numeric', timeZone: 'UTC' });
     }
     render();
+    rundown();
+  }
+
+  /* The Rundown line plays in the site's own player. Hidden until the feed
+   * answers and holds the episode, so a feed failure costs nothing. */
+  var rundownEp = null, rundownSub = false;
+  async function rundown() {
+    var box = document.getElementById('rrundown'), btn = document.getElementById('rrplay');
+    if (!box || !btn || !window.TSPlayer) return;
+    if (!rundownEp) {
+      try {
+        var r = await fetch('/api/episodes');
+        if (!r.ok) return;
+        var j = await r.json();
+        rundownEp = (j.episodes || []).find(function (x) { return x.guid === RUNDOWN_GUID; }) || null;
+      } catch (e) { return; }
+    }
+    if (!rundownEp) return;
+    var len = document.getElementById('rrlen');
+    if (len && rundownEp.durationLabel) len.textContent = ', ' + rundownEp.durationLabel;
+    box.hidden = false;
+    if (btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', function () { window.TSPlayer.toggle(rundownEp); });
+    // A fresh copy of the page after soft navigation starts in step with the
+    // player. The subscription is once per visit to the site, not per page.
+    var cur = window.TSPlayer.current();
+    rundownSync({ guid: cur && cur.guid, playing: window.TSPlayer.isPlaying(RUNDOWN_GUID), position: 0 });
+    if (rundownSub) return;
+    rundownSub = true;
+    window.TSPlayer.subscribe(rundownSync);
+  }
+  function rundownSync(snap) {
+    var b = document.getElementById('rrplay');
+    if (!b) return;
+    var isCur = snap.guid === RUNDOWN_GUID, playing = isCur && snap.playing;
+    b.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    b.querySelector('.verb').textContent = playing ? 'Pause' : (isCur && snap.position > 1 ? 'Resume' : 'Listen');
   }
 
   function banner() {
