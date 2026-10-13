@@ -1117,6 +1117,10 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .rrundown[hidden]{display:none}
 .rrundown p{margin:0;font-size:15px;color:var(--ink-2);min-width:0}
 .rrundown p b{color:var(--ink);font-weight:600}
+/* Trevor's take inside an act's panel: his line, then a button that plays the
+   Rundown from his first word on that act. */
+.rmore .rtake{margin:2px 0 8px;font-family:var(--serif);font-style:italic;font-size:15.5px;line-height:1.45;color:var(--ink)}
+.rmore .rhear{display:inline-flex;align-self:flex-start;margin-bottom:10px}
 
 /* The control row stays put while the list scrolls. */
 .rbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);

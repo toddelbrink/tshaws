@@ -100,6 +100,45 @@
     'Wood Box Heroes': { guest: 'Thomas Cassell', href: '/guests/thomas-cassell/' }
   };
 
+  /* Trevor's take on each act, from the Rundown episode (RUNDOWN_GUID): the
+   * second his segment starts, 4 seconds early, and a line in his own words.
+   * Seconds were placed from Trevor's transcript, which is timed once a
+   * minute, so each is an estimate within a few seconds. Pickers Anonymous is
+   * missing on purpose: the episode calls their set a duplicate but never
+   * covers them. */
+  var TAKES = {
+    "Weary Ramblers": [875, "A duet. Fiddle, guitar, harmonica. Bluesy folk music."],
+    "Dave Adkins & Mountain Soul": [888, "Traditional bluegrass five piece. It’s exactly what I would expect."],
+    "Nick Dumas & Branchline": [903, "Good traditional bluegrass, and definitely worth watching."],
+    "Williamson Branch": [952, "A family bluegrass band. The whole family appears to be represented."],
+    "The Slocan Ramblers": [968, "Everything I’ve heard, I really, really, really enjoyed."],
+    "Tony Kamel & Kym Warner": [1040, "A duo, banjo and mandolin."],
+    "Nick Chandler & Delivered": [1095, "Hard-driving trad grass, and they’re wearing suits."],
+    "Veranda": [1137, "A very powerful voice. You may never get to see them again."],
+    "Seth Mulder & Midnight Run": [1192, "Good traditional bluegrass."],
+    "The Amanda Cook Band": [1213, "Trad grass."],
+    "Crying Uncle Bluegrass Band": [1230, "Young, talented pickers. Some excellent covers, some excellent original material."],
+    "Missy Raines & Allegheny": [1269, "I’d almost put her into bluegrass royalty."],
+    "Pitney Meyer": [1296, "They seem bigger than I would typically expect on the Ramble."],
+    "Wood Box Heroes": [1338, "That’s gonna be a personal highlight for me."],
+    "The Litch Brothers": [1490, "They did win the Telluride Band Contest. Gotta check out the Litch Brothers."],
+    "The Price Sisters": [1546, "Two sisters share mandolin and fiddle, and they share the vocals. Single mic."],
+    "Thunder and Rain": [1568, "Three female bluegrass musicians. Seemed very talented."],
+    "The Cleverlys": [1606, "That’s a party set for sure."],
+    "Tonewood String Band": [1699, "They did a very worthy job of Midnight Moonlight. Fun bluegrass."],
+    "NEWGRASSLANDS": [1735, "From Shanghai, China. Probably a band I will never get a chance to see again."],
+    "Wood Belly String Band": [1793, "Grabbed me in the first 30 seconds."],
+    "Kristy Cox": [1841, "Strong, powerful female vocals, from Australia."],
+    "Lonesome Ace Stringband": [1868, "Very peppy, with clawhammer banjo."],
+    "Country Gongbang": [1891, "Their guitar player is a Tony Rice clone. Really, really, really good."],
+    "Rock Hearts": [1984, "Classic country grass."],
+    "Rick Faris Band": [2008, "Classic country bluegrass."],
+    "John Hartford Fiddle Tune Project": [2079, "Terrific harmonies. Perfect breakfast grass."],
+    "Water Tower": [2116, "Los Angeles punk grass. It’s right up my alley."],
+    "Stillhouse Junkies": [2206, "Peppy, fun, wicked fiddle solo."],
+    "Ralph Stanley II & The Clinch Mountain Boys": [2233, "This is your only shot to see Ralph Stanley II during the Ramble."]
+  };
+
   var data = null;     // the parsed file
   var sets = [];       // every set, sorted by night then start
   var byId = {};
@@ -447,6 +486,7 @@
   /* ---- markup ---- */
 
   var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.8 6.1 6.7.7-5 4.5 1.4 6.6L12 17.1l-5.9 3.4 1.4-6.6-5-4.5 6.7-.7z"/></svg>';
+  var HEAR = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 9a5 5 0 0 1 10 0v4h-3V9h1.5a3.5 3.5 0 0 0-7 0H6v4H3z"/></svg>';
   var CROSS = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.4 2L8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>';
 
   function button(key, value, label, extra) {
@@ -515,8 +555,13 @@
   }
 
   function detail(x) {
-    var o = others(x), pod = PODCAST[x.act];
+    var o = others(x), pod = PODCAST[x.act], take = TAKES[x.act];
     var h = '<div class="rmore" id="more-' + x.id + '">';
+    if (take) {
+      h += '<p class="rtake">“' + esc(take[1]) + '”</p>' +
+        '<span class="lw rhear"><button type="button" class="play" data-take="' + take[0] + '">' + HEAR +
+        '<span class="verb">Hear Trevor’s take</span><span class="sr-only"> on ' + esc(x.act) + '</span></button></span>';
+    }
     h += o.length ? o.map(function (y) {
       return '<span>Also plays ' + dayLabel(y.day) + ' ' + y.start + ' to ' + y.end + ' at ' + esc(y.stageName) + '</span>';
     }).join('') : '<span>This is the only Ramble set for this act.</span>';
@@ -923,6 +968,8 @@
     listGroups: listGroups,
     stagesShown: stagesShown,
     venues: VENUES,
+    takes: TAKES,
+    rundownGuid: RUNDOWN_GUID,
     mapUrl: MAP_URL,
     planIds: planIds,
     planLink: planLink,
@@ -990,6 +1037,7 @@
     var b = e.target.closest && e.target.closest('#ramble button');
     if (!b || !data) return;
     var d = b.dataset;
+    if (d.take) { playTake(Number(d.take)); return; }
     S.toast = '';
     if (d.k) {
       S[d.k] = d.v;
@@ -1157,18 +1205,25 @@
   /* The Rundown line plays in the site's own player. Hidden until the feed
    * answers and holds the episode, so a feed failure costs nothing. */
   var rundownEp = null, rundownSub = false;
+  async function rundownFind() {
+    if (rundownEp) return rundownEp;
+    try {
+      var r = await fetch('/api/episodes');
+      if (!r.ok) return null;
+      var j = await r.json();
+      rundownEp = (j.episodes || []).find(function (x) { return x.guid === RUNDOWN_GUID; }) || null;
+    } catch (e) { return null; }
+    return rundownEp;
+  }
+  // A card's "Hear Trevor's take": the Rundown from that act's second.
+  async function playTake(sec) {
+    var ep = await rundownFind();
+    if (ep && window.TSPlayer) window.TSPlayer.playFrom(ep, sec);
+  }
   async function rundown() {
     var box = document.getElementById('rrundown'), btn = document.getElementById('rrplay');
     if (!box || !btn || !window.TSPlayer) return;
-    if (!rundownEp) {
-      try {
-        var r = await fetch('/api/episodes');
-        if (!r.ok) return;
-        var j = await r.json();
-        rundownEp = (j.episodes || []).find(function (x) { return x.guid === RUNDOWN_GUID; }) || null;
-      } catch (e) { return; }
-    }
-    if (!rundownEp) return;
+    if (!await rundownFind()) return;
     var len = document.getElementById('rrlen');
     if (len && rundownEp.durationLabel) len.textContent = ', ' + rundownEp.durationLabel;
     box.hidden = false;

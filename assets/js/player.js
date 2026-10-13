@@ -153,8 +153,13 @@ window.TSPlayer = (function () {
     if (!same) {
       current = ep;
       audio.src = ep.audioUrl;   // ?source=feed intact: Trevor keeps the download credit
-      if (opts.position) audio.currentTime = opts.position;
-      else audio.currentTime = 0;
+      if (opts.position) {
+        audio.currentTime = opts.position;
+        // iPhone Safari ignores a seek made before the file's length is
+        // known, so make it again once it is.
+        var at = opts.position;
+        audio.addEventListener('loadedmetadata', function () { audio.currentTime = at; }, { once: true });
+      } else audio.currentTime = 0;
       mediaSession();
     }
     if (el.bar) el.bar.setAttribute('data-active', 'true');
@@ -174,6 +179,18 @@ window.TSPlayer = (function () {
     if (ep && (!current || current.guid !== ep.guid)) { load(ep); return; }
     if (!current) return;
     if (audio.paused) play(); else audio.pause();
+  }
+
+  /* Start an episode at a given second: the Ramble cards play Trevor's take
+   * on one band out of the Rundown episode. */
+  function playFrom(ep, seconds) {
+    if (!ep || !ep.audioUrl) return;
+    if (current && current.guid === ep.guid) {
+      audio.currentTime = seconds;
+      play(); paint(); emit(); save();
+      return;
+    }
+    load(ep, { position: seconds });
   }
 
   function close() {
@@ -216,6 +233,7 @@ window.TSPlayer = (function () {
   return {
     load: load,
     toggle: toggle,
+    playFrom: playFrom,
     close: close,
     // Video playback calls this. Two things talking at once is never wanted.
     pause: function () { if (!audio.paused) audio.pause(); },

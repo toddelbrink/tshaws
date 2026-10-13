@@ -476,6 +476,21 @@ if (R && data) {
     !/\r\nX-EVIL/.test(R.planIcs([], [{ d: 'tue', s: 1080, e: 1140, t: 'a\r\nX-EVIL:1', p: '' }])));
 }
 
+/* Trevor's take on each act, from the Rundown bonus episode (2026-10-13).
+ * Every take names an act on the schedule, starts inside the 40:47 episode,
+ * and carries a line to show. Pickers Anonymous has none: the episode skips
+ * them. */
+console.log('\nTrevor\'s takes');
+{
+  const acts = new Set(R.load(JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/data/ramble-2026.json'), 'utf8'))).map((x) => x.act));
+  const T = R.takes, names = Object.keys(T);
+  check('every take names an act on the schedule (' + names.length + ')', names.every((a) => acts.has(a)));
+  check('every take starts inside the episode', names.every((a) => Number.isInteger(T[a][0]) && T[a][0] >= 0 && T[a][0] < 2447));
+  check('every take has a line under 100 characters', names.every((a) => T[a][1] && T[a][1].length < 100));
+  check('only Pickers Anonymous is missing', [...acts].filter((a) => !T[a]).join() === 'Pickers Anonymous');
+  check('the episode is the Rundown', R.rundownGuid === '0e0466ee-871f-49e3-8782-ec0f5c62f6c0');
+}
+
 console.log('');
 if (failures) { console.log(failures + ' failing'); process.exit(1); }
 console.log('all passing');
