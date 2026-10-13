@@ -658,7 +658,7 @@
       '<p>Add your own plans in My Ramble too, like dinner or a jam. They are checked against your picks, ' +
       'and only you and anyone you send your plan to will see them.</p>' +
       '<p>Your picks stay in this browser only. Use Save or send in My Ramble to keep your plan or open it on another device. A screenshot works too.</p>' +
-      (over() ? '' : '<p>For last-minute changes, check IBMA’s own app, out the week of Oct 12.</p>') +
+      (over() ? '' : '<p>For last-minute changes, check IBMA’s <a href="https://worldofbluegrass.org/ramble-schedule/" rel="noopener">official schedule</a>. Their app will carry them too once the 2026 version is out.</p>') +
       '</div></section>';
     if (!over()) {
       h += '<section aria-labelledby="ri-pass"><h2 class="rarea" id="ri-pass">Passes</h2><div class="rprose">' +
