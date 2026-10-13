@@ -105,7 +105,9 @@
    * Seconds were placed from Trevor's transcript, which is timed once a
    * minute, so each is an estimate within a few seconds. Pickers Anonymous is
    * missing on purpose: the episode calls their set a duplicate but never
-   * covers them. */
+   * covers them. A null second shows the line with no button, because the
+   * audio that follows reads as criticism (Todd and Trevor, 2026-10-13: "Bluegrass
+   * politics is a thing"). The Price Sisters' was 1546, Country Gongbang's 1891. */
   var TAKES = {
     "Weary Ramblers": [875, "A duet. Fiddle, guitar, harmonica. Bluesy folk music."],
     "Dave Adkins & Mountain Soul": [888, "Traditional bluegrass five piece. It’s exactly what I would expect."],
@@ -122,7 +124,7 @@
     "Pitney Meyer": [1296, "They seem bigger than I would typically expect on the Ramble."],
     "Wood Box Heroes": [1338, "That’s gonna be a personal highlight for me."],
     "The Litch Brothers": [1490, "They did win the Telluride Band Contest. Gotta check out the Litch Brothers."],
-    "The Price Sisters": [1546, "Two sisters share mandolin and fiddle, and they share the vocals. Single mic."],
+    "The Price Sisters": [null, "Two sisters share mandolin and fiddle, and they share the vocals. Single mic."],
     "Thunder and Rain": [1568, "Three female bluegrass musicians. Seemed very talented."],
     "The Cleverlys": [1606, "That’s a party set for sure."],
     "Tonewood String Band": [1699, "They did a very worthy job of Midnight Moonlight. Fun bluegrass."],
@@ -130,7 +132,7 @@
     "Wood Belly String Band": [1793, "Grabbed me in the first 30 seconds."],
     "Kristy Cox": [1841, "Strong, powerful female vocals, from Australia."],
     "Lonesome Ace Stringband": [1868, "Very peppy, with clawhammer banjo."],
-    "Country Gongbang": [1891, "Their guitar player is a Tony Rice clone. Really, really, really good."],
+    "Country Gongbang": [null, "Their guitar player is a Tony Rice clone. Really, really, really good."],
     "Rock Hearts": [1984, "Classic country grass."],
     "Rick Faris Band": [2008, "Classic country bluegrass."],
     "John Hartford Fiddle Tune Project": [2079, "Terrific harmonies. Perfect breakfast grass."],
@@ -557,9 +559,9 @@
   function detail(x) {
     var o = others(x), pod = PODCAST[x.act], take = TAKES[x.act];
     var h = '<div class="rmore" id="more-' + x.id + '">';
-    if (take) {
-      h += '<p class="rtake">“' + esc(take[1]) + '”</p>' +
-        '<span class="lw rhear"><button type="button" class="play" data-take="' + take[0] + '">' + HEAR +
+    if (take) h += '<p class="rtake">“' + esc(take[1]) + '”</p>';
+    if (take && take[0] != null) {
+      h += '<span class="lw rhear"><button type="button" class="play" data-take="' + take[0] + '">' + HEAR +
         '<span class="verb">Hear Trevor’s take</span><span class="sr-only"> on ' + esc(x.act) + '</span></button></span>';
     }
     h += o.length ? o.map(function (y) {

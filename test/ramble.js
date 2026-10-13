@@ -485,7 +485,9 @@ console.log('\nTrevor\'s takes');
   const acts = new Set(R.load(JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/data/ramble-2026.json'), 'utf8'))).map((x) => x.act));
   const T = R.takes, names = Object.keys(T);
   check('every take names an act on the schedule (' + names.length + ')', names.every((a) => acts.has(a)));
-  check('every take starts inside the episode', names.every((a) => Number.isInteger(T[a][0]) && T[a][0] >= 0 && T[a][0] < 2447));
+  check('every take starts inside the episode, or is line only', names.every((a) => T[a][0] === null ||
+    (Number.isInteger(T[a][0]) && T[a][0] >= 0 && T[a][0] < 2447)));
+  check('line only for The Price Sisters and Country Gongbang', names.filter((a) => T[a][0] === null).sort().join() === 'Country Gongbang,The Price Sisters');
   check('every take has a line under 100 characters', names.every((a) => T[a][1] && T[a][1].length < 100));
   check('only Pickers Anonymous is missing', [...acts].filter((a) => !T[a]).join() === 'Pickers Anonymous');
   check('the episode is the Rundown', R.rundownGuid === '0e0466ee-871f-49e3-8782-ec0f5c62f6c0');
