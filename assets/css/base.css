@@ -265,7 +265,13 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
    go narrower than it and took the width from the art (Ep 42 on a phone). */
 .ep{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start;
   padding:20px 0;border-bottom:1px solid var(--rule)}
-.ep[data-current="true"]{background:linear-gradient(90deg,rgba(192,138,62,.14),transparent 62%)}
+/* The playing row: only while it plays (Todd, 2026-10-12). A row merely
+   loaded in the player looked like a stray tint. Same mark as a picked Ramble
+   set, a pale fill and a brass edge; the fill reaches 12px into the gutter each side so
+   nothing in the row moves when it lights up. */
+.ep[data-current="true"]:has(.play[aria-pressed="true"]),
+.gep[data-current="true"]:has(.play[aria-pressed="true"]){background:var(--paper-2);
+  box-shadow:inset 3px 0 0 var(--brass);margin-inline:-12px;padding-inline:12px}
 /* Was 66px, then 112px. 18 of 41 episodes carry their own artwork, so it is
    content, not a bullet point.
 
@@ -338,7 +344,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.06;
 .play:focus-visible{outline-offset:-5px}
 
 .rowbar{height:2px;background:var(--rule);margin-top:12px;overflow:hidden;display:none}
-.ep[data-current="true"] .rowbar{display:block}
+.ep[data-current="true"]:has(.play[aria-pressed="true"]) .rowbar{display:block}
 .rowbar i{display:block;height:100%;background:var(--accent);width:0}
 /* Brass measured 1.89:1 against the rule track. A progress indicator conveys
    state, so it needs 3:1. Accent gives 3.81:1. Brass stays on the dark player
@@ -1010,9 +1016,8 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
 .gep-art{width:116px;height:116px;border-radius:var(--radius);border:1px solid var(--rule);
   object-fit:cover;background:var(--paper-2)}
 .gep-art.ph{display:none}
-/* The playing row, same treatment the episode lists use. */
-.gep[data-current="true"]{background:linear-gradient(90deg,rgba(192,138,62,.14),transparent 62%)}
-.gep[data-current="true"] .rowbar{display:block}
+/* The playing row: see .ep[data-current] above. */
+.gep[data-current="true"]:has(.play[aria-pressed="true"]) .rowbar{display:block}
 .gep-live{margin-top:2px}
 .gep h3{font-family:var(--serif);font-weight:600;text-transform:none;letter-spacing:0;
   font-size:18px;line-height:1.34}
