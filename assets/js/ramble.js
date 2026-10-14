@@ -61,6 +61,10 @@
   // Trevor's bonus episode on the Ramble bands, 2026-10-12. Matched by guid,
   // which ZenCast never changes, not by title, which Trevor might.
   var RUNDOWN_GUID = '0e0466ee-871f-49e3-8782-ec0f5c62f6c0';
+  // IBMA's own page for the 2026 World of Bluegrass app, which sends each
+  // phone to its store (live 2026-10-14). The Info line using it hides at
+  // RAMBLE_OVER with the rest of the event-only lines.
+  var APP_URL = 'https://worldofbluegrass.org/2026wobapp/';
   var PASS_URL = 'https://ibma.ticketspice.com/-ibma-world-of-bluegrass-2026';
   var VENUES = [
     { stages: ['rv', 'mk'], name: 'Chattanooga Convention Center', // chattanoogaconventioncenter.org
@@ -705,7 +709,7 @@
       '<p>Add your own plans in My Ramble too, like dinner or a jam. They are checked against your picks, ' +
       'and only you and anyone you send your plan to will see them.</p>' +
       '<p>Your picks stay in this browser only. Use Save or send in My Ramble to keep your plan or open it on another device. A screenshot works too.</p>' +
-      (over() ? '' : '<p>For last-minute changes, check IBMA’s <a href="https://worldofbluegrass.org/ramble-schedule/" rel="noopener">official schedule</a>. Their app will carry them too once the 2026 version is out.</p>') +
+      (over() ? '' : '<p>For last-minute changes, check <a href="' + APP_URL + '" rel="noopener">IBMA’s official app</a> or their <a href="https://worldofbluegrass.org/ramble-schedule/" rel="noopener">official schedule</a>.</p>') +
       '</div></section>';
     if (!over()) {
       h += '<section aria-labelledby="ri-pass"><h2 class="rarea" id="ri-pass">Passes</h2><div class="rprose">' +
