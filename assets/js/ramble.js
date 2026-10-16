@@ -356,7 +356,7 @@
           : { type: 'set', id: x.id, time: clock(x.s) + ' to ' + clock(x.e), act: x.act,
               stage: x.stageName, area: areaName(x.area), areaId: x.area, notes: notes });
       });
-      days.push({ label: new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
+      days.push({ date: d.date, label: new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
         { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase(), items: items });
     });
     var cc = data.areas[0], names = data.stages.filter(function (s) { return s.area === cc.id; })
@@ -612,24 +612,29 @@
     return ' a-' + s.area + (i > 0 && cols[i - 1].area !== s.area ? ' asplit' : '');
   }
   function grid() {
+    return gridHtml(S.day, S.stage, false) + printBar();
+  }
+  // One night's grid. Printed, it drops the key and its columns shrink to fit
+  // the paper instead of scrolling sideways.
+  function gridHtml(day, f, printing) {
     var t0 = minutes(GRID_START), t1 = minutes(GRID_END), H = (t1 - t0) * PX + 16;
     var y = function (m) { return Math.round((m - t0) * PX + 8); };
-    var cols = stagesShown(S.stage);
+    var cols = stagesShown(f), colMin = printing ? 0 : 104;
     // The visitor's own events get a column of their own, first, and only on a
     // night that has one. Dashed, so it never reads as an IBMA set. Anything
     // outside the grid's hours is listed above it instead.
-    var mineTonight = yourItems(yours).filter(function (x) { return x.day === S.day; });
+    var mineTonight = yourItems(yours).filter(function (x) { return x.day === day; });
     var inGrid = mineTonight.filter(function (x) { return x.e > t0 && x.s < t1; });
     var outside = mineTonight.filter(function (x) { return !(x.e > t0 && x.s < t1); });
     var ycol = inGrid.length ? 1 : 0;
-    var h = key('grid', cols.length > 2) + (outside.length
+    var h = (printing ? '' : key('grid', cols.length > 2)) + (outside.length
       ? '<p class="ryout">Also yours this night: ' + outside.map(function (x) {
           return '<button type="button" class="rtextbtn" data-yedit="' + x.n + '">' + esc(x.act) + '</button>, ' +
             x.start + ' to ' + x.end;
         }).join('; ') + '.</p>' : '') +
-      '<div class="rgridbox" tabindex="0" role="region" aria-label="Stages, ' + esc(dayLabel(S.day)) + '">' +
-      '<div class="rgrid" style="grid-template-columns:40px repeat(' + (cols.length + ycol) + ',minmax(104px,1fr));min-width:' +
-      (40 + (cols.length + ycol) * 104) + 'px">' +
+      '<div class="rgridbox" tabindex="0" role="region" aria-label="Stages, ' + esc(dayLabel(day)) + '">' +
+      '<div class="rgrid" style="grid-template-columns:40px repeat(' + (cols.length + ycol) + ',minmax(' + colMin + 'px,1fr));min-width:' +
+      (40 + (cols.length + ycol) * colMin) + 'px">' +
       '<div class="rgh rpin"></div>' + (ycol ? '<div class="rgh ryh">Yours</div>' : '') + cols.map(function (s, i) {
         return '<div class="rgh one' + areaCls(cols, i) + '">' + esc(s.short) + '</div>';
       }).join('');
@@ -658,7 +663,7 @@
     }
     cols.forEach(function (s, i) {
       h += '<div class="rcol' + areaCls(cols, i) + '" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
-        sets.filter(function (x) { return x.day === S.day && x.stage === s.id; }).map(function (x) {
+        sets.filter(function (x) { return x.day === day && x.stage === s.id; }).map(function (x) {
           var on = picks.has(x.id), c = on && clashes(x).length > 0;
           return '<button type="button" class="rblk' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +
             '" aria-pressed="' + on + '" aria-label="' + starLabel(x, on) + '" style="top:' + y(x.s) + 'px;height:' +
@@ -667,6 +672,64 @@
         }).join('') + '</div>';
     });
     return h + '</div></div>';
+  }
+
+  /* ---- print ----
+   * Under the grid: the full schedule, or the visitor's own picks. Either
+   * prints one night to a page, landscape where the phone or printer allows,
+   * with a small T Shaw's mark and the page address so the paper leads back
+   * here. The printout is built into #rprint, a child of body, and the print
+   * stylesheet in base.css hides everything else. Nothing in the data or the
+   * plan changes. Times print as they ran, before, during and after. */
+  function printBar() {
+    var any = picks.size + yours.length > 0;
+    return '<div class="ractions rpair rprintbar"><button type="button" class="btn" data-print="all">Print full schedule</button>' +
+      (any ? '<button type="button" class="btn" data-print="mine">Print my picks</button>' : '') + '</div>';
+  }
+  var PRINT_ADDRESS = 'tshawsprogressivebluegrass.com/ramble/';
+  function printHead(title, d) {
+    return '<header class="rphead"><img src="/assets/brand/wordmark.svg" alt="T Shaw’s" width="64" height="18">' +
+      '<span class="rptitle">' + esc(title) + ' · ' + esc(dayLong(d)) + '</span>' +
+      '<span class="rpurl">' + PRINT_ADDRESS + '</span></header>';
+  }
+  var PRINT_FOOT = '<p class="rpfoot">All times are PM Eastern. Set times can change: check ' + PRINT_ADDRESS +
+    ' on the day. Schedule from IBMA World of Bluegrass, used with permission.</p>';
+  function printHtml(mode) {
+    var h = '';
+    if (mode === 'mine') {
+      var R = planRows(myIds(), SITE, undefined, yours);
+      data.days.forEach(function (d) {
+        var L = R.days.filter(function (x) { return x.date === d.date; })[0];
+        if (!L) return;
+        h += '<section class="rpday">' + printHead('My IBMA Ramble plan', d) + '<table class="rptable"><tbody>' +
+          L.items.map(function (it) {
+            if (it.type === 'break') return '<tr class="rpbreak"><td></td><td colspan="2">Break, ' + esc(it.length) + '</td></tr>';
+            return '<tr><td class="rptime">' + esc(it.time) + '</td><td><b>' + esc(it.act) + '</b>' +
+              (it.notes.length ? '<span class="rpnote">' + esc(it.notes.map(function (n) { return n.text; }).join(' ')) + '</span>' : '') +
+              '</td><td>' + (it.yours ? 'Your own' + (it.stage ? ', ' + esc(it.stage) : '') : esc(it.stage) + ', ' + esc(it.area)) + '</td></tr>';
+          }).join('') + '</tbody></table>' + PRINT_FOOT + '</section>';
+      });
+      return h;
+    }
+    data.days.forEach(function (d) {
+      h += '<section class="rpday">' + printHead('IBMA Bluegrass Ramble', d) + gridHtml(d.id, 'all', true) + PRINT_FOOT + '</section>';
+    });
+    return h;
+  }
+  var printMode = null;
+  function preparePrint(mode) {
+    var old = document.getElementById('rprint');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.id = 'rprint';
+    box.innerHTML = printHtml(mode);
+    document.body.appendChild(box);
+    document.body.classList.add('rprinting');
+  }
+  function dropPrint() {
+    var old = document.getElementById('rprint');
+    if (old) old.remove();
+    document.body.classList.remove('rprinting');
   }
 
   /* The how-to and the colour key, one line above the sets. Picked and
@@ -947,6 +1010,7 @@
     if (d.panel) return '[data-panel]';
     if (d.copy) return '[data-copy]';
     if (d.ics) return '[data-ics]';
+    if (d.print) return '[data-print="' + d.print + '"]';
     if (d.yadd) return '[data-yadd]';
     return null;
   }
@@ -992,6 +1056,11 @@
       picks = new Set(ids); yours = cleanYours(list); own = null; ownYours = null;
       S.tab = tab; S.day = day || data.days[0].id; S.view = 'grid'; S.stage = 'all'; S.form = null;
       return tab === 'mine' ? mine() : grid();
+    },
+    // The printout for a plan, as the print buttons build it.
+    print: function (ids, list, mode) {
+      picks = new Set(ids); yours = cleanYours(list); own = null; ownYours = null;
+      return printHtml(mode);
     },
     passUrl: PASS_URL,
     rambleOver: RAMBLE_OVER
@@ -1044,6 +1113,7 @@
     if (!b || !data) return;
     var d = b.dataset;
     if (d.take) { playTake(Number(d.take)); return; }
+    if (d.print) { printMode = d.print; preparePrint(d.print); window.print(); return; }
     S.toast = '';
     if (d.k) {
       S[d.k] = d.v;
@@ -1146,6 +1216,14 @@
     S.stage = e.target.value;
     render();
   });
+
+  // The browser's own Print works too: the picks from My Ramble, the full
+  // schedule from anywhere else. A print button has already set its choice.
+  window.addEventListener('beforeprint', function () {
+    if (!document.getElementById('ramble') || !data) { dropPrint(); return; }
+    preparePrint(printMode || (S.tab === 'mine' && picks.size + yours.length ? 'mine' : 'all'));
+  });
+  window.addEventListener('afterprint', function () { printMode = null; });
 
   // A shared link opened while the page is already up.
   window.addEventListener('hashchange', function () {
@@ -1264,7 +1342,7 @@
   async function init() {
     banner();
     var root = document.getElementById('ramble');
-    if (!root) return;
+    if (!root) { dropPrint(); return; }
     try {
       if (!data) {
         var r = await fetch(DATA_URL);

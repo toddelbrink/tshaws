@@ -476,6 +476,31 @@ if (R && data) {
     !/\r\nX-EVIL/.test(R.planIcs([], [{ d: 'tue', s: 1080, e: 1140, t: 'a\r\nX-EVIL:1', p: '' }])));
 }
 
+// Print, from the buttons under the grid. The full schedule is every night's
+// grid, one to a page; the picks are the same rows the plan email uses.
+console.log('\nPrint');
+if (R && data) {
+  R.load(data);
+  const css = fs.readFileSync(path.join(ROOT, 'assets/css/base.css'), 'utf8');
+  const all = R.print(['tuebb600'], [], 'all');
+  const pages = (h) => (h.match(/class="rpday"/g) || []).length;
+  check('the full schedule prints one page per night', pages(all) === data.days.length);
+  check('every set is on it', data.sets.every((x) => all.includes(x.act.replace(/&/g, '&amp;'))));
+  check('its grid shrinks to the paper instead of scrolling', /minmax\(0px,1fr\)\);min-width:40px/.test(all) && !/minmax\(104px/.test(all));
+  check('no key, no buttons to print, no pick buttons from the bar', !/rkeyrow|data-print|rprintbar/.test(all));
+  check('each page carries the mark and the address',
+    (all.match(/wordmark\.svg/g) || []).length === pages(all) && all.includes('tshawsprogressivebluegrass.com/ramble/'));
+  check('a pick shows as picked on paper', /class="rblk on[^"]*" data-pick="tuebb600"/.test(all));
+  const mine = R.print(['tuebb600', 'tuerv540'], [{ d: 'tue', s: 19 * 60, e: 20 * 60, t: 'Dinner <b>', p: '' }], 'mine');
+  check('the picks print only the nights with picks', pages(mine) === 1 && mine.includes('TUESDAY, OCTOBER 20') === false &&
+    mine.includes('My IBMA Ramble plan · Tuesday, October 20'));
+  check('the picks print in time order, own events included',
+    mine.indexOf('Weary Ramblers') < mine.indexOf('The Litch Brothers') && mine.indexOf('The Litch Brothers') < mine.indexOf('Dinner'));
+  check('typed text prints as plain characters', mine.includes('Dinner &lt;b&gt;') && !mine.includes('Dinner <b>'));
+  check('the print stylesheet hides the rest of the page', /body\.rprinting > \*:not\(#rprint\)\{display:none!important\}/.test(css) &&
+    /#rprint\{display:none\}/.test(css));
+}
+
 /* Trevor's take on each act, from the Rundown bonus episode (2026-10-13).
  * Every take names an act on the schedule, starts inside the 40:47 episode,
  * and carries a line to show. Pickers Anonymous has none: the episode skips

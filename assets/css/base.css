@@ -1458,3 +1458,38 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   .rtabs button{padding:0 8px}
   .rtabs button[data-v="info"]{flex:0 0 72px}
 }
+/* Print, from the buttons under the grid or the browser's own Print. ramble.js
+   builds the printout into #rprint, a child of body, and adds .rprinting;
+   on paper nothing else shows. One night to a page. Landscape is asked for;
+   a phone that prints portrait still fits, because the columns shrink. */
+.rprintbar{margin-top:4px}
+#rprint{display:none}
+@media print{
+  @page{size:landscape;margin:.3in}
+  body.rprinting{padding:0!important;background:#fff}
+  body.rprinting > *:not(#rprint){display:none!important}
+  body.rprinting #rprint{display:block}
+  #rprint{color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rpday{break-after:page}
+  .rpday:last-child{break-after:auto}
+  .rphead{display:flex;align-items:baseline;gap:12px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:8px}
+  .rphead img{height:18px;width:auto;align-self:center}
+  .rptitle{font-family:var(--display);font-size:15px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;flex:1}
+  .rpurl{font-family:var(--sans);font-size:11px;color:var(--ink-2)}
+  .rpfoot{font-family:var(--sans);font-size:10px;color:var(--ink-2);margin:6px 0 0}
+  #rprint .rgridbox{overflow:visible;margin:0;break-inside:avoid}
+  #rprint .rpin,#rprint .rga span{position:static}
+  #rprint .rcol.rtime.rpin{position:relative}
+  #rprint .ryout{font-family:var(--sans);font-size:11px;margin:0 0 6px}
+  #rprint .ryout .rtextbtn{color:#000;text-decoration:none;font-weight:600}
+  #rprint .rblk{font-size:11.5px}
+  .rptable{width:100%;border-collapse:collapse;table-layout:fixed;font-family:var(--sans);font-size:13px;line-height:1.35}
+  .rptable td:nth-child(1){width:110px}
+  .rptable td:nth-child(3){width:32%}
+  .rptable td{border-bottom:1px solid var(--rule);padding:7px 10px 7px 0;vertical-align:top;break-inside:avoid}
+  .rptable td.rptime{font-family:var(--display);font-size:14px;white-space:nowrap;
+    font-variant-numeric:tabular-nums}
+  .rptable b{font-family:var(--serif);font-size:15px;font-weight:600}
+  .rpnote{display:block;font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .rpbreak td{color:var(--ink-muted);font-style:italic}
+}
