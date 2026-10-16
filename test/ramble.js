@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const FILE = path.join(ROOT, 'assets/data/ramble-2026.json');
-const SET_COUNT = 61;
+const SET_COUNT = 65;
 
 let failures = 0;
 function check(name, cond, detail) {
@@ -223,6 +223,8 @@ if (R && data) {
       }
       check(day.label + ', ' + g.name + ': only its own stages, in time order', ordered);
     }
+    // The showcase sets sit under their own heading, never in an area.
+    for (const g of R.showGroups(day.id, 'all')) for (const slot of g.slots) for (const x of slot.rows) seen.push(x.id);
   }
   check('every set is listed exactly once across both nights',
     seen.length === data.sets.length && new Set(seen).size === seen.length, seen.length + ' listed');
@@ -476,6 +478,69 @@ if (R && data) {
     !/\r\nX-EVIL/.test(R.planIcs([], [{ d: 'tue', s: 1080, e: 1140, t: 'a\r\nX-EVIL:1', p: '' }])));
 }
 
+// IBMA's International Showcase, Tue and Wed (2026-10-16). Daytime sets on
+// McKenzie from IBMA's conference schedule, picked like any set but labelled,
+// with IBMA's access line wherever a set is named.
+console.log('\nInternational Showcase');
+if (R && data) {
+  const sets = R.load(data);
+  const sc = sets.filter((x) => x.show);
+  const sh = data.showcases && data.showcases.intl;
+  check('four showcase sets, all on McKenzie', sc.length === 4 && sc.every((x) => x.stage === 'mk' && x.show === 'intl'),
+    sc.map((x) => x.id).join());
+  check('the access line is IBMA\'s wording', !!sh && sh.access === 'Requires registration for the IBMA Business Conference.');
+  check('every showcase set names a showcase in the data', data.sets.filter((x) => x.show).every((x) => data.showcases[x.show]));
+  check('they parse as afternoon times', sc.map((x) => x.id + ':' + x.s).join() ===
+    'tuemk200:840,tuemk245:885,wedmk415:975,wedmk500:1020', sc.map((x) => x.id + ':' + x.s).join());
+  check('each sorts ahead of the Ramble that day', ['tue', 'wed'].every((d) => {
+    const day = sets.filter((x) => x.day === d);
+    const last = day.map((x) => !!x.show).lastIndexOf(true);
+    return day.slice(0, last + 1).every((x) => x.show);
+  }));
+  check('the Ramble sets keep their ids', sets.filter((x) => !x.show).length === 61 && sets.some((x) => x.id === 'tuebb600'));
+  check('the list puts them under their own heading',
+    R.showGroups('tue', 'all').length === 1 && R.showGroups('tue', 'area:ms').length === 0 &&
+    R.listGroups('tue', 'all').every((g) => g.slots.every((sl) => sl.rows.every((x) => !x.show))));
+  global.location = { origin: 'https://www.tshawsprogressivebluegrass.com', hash: '' };
+  // Veranda's Wednesday showcase, 5:00 to 5:30, against a dinner at 5:15.
+  const dinner = { d: 'wed', s: 17 * 60 + 15, e: 18 * 60, t: 'Dinner', p: '' };
+  const grid = R.view(['wedmk500'], [dinner], 'browse', 'wed');
+  check('the grid shows them in a band above, with the access line',
+    /class="rshowband".*Requires registration for the IBMA Business Conference/.test(grid) &&
+    grid.indexOf('rshowband') < grid.indexOf('rgridbox'));
+  check('the grid columns never draw a showcase set, only the band does',
+    ['tue', 'wed'].every((d) => sc.filter((x) => x.day === d).every((x) => {
+      const g = R.view([], [], 'browse', d);
+      return (g.match(new RegExp('data-pick="' + x.id + '"', 'g')) || []).length === 1 && !g.includes('top:-');
+    })));
+  check('a showcase pick that overlaps is flagged on the grid', /class="rblk rchip on clash" data-pick="wedmk500"/.test(grid));
+  const mine = R.view(['wedmk500'], [dinner], 'mine');
+  check('My Ramble labels it and flags the overlap', mine.includes('International Showcase · McKenzie') && /rnote bad/.test(mine));
+  // Country Gongbang plays the showcase Tue 2:45 and the Ramble Tue 8:40.
+  check('a showcase overlapping a Ramble pick is flagged', (() => {
+    const rows = R.planRows(['tuemk245'], undefined, R.rambleOver - 1, [{ d: 'tue', s: 14 * 60 + 30, e: 15 * 60, t: 'Coffee', p: '' }]);
+    return rows.days[0].items.some((i) => i.notes.some((n) => n.warn && /Overlaps/.test(n.text)));
+  })());
+  const clash = R.view(['tuemk200', 'tuemk245'], [], 'mine');
+  check('two touching showcase sets are not an overlap', !/rnote bad/.test(clash));
+  const t = R.planText(['tuemk245', 'tuest840'], undefined, R.rambleOver - 1, []);
+  check('the message names the showcase and who can get in',
+    t.includes('2:45 to 3:15  Country Gongbang\nMcKenzie, Convention Center\nInternational Showcase. Requires registration for the IBMA Business Conference.'));
+  check('the Ramble set in the same message carries no showcase line', !/Stratus.*\nInternational Showcase/.test(t));
+  const ics = R.planIcs(['tuemk245'], [], Date.UTC(2026, 9, 16)).replace(/\r\n /g, '');
+  check('the calendar entry says showcase and who can get in',
+    ics.includes('International Showcase presented by Bluegrass in La Roche\\, McKenzie. Requires registration for the IBMA Business Conference.'));
+  const mail = require(path.join(ROOT, 'lib/plan-email.js')).build(['tuemk245'], R.rambleOver - 1, '');
+  check('the email lists it too', mail.html.includes('International Showcase. Requires registration for the IBMA Business Conference.'));
+  // A Ramble pick that clashes is never offered a switch to a showcase set,
+  // and a showcase pick never to a Ramble set: they need different passes.
+  // Veranda plays the Ramble Tue 5:50 and 8:30 and the showcase Wed 5:00.
+  const ramblePick = R.view(['tuemk550'], [{ d: 'tue', s: 17 * 60 + 50, e: 18 * 60 + 10, t: 'Call home', p: '' }], 'mine');
+  check('a clashing Ramble pick is offered another Ramble set, never the showcase',
+    /data-swap="tuemk550" data-to="tuesb830"/.test(ramblePick) && !ramblePick.includes('data-to="wedmk500"'));
+  check('a clashing showcase pick is never offered a Ramble set', !/data-swap/.test(mine));
+}
+
 // Print, from the buttons under the grid. The full schedule is every night's
 // grid, one to a page; the picks are the same rows the plan email uses.
 console.log('\nPrint');
@@ -514,7 +579,8 @@ console.log('\nTrevor\'s takes');
     (Number.isInteger(T[a][0]) && T[a][0] >= 0 && T[a][0] < 2447)));
   check('line only for The Price Sisters and Country Gongbang', names.filter((a) => T[a][0] === null).sort().join() === 'Country Gongbang,The Price Sisters');
   check('every take has a line under 100 characters', names.every((a) => T[a][1] && T[a][1].length < 100));
-  check('only Pickers Anonymous is missing', [...acts].filter((a) => !T[a]).join() === 'Pickers Anonymous');
+  const rambleActs = new Set(data.sets.filter((x) => !x.show).map((x) => x.act));
+  check('only Pickers Anonymous is missing from the Ramble acts', [...rambleActs].filter((a) => !T[a]).join() === 'Pickers Anonymous');
   check('the episode is the Rundown', R.rundownGuid === '0e0466ee-871f-49e3-8782-ec0f5c62f6c0');
 }
 

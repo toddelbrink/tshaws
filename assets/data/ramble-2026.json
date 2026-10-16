@@ -6,7 +6,8 @@
  "last_checked": "2026-10-07",
  "notes": [
   "All times are PM, Eastern.",
-  "Tue Barrelhouse, The Price Sisters: IBMA's page prints 5:50 - 7:30, which overlaps The Litch Brothers on the same stage. IBMA confirmed 6:50 - 7:30 on 2026-10-07."
+  "Tue Barrelhouse, The Price Sisters: IBMA's page prints 5:50 - 7:30, which overlaps The Litch Brothers on the same stage. IBMA confirmed 6:50 - 7:30 on 2026-10-07.",
+  "International Showcase sets (McKenzie, daytime) are from IBMA's 2026 conference schedule PDF, checked 2026-10-16. Only Tue and Wed are on this page; Thu to Sat wait for next year. When they are added: the PDF prints Fri's Leona set as 12:30 AM - 1 PM, which is 12:30 PM."
  ],
  "areas": [
   {
@@ -76,6 +77,13 @@
    "area": "ms"
   }
  ],
+ "showcases": {
+  "intl": {
+   "name": "International Showcase",
+   "full": "International Showcase presented by Bluegrass in La Roche",
+   "access": "Requires registration for the IBMA Business Conference."
+  }
+ },
  "days": [
   {
    "id": "tue",
@@ -515,6 +523,38 @@
    "start": "8:50",
    "end": "9:30",
    "act": "Williamson Branch"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "2:00",
+   "end": "2:30",
+   "act": "Under the Rocks",
+   "show": "intl"
+  },
+  {
+   "day": "tue",
+   "stage": "mk",
+   "start": "2:45",
+   "end": "3:15",
+   "act": "Country Gongbang",
+   "show": "intl"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "4:15",
+   "end": "4:45",
+   "act": "Cam & Jay",
+   "show": "intl"
+  },
+  {
+   "day": "wed",
+   "stage": "mk",
+   "start": "5:00",
+   "end": "5:30",
+   "act": "Veranda",
+   "show": "intl"
   }
  ]
 }

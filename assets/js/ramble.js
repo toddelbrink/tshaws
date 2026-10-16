@@ -159,6 +159,15 @@
 
   /* ---- helpers ---- */
 
+  /* IBMA's International Showcase: daytime sets on the McKenzie stage, from
+   * IBMA's conference schedule, not its Ramble page. A set with "show" in the
+   * data is one. They pick, clash and travel like any set, but sit under their
+   * own heading, say who can get in, and never offer a switch to or from a
+   * Ramble set, because the two need different passes. */
+  function showOf(x) {
+    return x && x.show && data.showcases ? data.showcases[x.show] || null : null;
+  }
+
   function minutes(t) {
     var p = t.split(':');
     return (Number(p[0]) % 12 + 12) * 60 + Number(p[1]);
@@ -188,6 +197,7 @@
   }
   function others(x) {
     if (x.yours) return [];
+    // Every other set by the act, showcase or Ramble alike.
     return sets.filter(function (o) { return o.act === x.act && o.id !== x.id; });
   }
   function dayLabel(id) {
@@ -354,7 +364,8 @@
           ? { type: 'set', yours: true, id: x.id, time: x.start + ' to ' + x.end, act: x.act,
               stage: x.place, area: '', areaId: null, notes: notes }
           : { type: 'set', id: x.id, time: clock(x.s) + ' to ' + clock(x.e), act: x.act,
-              stage: x.stageName, area: areaName(x.area), areaId: x.area, notes: notes });
+              stage: x.stageName, area: areaName(x.area), areaId: x.area, notes: notes,
+              show: showOf(x) ? showOf(x).name : '', access: showOf(x) ? showOf(x).access : '' });
       });
       days.push({ date: d.date, label: new Date(d.date + 'T12:00:00Z').toLocaleDateString('en-US',
         { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }).toUpperCase(), items: items });
@@ -386,6 +397,7 @@
           return;
         }
         out.push('', it.time + '  ' + it.act, it.yours ? 'Your own' + (it.stage ? ', ' + it.stage : '') : it.stage + ', ' + it.area);
+        if (it.show) out.push(it.show + '. ' + it.access);
         if (it.notes.length) out.push(it.notes.map(function (n) { return n.text; }).join(' '));
       });
     });
@@ -459,8 +471,8 @@
       if (v) {
         // A venue with two stages names the stage. Elsewhere the stage is the venue.
         L.push('LOCATION:' + icsText((v.stages.length > 1 ? x.stageName + ' stage, ' : '') + v.name + ', ' + v.address),
-          'DESCRIPTION:' + icsText('IBMA Bluegrass Ramble, ' + x.stageName + '. Set times can change: check ' +
-            SITE + '/ramble/ on the day.'),
+          'DESCRIPTION:' + icsText((showOf(x) ? 'IBMA ' + showOf(x).full + ', ' + x.stageName + '. ' + showOf(x).access
+            : 'IBMA Bluegrass Ramble, ' + x.stageName + '.') + ' Set times can change: check ' + SITE + '/ramble/ on the day.'),
           'URL:' + SITE + '/ramble/');
       } else {
         if (x.place) L.push('LOCATION:' + icsText(x.place));
@@ -549,7 +561,7 @@
     return data.areas.map(function (a) {
       var slots = [], last = null;
       sets.forEach(function (x) {
-        if (x.day !== day || x.area !== a.id || !shown[x.stage]) return;
+        if (x.day !== day || x.area !== a.id || !shown[x.stage] || x.show) return;
         if (!last || last.t !== x.start) { last = { t: x.start, rows: [] }; slots.push(last); }
         last.rows.push(x);
       });
@@ -560,6 +572,21 @@
     }).filter(function (g) { return g.slots.length; });
   }
 
+  /* One day's showcase sets the menu's choice shows, by showcase, in time
+   * order and grouped by start, as listGroups does for an area. */
+  function showGroups(day, f) {
+    return Object.keys(data.showcases || {}).map(function (k) {
+      var slots = [], last = null;
+      sets.forEach(function (x) {
+        if (x.day !== day || x.show !== k || !stagesShown(f).some(function (s) { return s.id === x.stage; })) return;
+        if (!last || last.t !== x.start) { last = { t: x.start, rows: [] }; slots.push(last); }
+        last.rows.push(x);
+      });
+      return { show: data.showcases[k], slots: slots };
+    }).filter(function (g) { return g.slots.length; });
+  }
+  function whereOf(x) { return x.stageName + ', ' + areaName(x.area); }
+
   function detail(x) {
     var o = others(x), pod = PODCAST[x.act], take = TAKES[x.act];
     var h = '<div class="rmore" id="more-' + x.id + '">';
@@ -568,9 +595,12 @@
       h += '<span class="lw rhear"><button type="button" class="play" data-take="' + take[0] + '">' + HEAR +
         '<span class="verb">Hear Trevor’s take</span><span class="sr-only"> on ' + esc(x.act) + '</span></button></span>';
     }
+    var sh = showOf(x);
+    if (sh) h += '<span>' + esc(sh.full) + '. ' + esc(sh.access) + '</span>';
     h += o.length ? o.map(function (y) {
-      return '<span>Also plays ' + dayLabel(y.day) + ' ' + y.start + ' to ' + y.end + ' at ' + esc(y.stageName) + '</span>';
-    }).join('') : '<span>This is the only Ramble set for this act.</span>';
+      return '<span>Also plays ' + dayLabel(y.day) + ' ' + y.start + ' to ' + y.end + ' at ' + esc(y.stageName) +
+        (showOf(y) ? ', ' + esc(showOf(y).name) : '') + '</span>';
+    }).join('') : sh ? '' : '<span>This is the only Ramble set for this act.</span>';
     if (pod) h += '<span>On the podcast: <a href="' + pod.href + '">' + esc(pod.guest) + '</a></span>';
     return h + '</div>';
   }
@@ -580,9 +610,14 @@
   }
 
   function list() {
-    var areas = listGroups(S.day, S.stage);
-    if (!areas.length) return key('list') + '<p class="status">No sets on this stage that night.</p>';
-    return key('list') + areas.map(function (a) {
+    var areas = listGroups(S.day, S.stage), shows = showGroups(S.day, S.stage);
+    if (!areas.length && !shows.length) return key('list') + '<p class="status">No sets on this stage that night.</p>';
+    return key('list') + shows.map(function (g) {
+      var x = g.slots[0].rows[0];
+      return '<section class="rareasec rshowsec" aria-label="' + esc(g.show.name) + '"><h2 class="rarea">' + esc(g.show.name) +
+        ' <span>' + esc(x.stageShort + ' · ' + areaName(x.area)) + '</span></h2>' +
+        '<p class="raccess">Daytime, before the Ramble. ' + esc(g.show.access) + '</p>' + slotsHtml(g.slots) + '</section>';
+    }).join('') + areas.map(function (a) {
       return '<section class="rareasec" aria-label="' + esc(a.name) + '"><h2 class="rarea">' + esc(a.name) +
         ' <span>' + esc(a.stages.join(' · ')) + '</span></h2>' + slotsHtml(a.slots) + '</section>';
     }).join('');
@@ -627,7 +662,7 @@
     var inGrid = mineTonight.filter(function (x) { return x.e > t0 && x.s < t1; });
     var outside = mineTonight.filter(function (x) { return !(x.e > t0 && x.s < t1); });
     var ycol = inGrid.length ? 1 : 0;
-    var h = (printing ? '' : key('grid', cols.length > 2)) + (outside.length
+    var h = (printing ? '' : key('grid', cols.length > 2)) + showBand(day, f) + (outside.length
       ? '<p class="ryout">Also yours this night: ' + outside.map(function (x) {
           return '<button type="button" class="rtextbtn" data-yedit="' + x.n + '">' + esc(x.act) + '</button>, ' +
             x.start + ' to ' + x.end;
@@ -663,7 +698,7 @@
     }
     cols.forEach(function (s, i) {
       h += '<div class="rcol' + areaCls(cols, i) + '" style="height:' + H + 'px;background-position:0 ' + (y(Math.ceil(t0 / 30) * 30) - 54) + 'px">' +
-        sets.filter(function (x) { return x.day === day && x.stage === s.id; }).map(function (x) {
+        sets.filter(function (x) { return x.day === day && x.stage === s.id && !x.show; }).map(function (x) {
           var on = picks.has(x.id), c = on && clashes(x).length > 0;
           return '<button type="button" class="rblk' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +
             '" aria-pressed="' + on + '" aria-label="' + starLabel(x, on) + '" style="top:' + y(x.s) + 'px;height:' +
@@ -672,6 +707,24 @@
         }).join('') + '</div>';
     });
     return h + '</div></div>';
+  }
+
+  /* The showcase sets come before the grid's hours, so they sit in a band
+   * above it, picked by a tap like any block. */
+  function showBand(day, f) {
+    return showGroups(day, f).map(function (g) {
+      var first = g.slots[0].rows[0], all = [];
+      g.slots.forEach(function (sl) { all = all.concat(sl.rows); });
+      return '<div class="rshowband"><p class="raccess"><b>' + esc(g.show.name) + '</b>, ' + esc(first.stageShort) +
+        ', ' + esc(areaName(first.area)) + ', before the Ramble. ' + esc(g.show.access) + '</p><div class="rshowsets">' +
+        all.map(function (x) {
+          var on = picks.has(x.id), c = on && clashes(x).length > 0;
+          return '<button type="button" class="rblk rchip' + (on ? ' on' : '') + (c ? ' clash' : '') + '" data-pick="' + x.id +
+            '" aria-pressed="' + on + '" aria-label="' + starLabel(x, on) + '">' +
+            (c ? '<i aria-hidden="true">!</i>' : on ? '<i aria-hidden="true">' + STAR + '</i>' : '') +
+            '<span>' + esc(x.act) + '</span><small>' + x.start + ' to ' + x.end + '</small></button>';
+        }).join('') + '</div></div>';
+    }).join('');
   }
 
   /* ---- print ----
@@ -705,6 +758,7 @@
           L.items.map(function (it) {
             if (it.type === 'break') return '<tr class="rpbreak"><td></td><td colspan="2">Break, ' + esc(it.length) + '</td></tr>';
             return '<tr><td class="rptime">' + esc(it.time) + '</td><td><b>' + esc(it.act) + '</b>' +
+              (it.show ? '<span class="rpnote">' + esc(it.show + '. ' + it.access) + '</span>' : '') +
               (it.notes.length ? '<span class="rpnote">' + esc(it.notes.map(function (n) { return n.text; }).join(' ')) + '</span>' : '') +
               '</td><td>' + (it.yours ? 'Your own' + (it.stage ? ', ' + esc(it.stage) : '') : esc(it.stage) + ', ' + esc(it.area)) + '</td></tr>';
           }).join('') + '</tbody></table>' + PRINT_FOOT + '</section>';
@@ -780,6 +834,20 @@
         '<p class="rmapbtn"><a class="btn" href="' + PASS_URL + '" target="_blank" rel="noopener">Get Ramble passes</a></p>' +
         '</div></section>';
     }
+    var showSets = sets.filter(function (x) { return x.show; });
+    Object.keys(data.showcases || {}).forEach(function (k) {
+      var sh = data.showcases[k], L = showSets.filter(function (x) { return x.show === k; });
+      if (!L.length) return;
+      var when = data.days.map(function (d) {
+        var D = L.filter(function (x) { return x.day === d.id; });
+        if (!D.length) return '';
+        return dayLong(d).split(',')[0] + ' ' + D[0].start + ' to ' + D.reduce(function (m, x) { return x.e > m.e ? x : m; }).end;
+      }).filter(Boolean);
+      h += '<section aria-labelledby="ri-show-' + k + '"><h2 class="rarea" id="ri-show-' + k + '">' + esc(sh.name) + '</h2><div class="rprose">' +
+        '<p>IBMA’s ' + esc(sh.full) +
+        ' plays short daytime sets on the ' + esc(L[0].stageName) + ' stage, before the Ramble: ' + esc(and(when)) + '.</p>' +
+        '<p>' + esc(sh.access) + ' Pick them like any set.</p></div></section>';
+    });
     h += '<section aria-labelledby="ri-areas"><h2 class="rarea" id="ri-areas">The two areas</h2><div class="rprose">' +
       '<p>The seven stages sit in two areas, and most people pick one a night.</p>' +
       '<p><strong>' + esc(cc.name) + ':</strong> ' + and(stageList(cc.id)) + '.</p>' +
@@ -816,7 +884,7 @@
     for (var i = 0; i < pairs.length; i++) {
       var from = pairs[i][0];
       var alt = others(from).filter(function (o) {
-        if (picks.has(o.id)) return false;
+        if (picks.has(o.id) || !o.show !== !from.show) return false;
         return !picked().some(function (p) { return p.id !== from.id && overlap(p, o); });
       })[0];
       if (alt) return { from: from, to: alt };
@@ -862,7 +930,7 @@
             '<button type="button" class="rx" data-ydel="' + x.n + '" aria-label="Remove ' + esc(x.act) + '">' + CROSS + '</button>'
           : '<div class="rpick"><div class="rt">' + x.start + '</div>' +
             '<div class="rinfo"><div class="ract one">' + esc(x.act) + '</div>' +
-            '<div class="rm one">' + esc(x.stageShort) + ' · to ' + x.end + '</div></div>' +
+            '<div class="rm one">' + (showOf(x) ? esc(showOf(x).name) + ' · ' : '') + esc(x.stageShort) + ' · to ' + x.end + '</div></div>' +
             '<button type="button" class="rx" data-pick="' + x.id + '" aria-label="Remove ' + esc(x.act) + '">' + CROSS + '</button>';
         L.forEach(function (y) {
           if (y === x || !overlap(x, y)) return;
@@ -1036,6 +1104,7 @@
   window.TSRamble = {
     load: function (d) { build(d); return sets; },
     listGroups: listGroups,
+    showGroups: showGroups,
     stagesShown: stagesShown,
     venues: VENUES,
     takes: TAKES,
@@ -1242,7 +1311,7 @@
       var st = stages[x.stage];
       return {
         id: x.day + x.stage + x.start.replace(':', ''),
-        day: x.day, stage: x.stage, start: x.start, end: x.end, act: x.act,
+        day: x.day, stage: x.stage, start: x.start, end: x.end, act: x.act, show: x.show || null,
         s: minutes(x.start), e: minutes(x.end),
         stageShort: st.short, stageName: st.name, building: st.building, area: st.area
       };
