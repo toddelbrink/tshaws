@@ -1458,13 +1458,6 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   .rtabs button{padding:0 8px}
   .rtabs button[data-v="info"]{flex:0 0 72px}
 }
-/* IBMA's International Showcase: its own heading in the list, a band above
-   the grid, and who can get in, every time. */
-.raccess{font-family:var(--sans);font-size:13px;line-height:1.45;color:var(--ink-2);margin:2px 0 6px}
-.raccess b{color:var(--ink);font-weight:600}
-.rshowband{margin:8px 0 0}
-.rshowsets{display:flex;flex-wrap:wrap;gap:6px}
-.rblk.rchip{position:relative;left:auto;right:auto;flex:0 1 180px;min-width:0;min-height:44px}
 /* Print, from the buttons under the grid or the browser's own Print. ramble.js
    builds the printout into #rprint, a child of body, and adds .rprinting;
    on paper nothing else shows. One night to a page. Landscape is asked for;
@@ -1477,31 +1470,19 @@ a.tile:hover{border-color:var(--ink);background:var(--paper)}
   body.rprinting > *:not(#rprint){display:none!important}
   body.rprinting #rprint{display:block}
   #rprint{color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  /* A night measures about 730px; a landscape page holds 736 on A4 and 758 on
-     Letter at these margins. The slight zoom leaves room for font differences. */
-  .rpday{break-after:page;zoom:.96}
+  .rpday{break-after:page}
   .rpday:last-child{break-after:auto}
-  .rphead{display:flex;align-items:baseline;gap:12px;border-bottom:1.5px solid #000;padding-bottom:4px;margin-bottom:6px}
+  .rphead{display:flex;align-items:baseline;gap:12px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:8px}
   .rphead img{height:18px;width:auto;align-self:center}
   .rptitle{font-family:var(--display);font-size:15px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;flex:1}
   .rpurl{font-family:var(--sans);font-size:11px;color:var(--ink-2)}
-  .rpfoot{font-family:var(--sans);font-size:10px;color:var(--ink-2);margin:4px 0 0}
+  .rpfoot{font-family:var(--sans);font-size:10px;color:var(--ink-2);margin:6px 0 0}
   #rprint .rgridbox{overflow:visible;margin:0;break-inside:avoid}
   #rprint .rpin,#rprint .rga span{position:static}
   #rprint .rcol.rtime.rpin{position:relative}
   #rprint .ryout{font-family:var(--sans);font-size:11px;margin:0 0 6px}
   #rprint .ryout .rtextbtn{color:#000;text-decoration:none;font-weight:600}
   #rprint .rblk{font-size:11.5px}
-  #rprint .rgh{padding:5px 6px}
-  #rprint .rga{padding:3px 8px}
-  /* The showcase band on one line, so a night still fits one landscape page. */
-  #rprint .rshowband{display:flex;align-items:center;gap:6px 10px;margin:0 0 6px}
-  #rprint .rshowband .raccess{margin:0;flex:1 1 auto;font-size:11px}
-  #rprint .rshowsets{flex:none;flex-wrap:nowrap}
-  #rprint .rblk.rchip{min-height:0;flex:none;padding:3px 7px}
-  #rprint .rblk.rchip.on,#rprint .rblk.rchip.clash{padding-right:18px}
-  #rprint .rchip span,#rprint .rchip small{display:inline}
-  #rprint .rchip small{margin-left:5px}
   .rptable{width:100%;border-collapse:collapse;table-layout:fixed;font-family:var(--sans);font-size:13px;line-height:1.35}
   .rptable td:nth-child(1){width:110px}
   .rptable td:nth-child(3){width:32%}
