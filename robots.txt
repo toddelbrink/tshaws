@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
+# The two public data feeds, so Google can draw the pages that read them.
+# Google follows the longest matching rule, so these beat Disallow: /api/.
+# Every /api/ response also carries X-Robots-Tag: noindex (vercel.json).
+# test/robots.js fails the build if admin, plan-email or warm ever open.
+Allow: /api/episodes
+Allow: /api/videos
 Disallow: /admin/
 Disallow: /api/
 
